@@ -1,0 +1,461 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>LINK UP Field Kit</title>
+<meta name="description" content="Install guide, career roadmaps, exam facts and study resources for graduates of the LINK UP CCNA Fundamentals workshop.">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oxanium:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Arabic:wght@400;600&display=swap">
+<style>
+/* LINK UP Field Kit. Night Ops palette from HexNet Lab (single dark theme by design).
+   Layout: sticky bar, hero beside a live topology of Mawja HQ, then one lab station per section. */
+:root{--void:#050A18;--deck:#0B1532;--deck-2:#112048;--rule:#21346A;--ice:#E8EFFF;--mist:#93A5D3;--signal:#4A7DFF;--signal-t:#7FA2FF;--signal-fill:#2350D8;--flux:#3CC8FF;--silver:#C9D6EC;--up:#2EE59D;--wait:#FFB547;--down:#FF5A6E;--dhcp:#B59CFF;--dns:#FF86CB;--well:#02050D;
+--f-d:"Oxanium","Chakra Petch",system-ui,sans-serif;--f-s:"IBM Plex Sans",system-ui,sans-serif;--f-m:"IBM Plex Mono",ui-monospace,Menlo,monospace;--f-a:"IBM Plex Sans Arabic",Tahoma,sans-serif;
+--r-xs:2px;--r-sm:6px;--r-md:10px;color-scheme:dark}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:76px}
+body{margin:0;background:var(--void);color:var(--ice);font:15px/1.6 var(--f-s);-webkit-text-size-adjust:100%}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--deck);z-index:30}
+a{color:var(--flux);text-underline-offset:3px}
+a:hover{color:var(--ice)}
+:focus-visible{outline:2px solid var(--flux);outline-offset:2px}
+code,pre,kbd{font-family:var(--f-m)}
+code{background:var(--deck-2);border:1px solid var(--rule);border-radius:var(--r-xs);padding:0 5px;font-size:.9em;color:var(--silver)}
+h1,h2,h3,h4{font-family:var(--f-d);text-wrap:balance;margin:0}
+p{margin:0}
+.in{max-width:1120px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.tri{display:inline-block;width:9px;height:8px;background:var(--up);clip-path:polygon(50% 0,100% 100%,0 100%);flex:none}
+.tri.w{background:var(--wait)}.tri.d{background:var(--down)}
+.eyebrow{font:600 11px/1.2 var(--f-d);letter-spacing:.18em;text-transform:uppercase;color:var(--flux)}
+/* top bar */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:40;background:var(--deck);border-bottom:1px solid var(--rule)}
+.top .in{display:flex;align-items:center;gap:18px;min-height:52px}
+.brand{display:flex;align-items:center;gap:10px;flex:none;text-decoration:none;color:var(--ice)}
+.brand b{font:800 18px/1 var(--f-d);letter-spacing:.02em}
+.lu{font:700 11px/1 var(--f-d);letter-spacing:.12em;color:var(--mist);display:inline-flex;align-items:center;gap:5px;border:1px solid var(--rule);border-radius:var(--r-xs);padding:4px 7px}
+.top nav{display:flex;gap:2px;overflow-x:auto;min-width:0;margin-left:auto;scrollbar-width:none}
+.top nav::-webkit-scrollbar{display:none}
+.top nav a{font:600 12px/1 var(--f-d);letter-spacing:.08em;text-transform:uppercase;color:var(--mist);text-decoration:none;padding:10px 11px;border-radius:var(--r-sm);white-space:nowrap}
+.top nav a:hover{color:var(--ice);background:var(--deck-2)}
+/* hero */
+.hero{padding-block:48px 40px;background:radial-gradient(ellipse at 78% 30%,rgba(35,80,216,.16),transparent 62%)}
+.hero .in{display:grid;grid-template-columns:1.05fr .95fr;gap:40px;align-items:center}
+.hero h1{font-weight:800;font-size:clamp(34px,5.4vw,58px);line-height:1.04;margin:12px 0 16px}
+.hero h1 span{color:var(--up)}
+.lead{color:var(--silver);max-width:62ch}
+.ar{font:600 18px/1.7 var(--f-a);color:var(--ice);margin-top:16px;display:block}
+.cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.btn{font:600 12.5px/1 var(--f-d);letter-spacing:.08em;text-transform:uppercase;border-radius:var(--r-sm);padding:12px 15px;border:1px solid transparent;cursor:pointer;display:inline-flex;align-items:center;gap:8px;text-decoration:none}
+.btn.primary{background:var(--signal-fill);color:#fff}
+.btn.primary:hover{background:#2a5cf0;color:#fff}
+.btn.ghost{background:transparent;color:var(--flux);border-color:var(--flux)}
+.btn.ghost:hover{background:var(--deck-2);color:var(--ice)}
+.ranks{display:flex;flex-wrap:wrap;gap:8px;margin-top:26px;align-items:center}
+.rank{display:inline-flex;align-items:center;gap:8px;font:700 12px/1 var(--f-d);letter-spacing:.06em;text-transform:uppercase;color:var(--silver);padding:7px 10px;border:1px solid var(--rule);border-radius:var(--r-sm);background:var(--deck)}
+.rank i{width:20px;height:20px;display:grid;place-items:center;clip-path:polygon(25% 3%,75% 3%,100% 50%,75% 97%,25% 97%,0 50%);background:var(--signal-fill);color:#fff;font-style:normal;font-size:10px}
+.rank.on i{background:var(--up);color:#02140B}
+.topo{background:var(--deck);border:1px solid var(--rule);border-radius:var(--r-md);padding:14px;min-width:0}
+.topo svg{display:block;width:100%;height:auto}
+.topo figcaption{font:500 11px/1.4 var(--f-m);color:var(--mist);margin-top:8px;display:flex;gap:8px;align-items:center}
+.topo .nd{fill:var(--deck-2);stroke:var(--rule);stroke-width:1.5}
+.topo .nd.r{stroke:var(--flux)}
+.topo .ln{stroke:#7F93C4;stroke-width:2;fill:none}
+.topo .tx{font:600 11px var(--f-m);fill:var(--ice);text-anchor:middle}
+.topo .sm{font:500 9.5px var(--f-m);fill:var(--mist);text-anchor:middle}
+.topo .led{fill:var(--up)}
+@media (prefers-reduced-motion:no-preference){.topo .led{animation:pulse 2.4s ease-in-out infinite}@keyframes pulse{50%{opacity:.35}}}
+/* sections */
+.sec{padding-block:56px;border-top:1px solid var(--rule)}
+.sec>.in>h2{font-size:clamp(26px,3.6vw,36px);line-height:1.1;margin:8px 0 10px}
+.sec .lead{margin-bottom:28px}
+.sub{font:600 11px/1 var(--f-d);letter-spacing:.18em;text-transform:uppercase;color:var(--mist);margin:30px 0 12px;display:flex;align-items:center;gap:8px}
+.sub::after{content:"";flex:1;height:1px;background:var(--rule)}
+.sub:first-child{margin-top:0}
+/* mission cards */
+.mg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.mc{background:var(--deck);border:1px solid var(--rule);border-radius:var(--r-md);padding:14px 16px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.mc .h{display:flex;align-items:center;gap:10px}
+.mc .n{font:700 12px/22px var(--f-d);width:24px;height:24px;text-align:center;border:1px solid var(--rule);border-radius:var(--r-xs);color:var(--flux);flex:none}
+.mc h3{font-size:17px}
+.mc p{color:var(--mist);font-size:14px}
+.pill{align-self:flex-start;font:600 10.5px/1 var(--f-m);letter-spacing:.04em;color:var(--dc,var(--flux));border:1px solid var(--dc,var(--flux));border-radius:999px;padding:4px 9px}
+.ahead{margin-top:14px;border:1px dashed var(--wait);border-radius:var(--r-md);padding:14px 16px;background:rgba(255,181,71,.06)}
+.ahead b{font-family:var(--f-d);letter-spacing:.04em}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.chips span{font:500 12px var(--f-m);color:var(--silver);background:var(--deck-2);border:1px solid var(--rule);border-radius:var(--r-xs);padding:3px 8px}
+/* tabs */
+.tl{display:flex;flex-wrap:wrap;border:1px solid var(--rule);border-radius:var(--r-sm);overflow:hidden;width:max-content;max-width:100%}
+.tl button{background:transparent;border:0;padding:10px 14px;font:600 12px/1 var(--f-d);letter-spacing:.08em;text-transform:uppercase;color:var(--mist);cursor:pointer}
+.tl button[aria-selected="true"]{background:var(--signal-fill);color:#fff}
+.tl button:not([aria-selected="true"]):hover{color:var(--ice);background:var(--deck-2)}
+.tp{margin-top:18px}
+/* install */
+.ins{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:28px;align-items:start}
+ol.steps{list-style:none;margin:0;padding:0;display:grid;gap:14px;counter-reset:s}
+ol.steps li{counter-increment:s;display:grid;grid-template-columns:28px minmax(0,1fr);gap:10px}
+ol.steps li::before{content:counter(s);font:700 12px/26px var(--f-d);text-align:center;width:26px;height:26px;border:1px solid var(--rule);border-radius:var(--r-xs);color:var(--flux)}
+ol.steps.c2 li::before{content:counter(s)}
+ol.steps h4{font:600 15px/1.35 var(--f-s);margin:2px 0 3px}
+ol.steps p{color:var(--mist);font-size:14px}
+.pre{position:relative;margin-top:8px}
+pre{background:var(--well);border:1px solid var(--rule);border-radius:var(--r-sm);padding:11px 12px;margin:0;font-size:12.5px;line-height:1.55;color:#D7E3FF;overflow-x:auto;white-space:pre}
+.copy{position:absolute;top:6px;right:6px;font:600 10.5px/1 var(--f-d);letter-spacing:.08em;text-transform:uppercase;background:var(--deck-2);color:var(--ice);border:1px solid var(--rule);border-radius:var(--r-xs);padding:6px 8px;cursor:pointer}
+.copy:hover{border-color:var(--flux)}
+.pre pre{padding-right:70px}
+.box{background:var(--deck);border:1px solid var(--rule);border-radius:var(--r-md);padding:16px 18px;min-width:0}
+.box+.box{margin-top:12px}
+.box h3{font-size:15px;letter-spacing:.04em;margin-bottom:8px}
+.box ul{margin:0;padding-left:18px;color:var(--silver);font-size:14px}
+.box li+li{margin-top:4px}
+.box.warn{border-color:rgba(255,181,71,.5);background:rgba(255,181,71,.06)}
+.box.good{border-color:rgba(46,229,157,.45);background:rgba(46,229,157,.05)}
+/* paths */
+.pg{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:28px;align-items:start}
+.lad{list-style:none;margin:0;padding:0;position:relative}
+.lad::before{content:"";position:absolute;left:11px;top:10px;bottom:10px;width:2px;background:var(--rule)}
+.lad li{position:relative;padding:0 0 18px 38px}
+.lad li:last-child{padding-bottom:0}
+.lad .tri{position:absolute;left:5px;top:5px;width:14px;height:12px;background:var(--rule);outline:3px solid var(--void)}
+.lad li.done .tri{background:var(--up)}
+.lad h4{font:600 15px/1.35 var(--f-s)}
+.lad p{color:var(--mist);font-size:14px}
+.lad .tag{font:600 10.5px var(--f-m);color:var(--up);margin-left:8px}
+.kv{display:grid;gap:12px}
+.kv dt{font:600 11px/1 var(--f-d);letter-spacing:.14em;text-transform:uppercase;color:var(--mist);margin-bottom:6px}
+.kv dd{margin:0}
+.kv .chips{margin-top:0}
+.rm{display:flex;flex-direction:column;gap:8px}
+/* exam */
+.ex{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px;align-items:start}
+dl.facts{margin:0;display:grid}
+dl.facts div{display:grid;grid-template-columns:130px minmax(0,1fr);gap:12px;padding:9px 0;border-bottom:1px solid var(--rule)}
+dl.facts dt{color:var(--mist);font-size:13px}
+dl.facts dd{margin:0;font-weight:500}
+.dom{display:grid;gap:12px}
+.dom .row{display:grid;gap:5px}
+.dom .lb{display:flex;justify-content:space-between;gap:10px;font-size:13.5px}
+.dom .lb b{font:600 13px var(--f-m);font-variant-numeric:tabular-nums}
+.dom .tr{height:10px;background:var(--deck-2);border:1px solid var(--rule);border-radius:999px;overflow:hidden}
+.dom .tr i{display:block;height:100%;background:var(--dc);border-radius:999px}
+.dom .st{font:500 11px var(--f-m);color:var(--mist)}
+.note{font-size:12.5px;color:var(--mist);margin-top:10px}
+.scroll{overflow-x:auto;border:1px solid var(--rule);border-radius:var(--r-md)}
+table{border-collapse:collapse;width:100%;min-width:560px;font-size:14px}
+th{text-align:left;font:600 11px var(--f-d);letter-spacing:.12em;text-transform:uppercase;color:var(--mist);padding:10px 12px;background:var(--deck);border-bottom:1px solid var(--rule)}
+td{padding:9px 12px;border-bottom:1px solid rgba(33,52,106,.55);vertical-align:top}
+tbody tr:last-child td{border-bottom:0}
+td:first-child{font:600 12px var(--f-m);color:var(--flux);white-space:nowrap}
+.cta.tight{margin-top:18px}
+/* library & certs */
+.lg{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}
+.lg .box+.box{margin-top:0}
+.lk{list-style:none;margin:0;padding:0;display:grid;gap:2px}
+.lk a{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:8px 0;border-bottom:1px solid rgba(33,52,106,.55);text-decoration:none;color:var(--ice);font-size:14px}
+.lk a:hover{color:var(--flux)}
+.lk a span{font:500 10.5px var(--f-m);color:var(--mist);white-space:nowrap}
+.lk li:last-child a{border-bottom:0}
+.cg{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:12px}
+.cc{background:var(--deck);border:1px solid var(--rule);border-radius:var(--r-md);padding:16px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.cc .lv{font:600 10.5px var(--f-m);letter-spacing:.06em;color:var(--dc);text-transform:uppercase}
+.cc h3{font-size:18px}
+.cc .code{font:500 12px var(--f-m);color:var(--silver)}
+.cc p{color:var(--mist);font-size:14px;flex:1}
+.cc.me{border-color:var(--flux)}
+/* checklist */
+.ck{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.ck label{display:flex;gap:12px;align-items:flex-start;background:var(--deck);border:1px solid var(--rule);border-radius:var(--r-sm);padding:12px 14px;cursor:pointer}
+.ck input{accent-color:var(--up);width:18px;height:18px;margin:2px 0 0;flex:none}
+.ck input:checked+span{color:var(--mist);text-decoration:line-through;text-decoration-color:var(--rule)}
+.prog{display:flex;align-items:center;gap:12px;font:600 12px var(--f-m);color:var(--mist);margin-bottom:14px}
+.prog .tr{flex:1;max-width:320px;height:8px;border-radius:999px;background:var(--deck-2);border:1px solid var(--rule);overflow:hidden}
+.prog .tr i{display:block;height:100%;width:0;background:var(--up);transition:width .4s}
+.done-msg{margin-top:14px;color:var(--up);font-weight:600}
+footer{border-top:1px solid var(--rule);padding-block:30px 44px;color:var(--mist);font-size:13px}
+footer .in{display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-between}
+@media (max-width:900px){
+ .hero .in,.ins,.pg,.ex{grid-template-columns:minmax(0,1fr)}
+ .mg{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .hero{padding-block:34px 28px}
+}
+@media (max-width:560px){
+ .mg{grid-template-columns:minmax(0,1fr)}
+ .top .in{gap:10px}
+ .lu{display:none}
+ dl.facts div{grid-template-columns:minmax(0,1fr)}
+ dl.facts div{gap:2px}
+}
+</style>
+
+</head>
+<body>
+
+<header class="top"><div class="in">
+ <a class="brand" href="#top"><span class="tri"></span><b>HexNet Lab</b><span class="lu">LINK UP</span></a>
+ <nav aria-label="Sections"><a href="#covered">Covered</a><a href="#install">Install</a><a href="#paths">Paths</a><a href="#exam">Exam</a><a href="#library">Library</a><a href="#certs">Certs</a><a href="#next">Next 30 days</a></nav>
+</div></header>
+
+<main id="top">
+<section class="hero"><div class="in">
+ <div>
+  <div class="eyebrow">CCNA Fundamentals · Computer Club</div>
+  <h1>Mission complete. <span>Your network is up.</span></h1>
+  <p class="lead">You cabled two PCs, subnetted an office, split a switch into VLANs, routed between floors, switched on DHCP and DNS, locked down a console and fixed a broken network before Monday 9:00 AM. Then you built Mawja HQ from an empty floor plan. That is real CCNA work, and this page is where it goes next.</p>
+  <span class="ar" dir="rtl" lang="ar">مبروك! أنهيتم ورشة LINK UP. هذه بداية الطريق.</span>
+  <div class="cta"><a class="btn primary" href="#install">Install Packet Tracer</a><a class="btn ghost" href="#paths">Pick a career path</a></div>
+  <div class="ranks" aria-label="Lab ranks">
+   <span class="rank on"><i>1</i>Cable Rookie</span><span class="rank on"><i>2</i>Packet Pusher</span><span class="rank on"><i>3</i>Subnet Slayer</span><span class="rank on"><i>4</i>Route Master</span>
+  </div>
+ </div>
+ <figure class="topo" style="margin:0">
+  <svg viewBox="0 0 520 318" role="img" aria-label="Topology of Mawja HQ: an ISP, one router, a staff switch with two PCs and a server, and a guest switch with two PCs">
+   <rect class="nd" x="392" y="14" width="112" height="36" rx="6"/><text class="tx" x="448" y="36">ISP</text>
+   <path class="ln" d="M448 50V74H270V98"/><text class="sm" x="360" y="68">203.0.113.0/30</text>
+   <rect class="nd r" x="212" y="98" width="116" height="44" rx="6"/><text class="tx" x="270" y="125">MAWJA-R1</text>
+   <path class="ln" d="M240 142V164H140V188"/><path class="ln" d="M300 142V164H400V188"/>
+   <rect class="nd" x="92" y="188" width="96" height="34" rx="6"/><text class="tx" x="140" y="209">S1</text>
+   <rect class="nd" x="352" y="188" width="96" height="34" rx="6"/><text class="tx" x="400" y="209">S2</text>
+   <path class="ln" d="M140 222V240H52V252M140 222V252M140 222V240H228V252"/>
+   <path class="ln" d="M400 222V240H350V252M400 222V240H450V252"/>
+   <rect class="nd" x="28" y="252" width="48" height="28" rx="4"/><text class="sm" x="52" y="270">PC</text>
+   <rect class="nd" x="116" y="252" width="48" height="28" rx="4"/><text class="sm" x="140" y="270">PC</text>
+   <rect class="nd" x="204" y="252" width="48" height="28" rx="4"/><text class="sm" x="228" y="270">SRV</text>
+   <rect class="nd" x="326" y="252" width="48" height="28" rx="4"/><text class="sm" x="350" y="270">PC</text>
+   <rect class="nd" x="426" y="252" width="48" height="28" rx="4"/><text class="sm" x="450" y="270">PC</text>
+   <text class="sm" x="140" y="302">STAFF · 192.168.10.0/24</text><text class="sm" x="400" y="302">GUEST · 192.168.20.0/24 · DHCP</text>
+   <g class="led"><polygon points="270,86 275,94 265,94"/><polygon points="448,62 453,70 443,70"/><polygon points="140,176 145,184 135,184"/><polygon points="400,176 405,184 395,184"/></g>
+  </svg>
+  <figcaption><span class="tri"></span>Mawja HQ, the network you built in mission 9. All links up.</figcaption>
+ </figure>
+</div></section>
+
+<section class="sec" id="covered"><div class="in">
+ <div class="eyebrow">Mission log</div>
+ <h2>Nine missions, five exam domains</h2>
+ <p class="lead">Each mission lines up with a domain of the Cisco CCNA 200-301 exam. Knowing where your lab work sits tells you what to study next.</p>
+ <div class="mg" id="missions"></div>
+ <div class="ahead">
+  <b>On the exam, not in the workshop yet</b>
+  <p class="note" style="margin-top:4px">The workshop gave you the base. These topics are part of CCNA and are the next ones to learn.</p>
+  <div class="chips"><span>OSPF</span><span>STP</span><span>EtherChannel</span><span>Trunks</span><span>NAT</span><span>ACLs</span><span>Port security</span><span>SSH</span><span>IPv6</span><span>Wireless</span><span>SNMP and syslog</span><span>REST APIs and JSON</span><span>Ansible</span></div>
+ </div>
+</div></section>
+
+<section class="sec" id="install"><div class="in">
+ <div class="eyebrow">Real tool, real lab</div>
+ <h2>Install Cisco Packet Tracer</h2>
+ <p class="lead">HexNet Lab runs in your browser. Packet Tracer is the same idea with Cisco's full device library, and it is the simulator Cisco's own courses use. Cisco offers it free through Networking Academy.</p>
+ <div class="ins">
+  <div>
+   <div class="sub">Get the installer</div>
+   <ol class="steps">
+    <li><div><h4>Open the official page</h4><p><a href="https://www.netacad.com/cisco-packet-tracer" target="_blank" rel="noopener noreferrer">netacad.com/cisco-packet-tracer</a>. Use only this address for the download.</p></div></li>
+    <li><div><h4>Create a free Networking Academy account</h4><p>Use an email you check often and verify it. The same login unlocks Packet Tracer and Cisco's free networking courses.</p></div></li>
+    <li><div><h4>Follow the sign-up or download button on that page</h4><p>Cisco may ask you to enrol in a short free course first. That is normal, and the download is inside the course resources.</p></div></li>
+    <li><div><h4>Pick the installer for your computer</h4><p>Official builds exist for 64-bit Windows, macOS and Ubuntu Linux. The download page lists the current version and minimum system requirements.</p></div></li>
+   </ol>
+   <div class="sub">Install it</div>
+   <div class="tl" role="tablist" aria-label="Operating system" id="ostabs">
+    <button role="tab" id="t-win" aria-controls="p-win">Windows</button><button role="tab" id="t-mac" aria-controls="p-mac">macOS</button><button role="tab" id="t-lin" aria-controls="p-lin">Ubuntu</button>
+   </div>
+   <div class="tp" id="p-win" role="tabpanel" aria-labelledby="t-win"><ol class="steps">
+    <li><div><h4>Run the installer</h4><p>Double-click the downloaded <code>.exe</code> and accept the licence.</p></div></li>
+    <li><div><h4>Keep the defaults</h4><p>Leave the install folder and the desktop shortcut option as they are, then click Install and Finish.</p></div></li>
+    <li><div><h4>If Windows shows a warning</h4><p>SmartScreen may flag a new installer. Continue only if you downloaded it from netacad.com.</p></div></li>
+   </ol></div>
+   <div class="tp" id="p-mac" role="tabpanel" aria-labelledby="t-mac" hidden><ol class="steps">
+    <li><div><h4>Open the disk image</h4><p>Double-click the downloaded <code>.dmg</code> file.</p></div></li>
+    <li><div><h4>Drag to Applications</h4><p>Drag the Packet Tracer icon onto the Applications folder.</p></div></li>
+    <li><div><h4>First launch</h4><p>If macOS blocks the app, right-click it in Applications, choose Open, then confirm.</p></div></li>
+   </ol></div>
+   <div class="tp" id="p-lin" role="tabpanel" aria-labelledby="t-lin" hidden><ol class="steps">
+    <li><div><h4>Open a terminal in your Downloads folder</h4><p>Check the exact file name first with <code>ls</code>.</p></div></li>
+    <li><div><h4>Install the package</h4><p>Replace the file name with yours.</p>
+     <div class="pre"><pre id="c-deb">sudo apt update
+sudo apt install ./CiscoPacketTracer*.deb</pre><button class="copy" data-copy="c-deb">Copy</button></div></div></li>
+    <li><div><h4>Launch it</h4><p>Open Packet Tracer from your applications menu.</p></div></li>
+   </ol></div>
+   <div class="sub">Test it</div>
+   <ol class="steps">
+    <li><div><h4>Sign in</h4><p>Start Packet Tracer and sign in with the same Networking Academy account.</p></div></li>
+    <li><div><h4>Rebuild mission 1</h4><p>Drag in two PCs and a switch, join them with copper straight-through cables, set <code>192.168.1.10</code> and <code>192.168.1.11</code> with mask <code>255.255.255.0</code>, then run <code>ping 192.168.1.11</code> from PC1's command prompt.</p></div></li>
+    <li><div><h4>Then take on the bigger one</h4><p>Rebuild Mawja HQ in Packet Tracer, save it as a <code>.pkt</code> file and show it to the club. The commands are the same ones you typed in HexNet Lab.</p></div></li>
+   </ol>
+  </div>
+  <aside>
+   <div class="box"><h3>Before you start</h3><ul><li>A 64-bit computer running Windows, macOS or Ubuntu.</li><li>Around 4 GB of RAM and a couple of GB of free disk space is plenty. Check the download page for the exact current figures.</li><li>A free Networking Academy account.</li></ul></div>
+   <div class="box warn"><h3>Download from netacad.com only</h3><p style="font-size:14px;color:var(--silver)">Search results are full of mirror sites and cracked installers. Those can carry malware. The official download is free, so there is no reason to use them.</p></div>
+   <div class="box"><h3>If something goes wrong</h3><ul><li><b>Cannot sign in:</b> reset the password from the Networking Academy login page.</li><li><b>Installer will not start:</b> it is 64-bit only. Check your operating system version.</li><li><b>Download blocked:</b> some campus or office networks filter it. Try your home or mobile connection.</li></ul></div>
+   <div class="box good"><h3>No laptop handy?</h3><p style="font-size:14px;color:var(--silver)">Keep practising in HexNet Lab. It runs in any browser, including your phone.</p></div>
+  </aside>
+ </div>
+</div></section>
+
+<section class="sec" id="paths"><div class="in">
+ <div class="eyebrow">Careers</div>
+ <h2>Pick a path</h2>
+ <p class="lead">These ladders follow the shape of the roadmaps on roadmap.sh. Each one links to the live roadmap, where you can tick off every topic and open the resources behind it.</p>
+ <div class="tl" role="tablist" aria-label="Career path" id="pathtabs"></div>
+ <div id="pathpanels"></div>
+</div></section>
+
+<section class="sec" id="exam"><div class="in">
+ <div class="eyebrow">Certification</div>
+ <h2>The CCNA exam</h2>
+ <p class="lead">CCNA is Cisco's associate-level networking certification, and the usual first step into a network, support or security role.</p>
+ <div class="ex">
+  <div>
+   <div class="sub">Facts from Cisco</div>
+   <dl class="facts">
+    <div><dt>Exam</dt><dd>200-301 CCNA, Implementing and Administering Cisco Solutions</dd></div>
+    <div><dt>Length</dt><dd>120 minutes</dd></div>
+    <div><dt>Price</dt><dd>US$300, or Cisco Learning Credits</dd></div>
+    <div><dt>Languages</dt><dd>English, Japanese</dd></div>
+    <div><dt>Valid for</dt><dd>Three years</dd></div>
+    <div><dt>Renew by</dt><dd>Passing the current CCNA or any higher Cisco exam, or earning 30 continuing education credits</dd></div>
+   </dl>
+   <p class="note">Pearson VUE test centres and online proctoring are scheduled through Cisco's exam portal. Check the price in your region before you book.</p>
+  </div>
+  <div>
+   <div class="sub">Domain weights</div>
+   <div class="dom" id="dom"></div>
+   <p class="note">Weights are those of exam version 1.1. Confirm them on the official exam topics page, because Cisco updates the blueprint from time to time.</p>
+  </div>
+ </div>
+ <div class="cta tight">
+  <a class="btn primary" href="https://learningnetwork.cisco.com/s/ccna-v1-1-exam-topics" target="_blank" rel="noopener noreferrer">Official exam topics</a>
+  <a class="btn ghost" href="https://u.cisco.com/exams/4525" target="_blank" rel="noopener noreferrer">Practice exam</a>
+  <a class="btn ghost" href="https://u.cisco.com/paths/implementing-administering-cisco-solutions-248" target="_blank" rel="noopener noreferrer">Cisco U. learning path</a>
+  <a class="btn ghost" href="https://cp.certmetrics.com/cisco/en/login" target="_blank" rel="noopener noreferrer">Schedule the exam</a>
+ </div>
+ <div class="sub" style="margin-top:36px">A ten-week study plan</div>
+ <div class="scroll"><table><thead><tr><th>Week</th><th>Focus</th><th>Lab it in Packet Tracer</th></tr></thead><tbody id="plan"></tbody></table></div>
+ <p class="note">This plan is a suggestion for about 8 to 10 hours a week. Shorten it if you already work with networks, and stretch it if you do not.</p>
+</div></section>
+
+<section class="sec" id="library"><div class="in">
+ <div class="eyebrow">Study library</div>
+ <h2>Courses, labs and communities</h2>
+ <p class="lead">Start with the official Cisco material, add one video course, and spend more time in labs than in lectures. Free tiers and prices change, so check each site.</p>
+ <div class="lg" id="lib"></div>
+</div></section>
+
+<section class="sec" id="certs"><div class="in">
+ <div class="eyebrow">Certifications</div>
+ <h2>Where CCNA sits</h2>
+ <p class="lead">A sensible order for most students is a foundation, then CCNA, then a specialty that matches the path you chose.</p>
+ <div class="cg" id="certgrid"></div>
+ <p class="note">Security+ is moving to a new version. CompTIA lists V7 as available now and V8 as expected around 17 November 2026, so check which one you are booking.</p>
+</div></section>
+
+<section class="sec" id="next"><div class="in">
+ <div class="eyebrow">Keep the momentum</div>
+ <h2>Your next 30 days</h2>
+ <p class="lead">Small, concrete steps beat a big plan. Ticks are saved in this browser only.</p>
+ <div class="prog"><span id="pt">0 of 7</span><div class="tr"><i id="pb"></i></div></div>
+ <ul class="ck" id="ck"></ul>
+ <p class="done-msg" id="dm" hidden>All done. You are ready for the next lab.</p>
+</div></section>
+</main>
+
+<footer><div class="in">
+ <span>Built for the Computer Club LINK UP workshop.</span>
+ <span>Links checked 24 October 2026. If one breaks, tell a club officer.</span>
+</div></footer>
+
+<script>
+(function(){
+var $=function(s,r){return (r||document).querySelector(s)};
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function ext(u,t,tag){return '<a href="'+u+'" target="_blank" rel="noopener noreferrer">'+t+(tag?'<span>'+tag+'</span>':'')+'</a>'}
+function tabs(list,onSel){
+ var btns=[].slice.call(list.querySelectorAll('[role=tab]'));
+ var panels=btns.map(function(b){return document.getElementById(b.getAttribute('aria-controls'))});
+ function sel(i){btns.forEach(function(b,j){b.setAttribute('aria-selected',String(j===i));b.tabIndex=j===i?0:-1;if(panels[j])panels[j].hidden=j!==i});if(onSel)onSel(i)}
+ btns.forEach(function(b,i){b.addEventListener('click',function(){sel(i)});b.addEventListener('keydown',function(e){if(e.key==='ArrowRight'||e.key==='ArrowLeft'){var n=(i+(e.key==='ArrowRight'?1:-1)+btns.length)%btns.length;sel(n);btns[n].focus()}})});
+ sel(0);
+}
+/* missions */
+var DOM={nf:['Network Fundamentals',20,'var(--flux)'],na:['Network Access',20,'var(--up)'],ic:['IP Connectivity',25,'var(--signal-t)'],is:['IP Services',10,'var(--dhcp)'],sec:['Security Fundamentals',15,'var(--down)'],au:['Automation and Programmability',10,'var(--wait)']};
+var M=[
+['First Contact','nf','Cabled two PCs, set addresses and pinged across a LAN.'],
+['Packet’s Journey','nf','Stepped through ARP, TCP and HTTP in Simulation mode and opened PDUs.'],
+['Address the Office','nf','Set addresses, masks and gateways, then practised /26 subnetting.'],
+['Switch On','na','Read a MAC address table and split a switch into two VLANs.'],
+['Two Floors, One Router','ic','Brought up router interfaces and added a static route to the branch.'],
+['Auto-Pilot','is','Ran DHCP on the router and DNS on the server, then opened the intranet by name.'],
+['Lock It Down','sec','Secured a switch with passwords, a banner and a management IP, then saved to NVRAM.'],
+['Network Down!','ic','Found four hidden faults using ping, tracert and show commands.'],
+['Mawja HQ','nf','Built the whole office network, with LANs, DHCP, DNS and an Internet route.']
+];
+var allDom='All five domains';
+$('#missions').innerHTML=M.map(function(m,i){
+ var d=DOM[m[1]],lab=(i===7||i===8)?allDom+' in practice':d[0];
+ return '<div class="mc"><div class="h"><span class="n">'+(i+1)+'</span><h3>'+esc(m[0])+'</h3></div><p>'+esc(m[2])+'</p><span class="pill" style="--dc:'+d[2]+'">'+esc(lab)+'</span></div>';
+}).join('');
+/* os tabs */
+tabs($('#ostabs'));
+/* paths */
+var P=[
+{n:'Network Engineer',id:'net',roles:['NOC technician','Network administrator','Network engineer'],certs:['CCNA','CCNP Enterprise'],rm:[['Network Engineer roadmap','https://roadmap.sh/network-engineer']],
+ s:[['Network fundamentals','OSI and TCP/IP, IPv4 subnetting, cabling and basic device setup. You finished this in missions 1 to 3.',1],['Switching and routing','VLANs, trunks, STP, EtherChannel, static routes and OSPF.'],['Network services','DHCP, DNS, NAT, NTP, access control lists and first-hop redundancy.'],['Security and wireless','Port security, DHCP snooping, SSH, WLAN architecture and VPN basics.'],['Monitoring and automation','SNMP, syslog, REST APIs, JSON, Python basics and Ansible.'],['Specialise','CCNP Enterprise, network design, SD-WAN, data-centre or service-provider tracks.']]},
+{n:'Cybersecurity',id:'sec',roles:['SOC analyst','Security analyst','Penetration tester'],certs:['Security+','CCNA','Cisco security track'],rm:[['Cyber Security roadmap','https://roadmap.sh/cyber-security'],['Linux roadmap','https://roadmap.sh/linux']],
+ s:[['Network fundamentals','Protocols, addressing and traffic flow. Attackers and defenders both start here, and you already have it.',1],['Operating systems','Linux and Windows command line, users, permissions and services.'],['Security principles','Confidentiality, integrity, availability, common threats, cryptography and authentication basics.'],['Traffic analysis','Capture and read packets in Wireshark. Spot ARP, DNS and TCP behaviour you saw in the lab.'],['Defend or attack','Monitoring and SIEM on the blue side, or legal practice labs on TryHackMe for the red side.'],['Certify','Security+ first, then a Cisco security certification or a hands-on exam.']]},
+{n:'Cloud and DevOps',id:'cld',roles:['Cloud engineer','DevOps engineer','Site reliability engineer'],certs:['AWS Cloud Practitioner','Associate-level cloud exam'],rm:[['DevOps roadmap','https://roadmap.sh/devops'],['AWS roadmap','https://roadmap.sh/aws'],['Linux roadmap','https://roadmap.sh/linux']],
+ s:[['Networking basics','CIDR, subnets, gateways, routing and DNS. Cloud networks use exactly what you built in the lab.',1],['Linux and the shell','Files, processes, permissions, SSH and shell scripting.'],['One scripting language','Python or Bash, enough to automate small jobs.'],['Cloud networking','Virtual networks, subnets, route tables and security groups.'],['Containers and pipelines','Docker, Git and CI/CD.'],['Infrastructure as code','Describe networks and servers in files, for example with Terraform.']]},
+{n:'Network Automation',id:'aut',roles:['Network automation engineer','NetDevOps engineer'],certs:['CCNA','Cisco DevNet certifications'],rm:[['Python roadmap','https://roadmap.sh/python'],['Cisco DevNet certification','https://developer.cisco.com/certification/']],
+ s:[['Networking basics','You need to read a routing table before you can script one. Done in the lab.',1],['Python fundamentals','Variables, loops, functions, files and error handling.'],['Data formats and APIs','JSON, YAML and REST, the language of modern network controllers.'],['Automation tools','Git, Netmiko or Ansible, and templates for device configuration.'],['Controller-based networking','Intent-based networking and programmable platforms.'],['DevNet certification','Cisco’s automation track, built on top of CCNA-level knowledge.']]}
+];
+$('#pathtabs').innerHTML=P.map(function(p){return '<button role="tab" id="pt-'+p.id+'" aria-controls="pp-'+p.id+'">'+esc(p.n)+'</button>'}).join('');
+$('#pathpanels').innerHTML=P.map(function(p){
+ return '<div class="tp pg" id="pp-'+p.id+'" role="tabpanel" aria-labelledby="pt-'+p.id+'" hidden>'+
+ '<ol class="lad">'+p.s.map(function(s){return '<li'+(s[2]?' class="done"':'')+'><span class="tri"></span><h4>'+esc(s[0])+(s[2]?'<span class="tag">DONE IN THE LAB</span>':'')+'</h4><p>'+esc(s[1])+'</p></li>'}).join('')+'</ol>'+
+ '<div class="box"><dl class="kv"><div><dt>Roles</dt><dd><div class="chips">'+p.roles.map(function(r){return '<span>'+esc(r)+'</span>'}).join('')+'</div></dd></div>'+
+ '<div><dt>Certifications</dt><dd><div class="chips">'+p.certs.map(function(r){return '<span>'+esc(r)+'</span>'}).join('')+'</div></dd></div>'+
+ '<div><dt>Live roadmaps</dt><dd><div class="rm">'+p.rm.map(function(r){return '<a class="btn ghost" href="'+r[1]+'" target="_blank" rel="noopener noreferrer">'+esc(r[0])+'</a>'}).join('')+'</div></dd></div></dl></div></div>';
+}).join('');
+tabs($('#pathtabs'));
+/* exam */
+$('#dom').innerHTML=['nf','na','ic','is','sec','au'].map(function(k){
+ var d=DOM[k],cov=k==='au'?'Not covered in the workshop':'Covered in the workshop, basics only';
+ return '<div class="row" style="--dc:'+d[2]+'"><div class="lb"><span>'+d[0]+'</span><b>'+d[1]+'%</b></div><div class="tr"><i style="width:'+(d[1]/30*100)+'%"></i></div><div class="st">'+cov+'</div></div>';
+}).join('');
+var PL=[['1','Network fundamentals, OSI and TCP/IP','Rebuild missions 1 and 2, then capture a ping in Wireshark'],['2','IPv4 subnetting every day, IPv6 introduction','Subnet a /24 into four networks and address them'],['3','VLANs, trunks and Spanning Tree','Two switches, two VLANs, one trunk'],['4','EtherChannel, CDP and LLDP, wireless basics','Bundle two links and read neighbour tables'],['5','Static routing and single-area OSPF','Three routers sharing routes automatically'],['6','NAT, NTP, DHCP and DNS, first-hop redundancy','Give the guest LAN Internet access through NAT'],['7','ACLs, port security, DHCP snooping, VPN concepts','Block one host from one server and prove it'],['8','Automation: REST, JSON, Ansible, controllers','Read a JSON reply and map it to a config'],['9','Mixed labs and troubleshooting','Break a network on purpose and fix it in order, layer by layer'],['10','Practice exams and booking','Two timed practice exams, then book the real one']];
+$('#plan').innerHTML=PL.map(function(r){return '<tr><td>'+r[0]+'</td><td>'+esc(r[1])+'</td><td>'+esc(r[2])+'</td></tr>'}).join('');
+/* library */
+var L=[
+['Official Cisco',[['Networking Academy: Networking','https://www.netacad.com/networking','Courses'],['CCNA exam topics','https://learningnetwork.cisco.com/s/ccna-v1-1-exam-topics','Blueprint'],['Cisco U. CCNA path','https://u.cisco.com/paths/implementing-administering-cisco-solutions-248','Course'],['Official practice exam','https://u.cisco.com/exams/4525','Practice'],['CCNA community','https://learningnetwork.cisco.com/s/topic/0TO3i0000008jYHGAY/ccna-certification-community','Forum'],['All Cisco certifications','https://www.cisco.com/site/us/en/learn/training-certifications/certifications/index.html','Catalog']]],
+['Video courses',[['Jeremy’s IT Lab','https://www.jeremysitlab.com/','Course hub'],['Jeremy’s IT Lab on YouTube','https://www.youtube.com/@JeremysITLab','Video'],['David Bombal on YouTube','https://www.youtube.com/@davidbombal','Video']]],
+['Labs and tools',[['Cisco Packet Tracer','https://www.netacad.com/cisco-packet-tracer','Simulator'],['Cisco Modeling Labs','https://www.cisco.com/site/us/en/learn/training-certifications/training/modeling-labs/index.html','Emulator'],['GNS3','https://www.gns3.com/','Emulator'],['Wireshark','https://www.wireshark.org/download.html','Packet capture']]],
+['Roadmaps and community',[['Network Engineer','https://roadmap.sh/network-engineer','roadmap.sh'],['Cyber Security','https://roadmap.sh/cyber-security','roadmap.sh'],['DevOps','https://roadmap.sh/devops','roadmap.sh'],['Linux','https://roadmap.sh/linux','roadmap.sh'],['AWS','https://roadmap.sh/aws','roadmap.sh'],['Python','https://roadmap.sh/python','roadmap.sh'],['roadmap.sh Discord','https://roadmap.sh/discord','Community']]],
+['Practice platforms',[['TryHackMe','https://tryhackme.com/','Hands-on labs'],['OverTheWire: Bandit','https://overthewire.org/wargames/bandit/','Linux wargame']]]
+];
+$('#lib').innerHTML=L.map(function(g){return '<div class="box"><h3>'+esc(g[0])+'</h3><ul class="lk">'+g[1].map(function(i){return '<li>'+ext(i[1],esc(i[0]),i[2])+'</li>'}).join('')+'</ul></div>'}).join('');
+/* certs */
+var C=[
+['Foundation','CompTIA Network+','N10-009','Vendor-neutral networking concepts, implementation, operations, security and troubleshooting.','https://www.comptia.org/en-us/certifications/network/','var(--flux)'],
+['Associate','Cisco CCNA','200-301','Routing, switching, IP services, security basics and automation on Cisco platforms. US$300, valid for three years.','https://www.cisco.com/site/us/en/learn/training-certifications/certifications/enterprise/ccna/index.html','var(--up)',1],
+['Security','CompTIA Security+','V7 now, V8 expected','Core security functions and practical cybersecurity skills.','https://www.comptia.org/en-us/certifications/security/','var(--down)'],
+['Cloud','AWS Cloud Practitioner','CLF-C02','A foundational understanding of AWS Cloud, services and terminology. US$100.','https://aws.amazon.com/certification/certified-cloud-practitioner/','var(--dhcp)'],
+['Next level','Cisco professional and DevNet','See the catalog','CCNP-level exams and DevNet automation certifications sit above CCNA in Cisco’s catalog.','https://www.cisco.com/site/us/en/learn/training-certifications/certifications/index.html','var(--wait)']
+];
+$('#certgrid').innerHTML=C.map(function(c){return '<div class="cc'+(c[6]?' me':'')+'" style="--dc:'+c[5]+'"><span class="lv">'+esc(c[0])+'</span><h3>'+esc(c[1])+'</h3><span class="code">'+esc(c[2])+'</span><p>'+esc(c[3])+'</p><a class="btn ghost" href="'+c[4]+'" target="_blank" rel="noopener noreferrer">Official page</a></div>'}).join('');
+/* checklist */
+var CK=['Install Packet Tracer and sign in','Rebuild Mawja HQ in Packet Tracer and save the .pkt file','Do ten subnetting problems on paper, no calculator','Install Wireshark and capture one ping','Start one free video course and finish its first module','Pick a career path above and open its roadmap','Book your study plan: set two lab sessions in your calendar'];
+var KEY='linkup-field-kit-v1',st={};
+try{st=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){st={}}
+function paint(){var n=CK.filter(function(_,i){return st[i]}).length;$('#pt').textContent=n+' of '+CK.length;$('#pb').style.width=(n/CK.length*100)+'%';$('#dm').hidden=n!==CK.length}
+$('#ck').innerHTML=CK.map(function(t,i){return '<li><label><input type="checkbox" data-i="'+i+'"'+(st[i]?' checked':'')+'><span>'+esc(t)+'</span></label></li>'}).join('');
+$('#ck').addEventListener('change',function(e){var i=e.target.getAttribute('data-i');if(i===null)return;st[i]=e.target.checked;try{localStorage.setItem(KEY,JSON.stringify(st))}catch(x){}paint()});
+paint();
+/* copy buttons */
+function pick(el){var r=document.createRange();r.selectNodeContents(el);var s=getSelection();s.removeAllRanges();s.addRange(r)}
+document.addEventListener('click',function(e){var b=e.target.closest('[data-copy]');if(!b)return;var el=document.getElementById(b.getAttribute('data-copy'));var t=el.innerText,o=b.textContent;
+ function ok(){b.textContent='Copied';setTimeout(function(){b.textContent=o},1400)}
+ if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(ok,function(){pick(el)})}else{pick(el)}});
+})();
+</script>
+
+</body>
+</html>

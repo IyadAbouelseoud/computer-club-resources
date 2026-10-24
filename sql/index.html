@@ -1,0 +1,443 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Shadow Lotus Loot Drop</title>
+<meta name="description" content="Database install guides, career roadmaps, certifications and practice sites for graduates of the Cyberpunk Heist SQL workshop.">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=JetBrains+Mono:wght@400;500;700&family=IBM+Plex+Sans+Arabic:wght@600&display=swap">
+<style>
+/* Shadow Lotus Loot Drop. Palette and glow come from the Heist Console (single dark theme by design).
+   Layout: sticky terminal bar, hero beside a status readout, then each section as a file in the vault. */
+:root{--bg:#080c15;--panel:#0e1524;--panel2:#121b2f;--line:#1f2c47;--text:#dbe6ff;--dim:#8294ba;--cyan:#22e6ff;--magenta:#ff3df2;--green:#3dff9a;--amber:#ffc247;--red:#ff4d6d;--well:#060a12;--ink:#00161b;
+--mono:"JetBrains Mono",ui-monospace,"SF Mono","Cascadia Code",Menlo,Consolas,monospace;--disp:"Chakra Petch",ui-monospace,system-ui,sans-serif;--sans:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans Arabic",sans-serif;--ar:"IBM Plex Sans Arabic","Noto Sans Arabic",Tahoma,sans-serif;color-scheme:dark}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:76px}
+body{margin:0;color:var(--text);font:15px/1.6 var(--sans);-webkit-text-size-adjust:100%;background:radial-gradient(900px 420px at 85% -10%,rgba(255,61,242,.12),transparent 60%),radial-gradient(900px 440px at 0% 0%,rgba(34,230,255,.11),transparent 60%),var(--bg);background-color:var(--bg)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:#0a0f1b;z-index:30}
+a{color:var(--cyan);text-underline-offset:3px}
+a:hover{color:#fff}
+:focus-visible{outline:2px solid var(--magenta);outline-offset:2px}
+code,pre,kbd{font-family:var(--mono)}
+code{background:var(--panel2);border:1px solid var(--line);border-radius:4px;padding:0 5px;font-size:.88em;color:#c8f7ff}
+h1,h2,h3,h4{font-family:var(--disp);text-wrap:balance;margin:0}
+p{margin:0}
+.in{max-width:1120px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.eyebrow{font:500 12px/1.2 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--magenta)}
+.eyebrow::before{content:"> ";color:var(--cyan)}
+/* top bar */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:40;background:rgba(10,15,27,.94);backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
+.top .in{display:flex;align-items:center;gap:18px;min-height:54px}
+.brand{font:700 14px/1.2 var(--mono);letter-spacing:.08em;color:var(--cyan);text-shadow:0 0 12px rgba(34,230,255,.5);text-decoration:none;flex:none}
+.brand small{display:block;font:400 11px var(--ar);letter-spacing:0;color:var(--dim);text-shadow:none}
+.top nav{display:flex;gap:2px;overflow-x:auto;min-width:0;margin-left:auto;scrollbar-width:none}
+.top nav::-webkit-scrollbar{display:none}
+.top nav a{font:500 12px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);text-decoration:none;padding:10px 11px;border-radius:8px;white-space:nowrap}
+.top nav a:hover{color:var(--cyan);background:var(--panel)}
+/* hero */
+.hero{padding-block:52px 44px}
+.hero .in{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center}
+.hero h1{font-weight:700;font-size:clamp(38px,7vw,74px);line-height:1;letter-spacing:.01em;color:var(--green);text-shadow:0 0 28px rgba(61,255,154,.35);margin:14px 0 18px}
+.lead{color:#bccbea;max-width:62ch}
+.arb{display:block;font:600 19px/1.7 var(--ar);margin-top:16px;color:var(--text)}
+.cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}
+.btn{font:500 13px/1 var(--mono);border-radius:8px;padding:12px 15px;border:1px solid var(--line);background:var(--panel2);color:var(--text);cursor:pointer;display:inline-flex;align-items:center;gap:8px;text-decoration:none;transition:.15s}
+.btn:hover{border-color:var(--cyan);box-shadow:0 0 0 1px var(--cyan) inset;color:#fff}
+.btn.pri{background:linear-gradient(180deg,#14d5ee,#0aa9c2);color:var(--ink);border-color:#14d5ee;font-weight:700}
+.btn.pri:hover{box-shadow:0 0 18px rgba(34,230,255,.55);color:var(--ink)}
+.term{background:var(--well);border:1px solid #2a3a5f;border-radius:12px;padding:16px 18px;font:400 13.5px/1.75 var(--mono);color:#c8f7ff;min-width:0;box-shadow:0 0 60px rgba(34,230,255,.1);overflow-x:auto;white-space:pre}
+.term .p{color:var(--magenta)}
+.term .ok{color:var(--green)}
+.term .am{color:var(--amber)}
+.term .d{color:var(--dim)}
+.term .cur{display:inline-block;width:.6em;height:1.1em;background:var(--cyan);vertical-align:-.2em}
+@media (prefers-reduced-motion:no-preference){.term .cur{animation:bl 1s steps(2) infinite}@keyframes bl{50%{opacity:.15}}}
+/* sections */
+.sec{padding-block:56px;border-top:1px solid var(--line)}
+.sec>.in>h2{font-size:clamp(26px,3.8vw,38px);line-height:1.1;margin:10px 0 10px}
+.sec .lead{margin-bottom:28px}
+.sub{font:500 11.5px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin:30px 0 12px;display:flex;align-items:center;gap:8px}
+.sub::after{content:"";flex:1;height:1px;background:var(--line)}
+.sub:first-child{margin-top:0}
+.card,.box{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px;min-width:0}
+.box+.box{margin-top:12px}
+.box h3{font:700 12px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin-bottom:10px}
+.box ul{margin:0;padding-left:18px;font-size:14px;color:#bccbea}
+.box li+li{margin-top:4px}
+.box.warn{border-color:rgba(255,194,71,.5);background:rgba(255,194,71,.06)}
+.box.good{border-color:rgba(61,255,154,.4);background:rgba(61,255,154,.05)}
+.note{font-size:12.5px;color:var(--dim);margin-top:10px}
+/* phases */
+.phg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.ph{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--panel);min-width:0}
+.ph .h{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--panel2);border-bottom:1px solid var(--line)}
+.ph .h b{font:700 13px var(--mono);color:var(--cyan)}
+.ph .h span{font-weight:600;font-family:var(--disp)}
+.ph .h i{margin-left:auto;font:700 11px var(--mono);font-style:normal;color:var(--green)}
+.ph .b{padding:14px;display:grid;gap:10px}
+.ph p{color:#bccbea;font-size:14px}
+.kw{display:flex;flex-wrap:wrap;gap:6px}
+.kw span{font:500 12px var(--mono);color:var(--amber);background:#0a1120;border:1px dashed #2a3a5f;border-radius:6px;padding:3px 8px}
+/* tabs */
+.tl{display:flex;flex-wrap:wrap;gap:6px}
+.tl button{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:10px 14px;font:500 12.5px/1 var(--mono);color:var(--dim);cursor:pointer;transition:.15s}
+.tl button:hover{border-color:var(--cyan);color:var(--text)}
+.tl button[aria-selected="true"]{border-color:var(--cyan);color:var(--cyan);box-shadow:0 0 0 1px var(--cyan) inset,0 0 16px rgba(34,230,255,.18)}
+.tp{margin-top:18px}
+/* install */
+.best{display:flex;gap:10px;align-items:baseline;margin-bottom:16px;color:#bccbea}
+.best b{font:700 11.5px var(--mono);letter-spacing:.12em;color:var(--green);text-transform:uppercase;flex:none}
+.cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
+.cols>div{min-width:0}
+ol.steps{list-style:none;margin:0;padding:0;display:grid;gap:14px;counter-reset:s}
+ol.steps li{counter-increment:s;display:grid;grid-template-columns:28px minmax(0,1fr);gap:10px}
+ol.steps li::before{content:counter(s);font:700 12px/24px var(--mono);text-align:center;width:26px;height:26px;border:1px solid #2a3a5f;border-radius:50%;color:var(--cyan)}
+ol.steps h4{font:600 15px/1.35 var(--sans);margin:2px 0 3px}
+ol.steps p{color:var(--dim);font-size:14px}
+.pre{position:relative;margin-top:8px}
+pre{background:var(--well);border:1px solid var(--line);border-radius:10px;padding:11px 12px;margin:0;font-size:12.5px;line-height:1.55;color:#c8f7ff;overflow-x:auto;white-space:pre}
+.pre pre{padding-right:70px}
+.copy{position:absolute;top:7px;right:7px;font:500 11px/1 var(--mono);background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:6px;padding:6px 8px;cursor:pointer}
+.copy:hover{border-color:var(--magenta)}
+.scroll{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--panel)}
+table{border-collapse:collapse;width:100%;min-width:600px;font-size:13.5px}
+th{text-align:left;font:500 11px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--cyan);padding:10px 12px;background:#101a30;border-bottom:1px solid var(--line)}
+td{padding:9px 12px;border-bottom:1px solid #131d33;vertical-align:top;font-family:var(--mono);font-size:12.5px;color:#c8f7ff}
+td:first-child{color:var(--amber);white-space:nowrap}
+tbody tr:last-child td{border-bottom:0}
+.out{margin-top:8px}
+.out table{min-width:0;width:auto;font-family:var(--mono)}
+.out .scroll{display:inline-block;max-width:100%}
+/* ladder */
+.pg{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:28px;align-items:start}
+.lad{list-style:none;margin:0;padding:0;position:relative}
+.lad::before{content:"";position:absolute;left:10px;top:10px;bottom:10px;width:2px;background:var(--line)}
+.lad li{position:relative;padding:0 0 18px 38px}
+.lad li:last-child{padding-bottom:0}
+.lad li::before{content:"";position:absolute;left:3px;top:4px;width:16px;height:16px;border-radius:50%;background:var(--bg);border:2px solid #2a3a5f}
+.lad li.done::before{background:var(--green);border-color:var(--green);box-shadow:0 0 10px rgba(61,255,154,.5)}
+.lad h4{font:600 15px/1.35 var(--sans)}
+.lad p{color:var(--dim);font-size:14px}
+.lad .tag{font:700 10.5px var(--mono);color:var(--green);margin-left:8px;letter-spacing:.06em}
+.kv{display:grid;gap:14px;margin:0}
+.kv dt{font:700 11px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin-bottom:6px}
+.kv dd{margin:0}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips span{font:500 12px var(--mono);color:#c8f7ff;background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:3px 8px}
+.rm{display:flex;flex-direction:column;gap:8px}
+/* library, certs */
+.lg{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}
+.lg .box+.box{margin-top:0}
+.lk{list-style:none;margin:0;padding:0;display:grid}
+.lk a{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:8px 0;border-bottom:1px solid #131d33;text-decoration:none;color:var(--text);font-size:14px}
+.lk a:hover{color:var(--cyan)}
+.lk a span{font:400 10.5px var(--mono);color:var(--dim);white-space:nowrap}
+.lk li:last-child a{border-bottom:0}
+.cg{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+.cc{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.cc .lv{font:500 11px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--dc)}
+.cc h3{font-size:18px}
+.cc .code{font:400 12px var(--mono);color:var(--dim)}
+.cc p{color:#bccbea;font-size:14px;flex:1}
+/* checklist */
+.ck{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.ck label{display:flex;gap:12px;align-items:flex-start;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px;cursor:pointer}
+.ck label:hover{border-color:#2a3a5f}
+.ck input{accent-color:var(--green);width:18px;height:18px;margin:2px 0 0;flex:none}
+.ck input:checked+span{color:var(--dim);text-decoration:line-through;text-decoration-color:#2a3a5f}
+.prog{display:flex;align-items:center;gap:12px;font:500 12px var(--mono);color:var(--dim);margin-bottom:14px}
+.prog .tr{flex:1;max-width:320px;height:8px;border-radius:999px;background:var(--panel2);border:1px solid var(--line);overflow:hidden}
+.prog .tr i{display:block;height:100%;width:0;background:var(--green);transition:width .4s}
+.done-msg{margin-top:14px;color:var(--green);font:700 14px var(--mono)}
+footer{border-top:1px solid var(--line);padding-block:30px 44px;color:var(--dim);font:400 12.5px var(--mono)}
+footer .in{display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-between}
+@media (max-width:900px){
+ .hero .in,.pg,.cols{grid-template-columns:minmax(0,1fr)}
+ .phg{grid-template-columns:minmax(0,1fr)}
+ .hero{padding-block:34px 28px}
+}
+@media (max-width:560px){.top .in{gap:10px}.brand small{display:none}}
+</style>
+
+</head>
+<body>
+
+<header class="top"><div class="in">
+ <a class="brand" href="#top">SHADOW LOTUS // LOOT DROP<small dir="rtl" lang="ar">عملية الاختراق الأخلاقي</small></a>
+ <nav aria-label="Sections"><a href="#debrief">Debrief</a><a href="#arsenal">Arsenal</a><a href="#paths">Paths</a><a href="#training">Training</a><a href="#certs">Certs</a><a href="#quests">Quests</a></nav>
+</div></header>
+
+<main id="top">
+<section class="hero"><div class="in">
+ <div>
+  <div class="eyebrow">Operator debrief</div>
+  <h1>HEIST COMPLETE</h1>
+  <p class="lead">Vault-7 is sealed, the data is back and the intruder is out. You did it with <code>SELECT</code>, <code>JOIN</code>, <code>GROUP BY</code> and a few careful <code>UPDATE</code>s. Analysts, developers and security teams run on those same commands, so this is a good place to keep going.</p>
+  <span class="arb" dir="rtl" lang="ar">أحسنتم أيها العملاء! اكتملت المهمة.</span>
+  <div class="cta"><a class="btn pri" href="#arsenal">Install a real database</a><a class="btn" href="#paths">Choose your next rank</a></div>
+ </div>
+ <div class="term" role="img" aria-label="Status readout: Vault-7 sealed, stolen files recovered, intruder removed, next mission loading">
+<span class="p">operator@lotus:~$</span> status vault-7
+<span class="d">vault-7 .......... </span><span class="ok">SEALED</span>
+<span class="d">stolen_files ...... </span><span class="ok">RECOVERED</span>
+<span class="d">intruder .......... </span><span class="ok">REMOVED</span>
+<span class="d">sql_skills ........ </span><span class="am">UNLOCKED</span>
+<span class="p">operator@lotus:~$</span> next --mission
+<span class="d">&gt;</span> put a real database on your own machine<span class="cur"></span></div>
+</div></section>
+
+<section class="sec" id="debrief"><div class="in">
+ <div class="eyebrow">What you pulled off</div>
+ <h2>Three phases, one clean exit</h2>
+ <p class="lead">Every command you typed in the console is standard SQL. What changes from here is the tool, the size of the data and the questions you ask.</p>
+ <div class="phg">
+  <div class="ph"><div class="h"><b>01</b><span>Reconnaissance</span><i>DONE</i></div><div class="b"><p>Read the database map, found the right servers and narrowed thousands of rows to the ones that mattered.</p><div class="kw"><span>SELECT</span><span>FROM</span><span>WHERE</span><span>ORDER BY</span><span>LIMIT</span></div></div></div>
+  <div class="ph"><div class="h"><b>02</b><span>Data Decryption</span><i>DONE</i></div><div class="b"><p>The evidence was scattered across tables. You connected employees to logs and counted what each one touched.</p><div class="kw"><span>JOIN</span><span>GROUP BY</span><span>HAVING</span><span>COUNT</span></div></div></div>
+  <div class="ph"><div class="h"><b>03</b><span>Restore</span><i>DONE</i></div><div class="b"><p>You changed the data itself, restored what was taken and locked the evidence away.</p><div class="kw"><span>INSERT</span><span>UPDATE</span><span>DELETE</span><span>CREATE TABLE</span></div></div></div>
+ </div>
+</div></section>
+
+<section class="sec" id="arsenal"><div class="in">
+ <div class="eyebrow">Arsenal</div>
+ <h2>Install a database</h2>
+ <p class="lead">The heist console ran SQLite inside your browser. To keep practising you need a database on your own computer. Start with SQLite, since it is the engine you just used and takes about two minutes. Move to PostgreSQL when you want the one most career roadmaps point to.</p>
+ <div class="tl" role="tablist" aria-label="Database" id="dbtabs">
+  <button role="tab" id="t-sq" aria-controls="p-sq">SQLite</button><button role="tab" id="t-pg" aria-controls="p-pg">PostgreSQL</button><button role="tab" id="t-my" aria-controls="p-my">MySQL</button><button role="tab" id="t-db" aria-controls="p-db">DBeaver</button><button role="tab" id="t-ms" aria-controls="p-ms">SQL Server</button>
+ </div>
+
+ <div class="tp" id="p-sq" role="tabpanel" aria-labelledby="t-sq">
+  <div class="best"><b>Best for</b><span>The fastest start. One file is one database, and the syntax matches the heist console.</span></div>
+  <div class="cols">
+   <div><div class="sub">Option A: point and click</div>
+    <ol class="steps">
+     <li><div><h4>Download DB Browser for SQLite</h4><p>Get it from <a href="https://sqlitebrowser.org/dl/" target="_blank" rel="noopener noreferrer">sqlitebrowser.org/dl</a>. It runs on Windows, macOS and Linux.</p></div></li>
+     <li><div><h4>Create the database</h4><p>Open the app, click New Database and save it as <code>heist.db</code>. Close the table dialog that appears.</p></div></li>
+     <li><div><h4>Run the starter script</h4><p>Open the Execute SQL tab, paste the starter script from further down, and press the Run button. Save with Write Changes.</p></div></li>
+    </ol></div>
+   <div><div class="sub">Option B: command line</div>
+    <ol class="steps">
+     <li><div><h4>Get the sqlite3 tool</h4><p>macOS ships with it. On Ubuntu run the command below. On Windows download the <code>sqlite-tools</code> zip for Windows (x64) from <a href="https://www.sqlite.org/download.html" target="_blank" rel="noopener noreferrer">sqlite.org/download</a>, unzip it and open a terminal in that folder.</p>
+      <div class="pre"><pre id="c-sqi">sudo apt install sqlite3</pre><button class="copy" data-copy="c-sqi">Copy</button></div></div></li>
+     <li><div><h4>Open a database file</h4><p>The file is created on first use.</p>
+      <div class="pre"><pre id="c-sqo">sqlite3 heist.db
+.headers on
+.mode column</pre><button class="copy" data-copy="c-sqo">Copy</button></div></div></li>
+     <li><div><h4>Paste the starter script, then check</h4><p>Type <code>.tables</code> and you should see <code>servers</code>. On macOS, a binary you downloaded may need <code>xattr -d com.apple.quarantine sqlite3</code> before it runs.</p></div></li>
+    </ol></div>
+  </div>
+ </div>
+
+ <div class="tp" id="p-pg" role="tabpanel" aria-labelledby="t-pg" hidden>
+  <div class="best"><b>Best for</b><span>Backend, data and cloud work. A very widely used open-source database, and the one behind the PostgreSQL DBA roadmap.</span></div>
+  <div class="cols">
+   <div><div class="sub">Windows and macOS</div>
+    <ol class="steps">
+     <li><div><h4>Download the installer</h4><p>Open <a href="https://www.postgresql.org/download/windows/" target="_blank" rel="noopener noreferrer">postgresql.org/download/windows</a> and follow it to the <a href="https://www.enterprisedb.com/downloads/postgres-postgresql-downloads" target="_blank" rel="noopener noreferrer">EDB installer</a>. On a Mac, use <a href="https://www.postgresql.org/download/macosx/" target="_blank" rel="noopener noreferrer">postgresql.org/download/macosx</a>.</p></div></li>
+     <li><div><h4>Run it with the defaults</h4><p>The Windows installer includes the server, pgAdmin and Stack Builder. Set a password for the <code>postgres</code> user and write it down. Keep port <code>5432</code>. You can skip Stack Builder at the end.</p></div></li>
+     <li><div><h4>Open pgAdmin 4</h4><p>Expand Servers, enter your password, then right-click Databases, choose Create, Database, and name it <code>heist</code>.</p></div></li>
+     <li><div><h4>Run the starter script</h4><p>Select <code>heist</code>, open Tools, Query Tool, paste the script and press F5.</p></div></li>
+    </ol></div>
+   <div><div class="sub">Ubuntu and other Linux</div>
+    <ol class="steps">
+     <li><div><h4>Install and open a prompt</h4>
+      <div class="pre"><pre id="c-pgi">sudo apt update
+sudo apt install postgresql
+sudo -u postgres psql</pre><button class="copy" data-copy="c-pgi">Copy</button></div></div></li>
+     <li><div><h4>Create and enter the database</h4>
+      <div class="pre"><pre id="c-pgc">CREATE DATABASE heist;
+\c heist</pre><button class="copy" data-copy="c-pgc">Copy</button></div></div></li>
+     <li><div><h4>Paste the starter script, then check the version</h4>
+      <div class="pre"><pre id="c-pgv">SELECT version();</pre><button class="copy" data-copy="c-pgv">Copy</button></div></div></li>
+    </ol></div>
+  </div>
+ </div>
+
+ <div class="tp" id="p-my" role="tabpanel" aria-labelledby="t-my" hidden>
+  <div class="best"><b>Best for</b><span>Classic web stacks and a huge amount of existing hosting and tutorials.</span></div>
+  <div class="cols">
+   <div><div class="sub">Server and Workbench</div>
+    <ol class="steps">
+     <li><div><h4>Open the download page</h4><p>Go to <a href="https://dev.mysql.com/downloads/mysql/" target="_blank" rel="noopener noreferrer">dev.mysql.com/downloads/mysql</a>. Pick a version labelled LTS. The page lists 8.4 LTS and 9.7 LTS beside newer releases, and LTS is the steadier choice for learning.</p></div></li>
+     <li><div><h4>Choose your operating system and install</h4><p>On Windows pick the MSI installer and run it. Set a password for the <code>root</code> user, write it down, and keep port <code>3306</code>.</p></div></li>
+     <li><div><h4>Add MySQL Workbench</h4><p>Download it from <a href="https://dev.mysql.com/downloads/workbench/" target="_blank" rel="noopener noreferrer">dev.mysql.com/downloads/workbench</a>. On Windows it needs .NET Framework 4.5 and the Visual C++ 2019 Redistributable, both listed on that page.</p></div></li>
+     <li><div><h4>Connect and run</h4><p>Open Workbench, click the local connection, enter the root password, paste the lines under Ubuntu, then the starter script, and press the lightning bolt.</p></div></li>
+    </ol></div>
+   <div><div class="sub">Ubuntu and first commands</div>
+    <ol class="steps">
+     <li><div><h4>Linux install</h4>
+      <div class="pre"><pre id="c-myi">sudo apt update
+sudo apt install mysql-server
+sudo mysql</pre><button class="copy" data-copy="c-myi">Copy</button></div></div></li>
+     <li><div><h4>Create the database</h4>
+      <div class="pre"><pre id="c-myc">CREATE DATABASE heist;
+USE heist;</pre><button class="copy" data-copy="c-myc">Copy</button></div></div></li>
+     <li><div><h4>Check it works</h4>
+      <div class="pre"><pre id="c-myv">SELECT VERSION();</pre><button class="copy" data-copy="c-myv">Copy</button></div></div></li>
+    </ol></div>
+  </div>
+ </div>
+
+ <div class="tp" id="p-db" role="tabpanel" aria-labelledby="t-db" hidden>
+  <div class="best"><b>Best for</b><span>One window for every database. Use it as your front end for SQLite, PostgreSQL and MySQL.</span></div>
+  <ol class="steps" style="max-width:720px">
+   <li><div><h4>Download DBeaver Community</h4><p>It is free and open source for Windows, macOS and Linux. Get it from <a href="https://dbeaver.io/download/" target="_blank" rel="noopener noreferrer">dbeaver.io/download</a>.</p></div></li>
+   <li><div><h4>Create a connection</h4><p>Click New Database Connection and choose SQLite, PostgreSQL or MySQL. For SQLite, point it at your <code>heist.db</code> file. For the others, enter <code>localhost</code>, the port and the password you set.</p></div></li>
+   <li><div><h4>Accept the driver download</h4><p>The first time you connect, DBeaver may offer to download a driver. Say yes.</p></div></li>
+   <li><div><h4>Open an editor and run the script</h4><p>Press <kbd>Ctrl</kbd>+<kbd>]</kbd> for a new SQL script, paste the starter script, and run the whole file with <kbd>Alt</kbd>+<kbd>X</kbd>.</p></div></li>
+  </ol>
+ </div>
+
+ <div class="tp" id="p-ms" role="tabpanel" aria-labelledby="t-ms" hidden>
+  <div class="best"><b>Best for</b><span>Companies built on the Microsoft stack. The Developer edition is free for development and testing.</span></div>
+  <ol class="steps" style="max-width:720px">
+   <li><div><h4>Open the download page</h4><p>Go to <a href="https://www.microsoft.com/en-us/sql-server/sql-server-downloads" target="_blank" rel="noopener noreferrer">microsoft.com/sql-server/sql-server-downloads</a> and choose the Developer edition.</p></div></li>
+   <li><div><h4>Pick how to run it</h4><p>The page offers Windows, Linux and a Docker container image. Docker keeps it off your main system, which is handy on a shared laptop.</p></div></li>
+   <li><div><h4>Connect with a client</h4><p>DBeaver works well here too. Choose SQL Server as the connection type.</p></div></li>
+   <li><div><h4>Mind the dialect</h4><p>SQL Server speaks T-SQL. It uses <code>SELECT TOP 5</code> where the heist console used <code>LIMIT 5</code>.</p></div></li>
+  </ol>
+ </div>
+
+ <div class="sub" style="margin-top:40px">Starter script. Works in every database above.</div>
+ <p class="lead" style="margin-bottom:8px">A small practice copy of the servers table. The rows are an example and not the exact heist data.</p>
+ <div class="pre"><pre id="starter">CREATE TABLE servers (
+  id INTEGER PRIMARY KEY,
+  name VARCHAR(20),
+  zone VARCHAR(20),
+  status VARCHAR(20)
+);
+
+INSERT INTO servers (id, name, zone, status) VALUES
+  (1, 'ALPHA-1', 'Restricted', 'online'),
+  (2, 'VAULT-7', 'Restricted', 'online'),
+  (3, 'BETA-2',  'Internal',   'online'),
+  (4, 'GAMMA-9', 'Internal',   'maintenance'),
+  (5, 'ECHO-5',  'Public',     'online');
+
+SELECT name, status
+FROM servers
+WHERE zone = 'Restricted'
+ORDER BY name;</pre><button class="copy" data-copy="starter">Copy</button></div>
+ <div class="out"><p class="note" style="margin:10px 0 6px">You should get two rows back:</p>
+  <div class="scroll"><table><thead><tr><th>name</th><th>status</th></tr></thead><tbody><tr><td>ALPHA-1</td><td>online</td></tr><tr><td>VAULT-7</td><td>online</td></tr></tbody></table></div></div>
+
+ <div class="sub" style="margin-top:40px">Small differences between databases</div>
+ <div class="scroll"><table><thead><tr><th>Task</th><th>SQLite</th><th>MySQL</th><th>PostgreSQL</th></tr></thead><tbody>
+  <tr><td>Auto-numbered id</td><td>INTEGER PRIMARY KEY AUTOINCREMENT</td><td>INT AUTO_INCREMENT PRIMARY KEY</td><td>INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY</td></tr>
+  <tr><td>Join two strings</td><td>a || b</td><td>CONCAT(a, b)</td><td>a || b</td></tr>
+  <tr><td>Case-blind search</td><td>LIKE (ASCII letters)</td><td>LIKE (depends on collation)</td><td>ILIKE</td></tr>
+  <tr><td>First 5 rows</td><td>LIMIT 5</td><td>LIMIT 5</td><td>LIMIT 5 (SQL Server: TOP 5)</td></tr>
+ </tbody></table></div>
+ <p class="note">Everything you learned in the heist carries over. These are the spots where a script written for one database needs a small edit for another.</p>
+</div></section>
+
+<section class="sec" id="paths"><div class="in">
+ <div class="eyebrow">Next ranks</div>
+ <h2>Choose a career path</h2>
+ <p class="lead">These ladders follow the shape of the roadmaps on roadmap.sh. Open the live roadmap for each path to tick off topics and see the resources behind every step.</p>
+ <div class="tl" role="tablist" aria-label="Career path" id="pathtabs"></div>
+ <div id="pathpanels"></div>
+</div></section>
+
+<section class="sec" id="training"><div class="in">
+ <div class="eyebrow">Training grounds</div>
+ <h2>Keep your queries sharp</h2>
+ <p class="lead">Ten minutes of SQL a day beats one long weekend. Mix a game, a lesson site and a reference page, and keep a database open on your own machine. Free tiers change, so check each site.</p>
+ <div class="lg" id="lib"></div>
+ <div class="box warn" style="margin-top:12px"><h3>Practise on legal targets only</h3><p style="font-size:14px;color:#bccbea">Attack techniques such as SQL injection are for labs built to be attacked and for systems you own. The sites in the security group above are made for exactly that.</p></div>
+</div></section>
+
+<section class="sec" id="certs"><div class="in">
+ <div class="eyebrow">Credentials</div>
+ <h2>Certifications worth knowing</h2>
+ <p class="lead">Employers hire on projects first and certificates second. These are the ones that match the paths above. Microsoft and CompTIA prices depend on your country, so check the official page before you book.</p>
+ <div class="cg" id="certgrid"></div>
+ <p class="note">Security+ is moving to a new version. CompTIA lists V7 as available now and V8 as expected around 17 November 2026, so check which one you are booking.</p>
+</div></section>
+
+<section class="sec" id="quests"><div class="in">
+ <div class="eyebrow">Side quests</div>
+ <h2>Your next 30 days</h2>
+ <p class="lead">Seven small missions. Ticks are saved in this browser only.</p>
+ <div class="prog"><span id="pt">0 of 7</span><div class="tr"><i id="pb"></i></div></div>
+ <ul class="ck" id="ck"></ul>
+ <p class="done-msg" id="dm" hidden>&gt; all quests complete. new rank unlocked.</p>
+</div></section>
+</main>
+
+<footer><div class="in">
+ <span>Shadow Lotus // Computer Club SQL workshop.</span>
+ <span>Links checked 24 October 2026. If one breaks, tell a club officer.</span>
+</div></footer>
+
+<script>
+(function(){
+var $=function(s,r){return (r||document).querySelector(s)};
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function tabs(list){
+ var btns=[].slice.call(list.querySelectorAll('[role=tab]'));
+ var panels=btns.map(function(b){return document.getElementById(b.getAttribute('aria-controls'))});
+ function sel(i){btns.forEach(function(b,j){b.setAttribute('aria-selected',String(j===i));b.tabIndex=j===i?0:-1;if(panels[j])panels[j].hidden=j!==i})}
+ btns.forEach(function(b,i){b.addEventListener('click',function(){sel(i)});b.addEventListener('keydown',function(e){if(e.key==='ArrowRight'||e.key==='ArrowLeft'){var n=(i+(e.key==='ArrowRight'?1:-1)+btns.length)%btns.length;sel(n);btns[n].focus()}})});
+ sel(0);
+}
+tabs($('#dbtabs'));
+var P=[
+{n:'Data Analyst',id:'da',roles:['Junior data analyst','Reporting analyst','Business analyst'],certs:['Google Data Analytics','PL-300'],rm:[['Data Analyst roadmap','https://roadmap.sh/data-analyst'],['SQL roadmap','https://roadmap.sh/sql'],['Python for Data Analysis','https://roadmap.sh/python-data-analysis']],
+ s:[['SQL basics','SELECT, WHERE, JOIN, GROUP BY and data changes. You did this in the heist.',1],['Intermediate SQL','Subqueries, CTEs, window functions and date handling.'],['Spreadsheets and statistics','Pivot tables, averages against medians, distributions and sampling.'],['Python for data','pandas, notebooks and cleaning messy data.'],['Dashboards and BI','Power BI or Tableau, with one finished dashboard per project.'],['Tell the story','Three portfolio projects, each with a short written finding.']]},
+{n:'BI Analyst',id:'bi',roles:['BI analyst','Reporting developer'],certs:['PL-300'],rm:[['BI Analyst roadmap','https://roadmap.sh/bi-analyst'],['Power BI roadmap','https://roadmap.sh/power-bi']],
+ s:[['SQL basics','Pulling the right rows from the right tables. Done in the heist.',1],['Data modelling','Fact and dimension tables, star schemas and keys.'],['Power BI Desktop','Importing, transforming and relating data.'],['DAX measures','Calculations that respond to filters and time.'],['Dashboard design','Clear charts, sensible layouts and readable colour.'],['Sharing and governance','Refresh schedules, access rules and data quality checks.']]},
+{n:'Backend Developer',id:'be',roles:['Junior backend developer','API developer'],certs:['None required, build a portfolio'],rm:[['Backend roadmap','https://roadmap.sh/backend'],['API Design roadmap','https://roadmap.sh/api-design'],['SQL roadmap','https://roadmap.sh/sql']],
+ s:[['SQL basics','Queries and data changes. Done in the heist.',1],['One programming language','Python, JavaScript or Java, enough to build a small service.'],['Schema design','Keys, relationships and normalisation.'],['Indexes and transactions','Why a query is slow, and how to keep data consistent.'],['APIs and ORMs','Expose data over HTTP and map tables to code.'],['Deploy and monitor','Ship a project online and watch its logs.']]},
+{n:'Database Admin',id:'dba',roles:['Junior DBA','Database engineer'],certs:['DP-900','DP-300'],rm:[['PostgreSQL DBA roadmap','https://roadmap.sh/postgresql-dba'],['SQL roadmap','https://roadmap.sh/sql']],
+ s:[['SQL basics','Everything starts with queries. Done in the heist.',1],['Install and configure','Set up a server, users and storage.'],['Backup and restore','Take backups and prove you can restore them.'],['Indexing and tuning','Read query plans with EXPLAIN and fix slow queries.'],['Security and roles','Least-privilege access and encrypted connections.'],['Replication and high availability','Keep a database running through failures.']]},
+{n:'Data Engineer',id:'de',roles:['Junior data engineer','Analytics engineer'],certs:['DP-900','AWS Cloud Practitioner'],rm:[['Data Engineer roadmap','https://roadmap.sh/data-engineer'],['Python roadmap','https://roadmap.sh/python'],['SQL roadmap','https://roadmap.sh/sql']],
+ s:[['SQL basics','Done in the heist.',1],['Python','Scripts that read, clean and write data.'],['ETL and ELT','Move data between systems and reshape it on the way.'],['Warehouses and lakes','Where analytics data lives and how it is organised.'],['Orchestration','Schedule pipelines and handle failures.'],['Scale and streaming','Handle large and fast-moving data.']]},
+{n:'Cybersecurity',id:'cy',roles:['SOC analyst','Penetration tester','Application security engineer'],certs:['Security+'],rm:[['Cyber Security roadmap','https://roadmap.sh/cyber-security'],['SQL roadmap','https://roadmap.sh/sql']],
+ s:[['SQL basics','Querying access logs and evidence is analyst work. You did it in the heist.',1],['Web basics','HTTP, cookies, forms and how apps talk to databases.'],['SQL injection','Learn how it works and how to prevent it, on labs built for it.'],['Linux and the command line','Files, permissions and processes. OverTheWire Bandit is a good drill.'],['Guided labs','Structured rooms on TryHackMe, one skill at a time.'],['Certify','Security+ is the usual first credential.']]}
+];
+$('#pathtabs').innerHTML=P.map(function(p){return '<button role="tab" id="pt-'+p.id+'" aria-controls="pp-'+p.id+'">'+esc(p.n)+'</button>'}).join('');
+$('#pathpanels').innerHTML=P.map(function(p){
+ return '<div class="tp pg" id="pp-'+p.id+'" role="tabpanel" aria-labelledby="pt-'+p.id+'" hidden>'+
+ '<ol class="lad">'+p.s.map(function(s){return '<li'+(s[2]?' class="done"':'')+'><h4>'+esc(s[0])+(s[2]?'<span class="tag">DONE IN THE HEIST</span>':'')+'</h4><p>'+esc(s[1])+'</p></li>'}).join('')+'</ol>'+
+ '<div class="box"><dl class="kv"><div><dt>Roles</dt><dd><div class="chips">'+p.roles.map(function(r){return '<span>'+esc(r)+'</span>'}).join('')+'</div></dd></div>'+
+ '<div><dt>Certifications</dt><dd><div class="chips">'+p.certs.map(function(r){return '<span>'+esc(r)+'</span>'}).join('')+'</div></dd></div>'+
+ '<div><dt>Live roadmaps</dt><dd><div class="rm">'+p.rm.map(function(r){return '<a class="btn" href="'+r[1]+'" target="_blank" rel="noopener noreferrer">'+esc(r[0])+'</a>'}).join('')+'</div></dd></div></dl></div></div>';
+}).join('');
+tabs($('#pathtabs'));
+function ext(u,t,tag){return '<a href="'+u+'" target="_blank" rel="noopener noreferrer">'+t+(tag?'<span>'+tag+'</span>':'')+'</a>'}
+var L=[
+['Play and learn',[['SQL Murder Mystery','https://mystery.knightlab.com/','Game'],['SQLBolt','https://sqlbolt.com/','Interactive'],['SQLZoo','https://sqlzoo.net/wiki/SQL_Tutorial','Interactive'],['PostgreSQL Exercises','https://pgexercises.com/','Free exercises'],['Kaggle: Intro to SQL','https://www.kaggle.com/learn/intro-to-sql','BigQuery']]],
+['Full courses',[['CS50 SQL, Harvard','https://cs50.harvard.edu/sql/','Free course'],['Google Data Analytics','https://www.coursera.org/professional-certificates/google-data-analytics','About 6 months'],['roadmap.sh SQL projects','https://roadmap.sh/sql/projects','Projects']]],
+['Reference',[['SQLite Tutorial','https://www.sqlitetutorial.net/','Guide'],['PostgreSQL Tutorial','https://www.postgresqltutorial.com/','Guide'],['SQLite SQL syntax','https://www.sqlite.org/lang.html','Official docs'],['PostgreSQL docs','https://www.postgresql.org/docs/','Official docs'],['MySQL docs','https://dev.mysql.com/doc/','Official docs']]],
+['Interview practice',[['LeetCode SQL 50','https://leetcode.com/studyplan/top-sql-50/','50 questions']]],
+['Security labs',[['PortSwigger: SQL injection','https://portswigger.net/web-security/sql-injection','Web Security Academy'],['TryHackMe','https://tryhackme.com/','Guided rooms'],['OverTheWire: Bandit','https://overthewire.org/wargames/bandit/','Linux wargame']]],
+['Roadmaps',[['SQL','https://roadmap.sh/sql','roadmap.sh'],['Data Analyst','https://roadmap.sh/data-analyst','roadmap.sh'],['PostgreSQL DBA','https://roadmap.sh/postgresql-dba','roadmap.sh'],['Backend','https://roadmap.sh/backend','roadmap.sh'],['Cyber Security','https://roadmap.sh/cyber-security','roadmap.sh'],['roadmap.sh Discord','https://roadmap.sh/discord','Community']]]
+];
+$('#lib').innerHTML=L.map(function(g){return '<div class="box"><h3>'+esc(g[0])+'</h3><ul class="lk">'+g[1].map(function(i){return '<li>'+ext(i[1],esc(i[0]),i[2])+'</li>'}).join('')+'</ul></div>'}).join('');
+var C=[
+['Analytics','Power BI Data Analyst','PL-300','Modelling, visualising and analysing data with Power BI. A good fit for the analyst and BI paths.','https://learn.microsoft.com/en-us/credentials/certifications/data-analyst-associate/','var(--cyan)'],
+['Foundation','Azure Data Fundamentals','DP-900','Core data concepts, relational and non-relational data on Azure, and analytics workloads.','https://learn.microsoft.com/en-us/credentials/certifications/azure-data-fundamentals/','var(--green)'],
+['Administration','Azure Database Administrator','DP-300','Planning, securing, monitoring and optimising Azure SQL and SQL Server, plus high availability.','https://learn.microsoft.com/en-us/credentials/certifications/azure-database-administrator-associate/','var(--magenta)'],
+['Career certificate','Google Data Analytics','Coursera','Roughly six months at ten hours a week. SQL appears in courses 3, 4 and 5.','https://www.coursera.org/professional-certificates/google-data-analytics','var(--amber)'],
+['Security','CompTIA Security+','V7 now, V8 expected','Core security functions and practical cybersecurity skills.','https://www.comptia.org/en-us/certifications/security/','var(--red)'],
+['Cloud','AWS Cloud Practitioner','CLF-C02','A foundational understanding of AWS Cloud, services and terminology. US$100.','https://aws.amazon.com/certification/certified-cloud-practitioner/','var(--cyan)']
+];
+$('#certgrid').innerHTML=C.map(function(c){return '<div class="cc" style="--dc:'+c[5]+'"><span class="lv">'+esc(c[0])+'</span><h3>'+esc(c[1])+'</h3><span class="code">'+esc(c[2])+'</span><p>'+esc(c[3])+'</p><a class="btn" href="'+c[4]+'" target="_blank" rel="noopener noreferrer">Official page</a></div>'}).join('');
+var CK=['Install one database. SQLite takes about two minutes','Run the starter script and get two Restricted servers back','Rewrite one Phase 1 query from memory, with no hints','Solve the SQL Murder Mystery','Finish every lesson on SQLBolt','Open the live roadmap for the path you chose','Try one SQL injection lab at PortSwigger, a site built for practice'];
+var KEY='shadow-lotus-loot-v1',st={};
+try{st=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){st={}}
+function paint(){var n=CK.filter(function(_,i){return st[i]}).length;$('#pt').textContent=n+' of '+CK.length;$('#pb').style.width=(n/CK.length*100)+'%';$('#dm').hidden=n!==CK.length}
+$('#ck').innerHTML=CK.map(function(t,i){return '<li><label><input type="checkbox" data-i="'+i+'"'+(st[i]?' checked':'')+'><span>'+esc(t)+'</span></label></li>'}).join('');
+$('#ck').addEventListener('change',function(e){var i=e.target.getAttribute('data-i');if(i===null)return;st[i]=e.target.checked;try{localStorage.setItem(KEY,JSON.stringify(st))}catch(x){}paint()});
+paint();
+function pick(el){var r=document.createRange();r.selectNodeContents(el);var s=getSelection();s.removeAllRanges();s.addRange(r)}
+document.addEventListener('click',function(e){var b=e.target.closest('[data-copy]');if(!b)return;var el=document.getElementById(b.getAttribute('data-copy'));var t=el.innerText,o=b.textContent;
+ function ok(){b.textContent='Copied';setTimeout(function(){b.textContent=o},1400)}
+ if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(ok,function(){pick(el)})}else{pick(el)}});
+})();
+</script>
+
+</body>
+</html>
