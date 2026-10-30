@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Keyboard Fury · Live Leaderboard</title>
+<link rel="stylesheet" href="../fonts/fonts.css">
+<style>
+:root{--y:#ffd400;--r:#ff2a2a;--k:#050505;--g:#2ee59d}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:#000;overflow:hidden;cursor:none}
+#stage{position:absolute;left:50%;top:50%;width:1920px;height:1080px;transform-origin:center;background:var(--k);color:#fff;font-family:"Chakra Petch",sans-serif;overflow:hidden}
+.ar{font-family:"Cairo","IBM Plex Sans Arabic",sans-serif;direction:rtl}
+.mono{font-family:"JetBrains Mono",monospace}
+#speed i{position:absolute;height:5px;border-radius:3px;background:linear-gradient(90deg,transparent,var(--y));animation:fly linear infinite;opacity:.35}
+@keyframes fly{from{transform:translateX(-600px)}to{transform:translateX(2600px)}}
+.hd{position:absolute;left:80px;right:80px;top:46px;display:flex;align-items:flex-end;justify-content:space-between}
+.t1{font:400 104px/0.9 "Anton";color:var(--y);transform:skewX(-10deg)}
+.t1 span{color:var(--r)}
+.t2{font:900 48px "Cairo";margin-top:8px}
+.shift{font:700 28px "Chakra Petch";padding:10px 26px;border-radius:999px}
+.shift.girls{background:#0b7a72}.shift.boys{background:#5b4bd1}
+.net{font:700 18px "JetBrains Mono";color:#888;text-align:right;margin-top:10px}
+.lb{position:absolute;left:80px;top:290px;width:1080px;display:flex;flex-direction:column;gap:12px}
+.row{position:relative;display:flex;align-items:center;gap:22px;height:78px;padding:0 26px;border-radius:14px;background:#141414;transform:skewX(-8deg);overflow:hidden}
+.row .fill{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,#ffd40022,#ffd40055);transition:width .8s cubic-bezier(.2,.8,.2,1)}
+.row>*{position:relative}
+.row .rk{font:400 52px "Anton";width:60px}
+.row .nm{flex:1;font:700 40px "Chakra Petch";white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .ac{font:700 22px "JetBrains Mono";color:#aaa}
+.row .wp{font:400 56px "Anton";width:150px;text-align:right}
+.row .wp small{font-size:20px;color:#aaa}
+.row.first{background:var(--y);color:#000}.row.first .fill{background:#ffffff33}.row.first .ac,.row.first .wp small{color:#333}
+.row.flash{animation:flash 1.2s ease-out 3}
+@keyframes flash{0%{box-shadow:0 0 0 0 #ff2a2a}50%{box-shadow:0 0 0 8px #ff2a2a}100%{box-shadow:0 0 0 0 #ff2a2a}}
+.empty{font:700 34px "JetBrains Mono";color:#666;padding:30px 0}
+.side{position:absolute;left:1220px;right:80px;top:290px;bottom:150px;display:flex;flex-direction:column;gap:20px}
+.now{flex:1;background:#101010;border:3px solid #222;border-radius:24px;padding:26px 30px;position:relative;overflow:hidden}
+.now.live{border-color:var(--r)}
+.lbl{font:700 20px "JetBrains Mono";letter-spacing:.2em;color:#999}
+.now .who{font:400 64px/1 "Anton";margin-top:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transform:skewX(-8deg)}
+.now .rd{font:700 26px "JetBrains Mono";color:var(--y);margin-top:8px}
+.gauge{position:relative;width:300px;height:300px;margin:18px auto 0;border-radius:50%;border:12px solid #222;background:radial-gradient(circle,#161616 55%,#0b0b0b)}
+.gauge .nd{position:absolute;left:50%;top:50%;width:130px;height:10px;margin-top:-5px;background:var(--r);transform-origin:0 50%;border-radius:5px;box-shadow:0 0 14px var(--r);transition:transform .25s}
+.gauge .hub{position:absolute;left:50%;top:50%;width:40px;height:40px;margin:-20px;border-radius:50%;background:var(--y)}
+.gauge b{position:absolute;left:0;right:0;top:170px;text-align:center;font:400 72px "Anton";color:var(--y)}
+.pbar{height:14px;background:#1d1d1d;border-radius:7px;margin-top:20px;overflow:hidden}.pbar b{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--y),var(--r));transition:width .3s}
+.idle{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:#101010}
+.idle .q{font:400 78px/1 "Anton";color:var(--y);transform:skewX(-10deg)}
+.idle .qa{font:900 40px "Cairo";margin-top:12px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.sb{background:#101010;border-radius:16px;padding:16px 18px}
+.sb b{display:block;font:400 54px "Anton"}.sb span{font:700 15px "JetBrains Mono";color:#999;letter-spacing:.14em}
+.prize{position:absolute;left:80px;right:80px;bottom:50px;height:70px;display:flex;align-items:center;justify-content:space-between;background:var(--y);color:#000;border-radius:16px;padding:0 30px;transform:skewX(-8deg)}
+.prize b{font:400 36px "Anton";letter-spacing:.02em}.prize span{font:900 30px "Cairo";direction:rtl}
+#rec{position:absolute;inset:0;background:#ff2a2aee;display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;z-index:5}
+#rec.on{display:flex;animation:pop .4s cubic-bezier(.2,.8,.2,1)}
+@keyframes pop{from{transform:scale(1.3);opacity:0}}
+#rec .a{font:400 150px/1 "Anton";color:#fff;transform:skewX(-10deg)}
+#rec .b{font:400 120px/1 "Anton";color:var(--y);margin-top:20px;transform:skewX(-10deg)}
+#rec .c{font:900 60px "Cairo";margin-top:10px}
+.help{position:absolute;right:20px;bottom:6px;font:12px "JetBrains Mono";color:#333}
+</style></head><body>
+<div id="stage">
+  <div id="speed"></div>
+  <div class="hd">
+    <div><div class="t1">KEYBOARD FURY · <span>LIVE</span></div><div class="t2 ar">الأسرع الآن · غضب الكيبورد</div></div>
+    <div><div class="shift" id="shift">GIRLS · الطالبات</div><div class="net" id="net">SAME LAPTOP</div></div>
+  </div>
+  <div class="lb" id="lb"></div>
+  <div class="side">
+    <div class="now" id="now">
+      <div class="lbl">NOW TYPING · يكتب الآن</div>
+      <div class="who" id="who">—</div>
+      <div class="rd" id="rnd">ROUND 1</div>
+      <div class="gauge"><div class="nd" id="nd"></div><div class="hub"></div><b id="lw">0</b></div>
+      <div class="pbar"><b id="pb"></b></div>
+      <div class="idle" id="idle"><div class="q">NEXT<br>CHALLENGER?</div><div class="qa">مين المتحدي الجاي؟</div><div class="lbl" style="margin-top:20px">TYPE YOUR NAME AT THE LAPTOP</div></div>
+    </div>
+    <div class="stats"><div class="sb"><b id="sN">0</b><span>CHALLENGERS</span></div><div class="sb"><b id="sAvg">0</b><span>AVG WPM</span></div><div class="sb"><b id="sTop">0</b><span>RECORD</span></div></div>
+  </div>
+  <div class="prize"><b>TOP WPM THIS SHIFT WINS A MECHANICAL KEYBOARD</b><span>الأسرع يفوز بلوحة مفاتيح ميكانيكية</span></div>
+  <div id="rec"><div class="a">NEW RECORD!</div><div class="b" id="recTxt">—</div><div class="c">رقم قياسي جديد</div></div>
+  <div class="help">G / B = switch shift · F = fullscreen</div>
+</div>
+<script src="sync.js"></script>
+<script>
+(() => {
+const $=s=>document.querySelector(s);
+let set=Fury.settings(); let shift=set.shift; let lastTop=null; let flashId=null; let liveT=0;
+function fit(){ const s=Math.min(innerWidth/1920,innerHeight/1080); $('#stage').style.transform=`translate(-50%,-50%) scale(${s})`; }
+addEventListener('resize',fit); fit();
+const sp=$('#speed'); for(let i=0;i<16;i++){const e=document.createElement('i');e.style.top=(Math.random()*1080)+'px';e.style.width=(200+Math.random()*500)+'px';e.style.animationDuration=(0.8+Math.random()*1.6)+'s';e.style.animationDelay=(-Math.random()*2)+'s';if(i%4==0)e.style.background='linear-gradient(90deg,transparent,#ff2a2a)';sp.appendChild(e)}
+const esc=s=>String(s).replace(/[<>&"]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]));
+function render(){
+  const sh=$('#shift'); sh.className='shift '+shift; sh.textContent= shift==='girls'?'GIRLS · الطالبات':'BOYS · الطلاب';
+  const st=Fury.status(); $('#net').textContent = set.room ? 'ROOM '+set.room.toUpperCase()+' · '+st.toUpperCase() : 'SAME LAPTOP';
+  const list=Fury.ranked(shift); const max=Math.max(60,...list.map(r=>r.wpm));
+  $('#lb').innerHTML = list.length ? list.slice(0,8).map((r,i)=>`<div class="row ${i==0?'first':''} ${r.id===flashId?'flash':''}"><div class="fill" style="width:${Math.round(r.wpm/max*100)}%"></div><div class="rk">${i+1}</div><div class="nm">${esc(r.name)}</div><div class="ac">${r.acc}%</div><div class="wp">${r.wpm}<small> WPM</small></div></div>`).join('')
+    : '<div class="empty">&gt; leaderboard empty. be the first legend._</div>';
+  const all=Fury.results(shift);
+  $('#sN').textContent=list.length; $('#sAvg').textContent= all.length?Math.round(all.reduce((s,r)=>s+r.wpm,0)/all.length):0; $('#sTop').textContent=list[0]?list[0].wpm:0;
+}
+function live(m){
+  if(m.shift && m.shift!==shift) return;
+  const idle=(m.state==='idle'||m.state==='done'); $('#idle').style.display=idle?'flex':'none'; $('#now').classList.toggle('live',!idle);
+  if(!idle){ liveT=Date.now(); $('#who').textContent=m.name||'—'; $('#rnd').textContent= m.state==='ready'?'ROUND '+m.round+' · GET READY':'ROUND '+m.round+' OF 3';
+    const w=m.wpm||0; $('#lw').textContent=w; $('#nd').style.transform=`rotate(${135+Math.min(w,160)/160*270}deg)`; $('#pb').style.width=Math.round((m.progress||0)*100)+'%'; }
+}
+function record(r){ $('#recTxt').textContent=r.name.toUpperCase()+' · '+r.wpm+' WPM'; const e=$('#rec'); e.classList.remove('on'); void e.offsetWidth; e.classList.add('on'); setTimeout(()=>e.classList.remove('on'),3500); }
+Fury.on(m=>{
+  if(m.t==='live') return live(m);
+  if(m.t==='result' && m.shift===shift){ const top=Fury.ranked(shift)[0]; flashId=m.id; if(top && top.id===m.id && (lastTop===null || m.wpm>lastTop)) record(m); lastTop=top?top.wpm:null; }
+  render();
+});
+setInterval(()=>{ if(Date.now()-liveT>15000){ $('#idle').style.display='flex'; $('#now').classList.remove('live'); } },2000);
+addEventListener('keydown',e=>{ const k=e.key.toLowerCase(); if(k==='g'||k==='b'){ shift=k==='g'?'girls':'boys'; lastTop=(Fury.ranked(shift)[0]||{}).wpm??null; render(); } if(k==='f'){ document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen().catch(()=>{}); } });
+Fury.connect(); lastTop=(Fury.ranked(shift)[0]||{}).wpm??null; render(); setInterval(render,5000);
+})();
+</script>
+</body></html>

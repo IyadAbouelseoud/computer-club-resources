@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Keyboard Fury · Overclocked</title>
+<link rel="stylesheet" href="../fonts/fonts.css">
+<style>
+:root{--y:#ffd400;--r:#ff2a2a;--k:#050505;--g:#2ee59d;--d:#8a8a8a}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--k);color:#fff;font-family:"Chakra Petch",system-ui,sans-serif;overflow:hidden}
+.ar{font-family:"Cairo","IBM Plex Sans Arabic",sans-serif;direction:rtl}
+.mono{font-family:"JetBrains Mono",ui-monospace,monospace}
+#speed{position:fixed;inset:0;pointer-events:none;overflow:hidden}
+#speed i{position:absolute;height:4px;border-radius:2px;background:linear-gradient(90deg,transparent,var(--y));animation:fly linear infinite;opacity:.55}
+@keyframes fly{from{transform:translateX(-40vw)}to{transform:translateX(140vw)}}
+header{position:relative;z-index:2;display:flex;align-items:center;gap:16px;padding:14px 26px;border-bottom:2px solid #1c1c1c}
+.logo{font:400 34px/1 "Anton",sans-serif;color:var(--y);transform:skewX(-10deg);letter-spacing:.02em}
+.logo span{color:var(--r)}
+.pill{font:700 12px "JetBrains Mono";letter-spacing:.14em;padding:6px 12px;border-radius:999px;border:1px solid #333;color:#bbb}
+.pill.girls{background:#0b7a72;border-color:#0b7a72;color:#fff}.pill.boys{background:#5b4bd1;border-color:#5b4bd1;color:#fff}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;background:#777}
+.dot.online{background:var(--g)}.dot.offline{background:var(--r)}.dot.connecting{background:var(--y)}
+.sp{flex:1}
+.gear{background:none;border:1px solid #333;color:#bbb;border-radius:10px;width:40px;height:40px;cursor:pointer;font-size:18px}
+main{position:relative;z-index:2;height:calc(100% - 70px);display:grid;place-items:center;padding:20px}
+.scr{display:none;width:min(1200px,96vw)}.scr.on{display:block}
+h1{margin:0;font:400 clamp(60px,9vw,128px)/.9 "Anton",sans-serif;color:var(--y);transform:skewX(-10deg);text-transform:uppercase}
+h1 em{font-style:normal;color:var(--r)}
+.sub{font:900 clamp(28px,3.4vw,46px) "Cairo";margin-top:6px}
+.rounds{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:26px 0}
+.rd{background:#121212;border:2px solid #222;border-radius:14px;padding:14px 16px;transform:skewX(-5deg)}
+.rd b{font:400 32px "Anton";color:var(--y)}.rd.r3 b{color:var(--r)}
+.rd div{font-size:16px;color:#ddd;margin-top:2px}.rd .ar{font-size:15px;color:#aaa}
+.row{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+input.name{font:700 26px "JetBrains Mono";background:#000;color:#fff;border:3px solid var(--y);border-radius:12px;padding:14px 18px;width:min(460px,90vw);outline:none}
+button.go{font:400 30px "Anton";letter-spacing:.04em;background:var(--y);color:#000;border:0;border-radius:12px;padding:14px 30px;cursor:pointer;transform:skewX(-8deg)}
+button.go:disabled{opacity:.4;cursor:not-allowed}
+.hint{font:400 14px "JetBrains Mono";color:var(--d)}
+/* countdown */
+#cd{text-align:center}
+.lights{display:flex;gap:28px;justify-content:center}
+.lights i{width:110px;height:110px;border-radius:50%;background:#1b1b1b;border:6px solid #2a2a2a}
+.lights i.on{background:var(--r);box-shadow:0 0 40px var(--r)}.lights.go i{background:var(--g);box-shadow:0 0 40px var(--g)}
+#cdText{font:400 120px "Anton";color:var(--y);margin-top:30px}
+/* typing */
+.top{display:flex;justify-content:space-between;align-items:flex-end;gap:20px}
+.rtag{font:400 54px/1 "Anton";color:var(--y);transform:skewX(-10deg)}
+.rtag small{display:block;font:700 18px "JetBrains Mono";color:#bbb;transform:none;letter-spacing:.12em;margin-top:6px}
+.stats{display:flex;gap:26px}
+.st{text-align:right}.st b{display:block;font:400 64px/1 "Anton";color:#fff}.st span{font:700 13px "JetBrains Mono";color:var(--d);letter-spacing:.18em}
+.st.t b{color:var(--r)}
+.bar{height:12px;background:#151515;border-radius:6px;margin:18px 0 22px;overflow:hidden}.bar b{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--y),var(--r))}
+.text{font:400 clamp(26px,2.6vw,38px)/1.6 "JetBrains Mono";background:#0d0d0d;border:2px solid #222;border-radius:16px;padding:26px 30px;min-height:220px;word-break:break-word;white-space:pre-wrap;position:relative}
+.text .c{color:#fff}.text .x{color:#fff;background:var(--r);border-radius:4px}.text .p{color:#555}
+.text .cur{border-left:4px solid var(--y);margin-left:-2px;animation:bl 1s steps(1) infinite}
+@keyframes bl{50%{border-color:transparent}}
+.r3note{margin-top:14px;font:700 18px "JetBrains Mono";color:var(--r)}
+#cap{position:absolute;opacity:0;left:-9999px}
+/* results */
+.res{display:grid;grid-template-columns:1.2fr 1fr;gap:26px;align-items:center}
+.big{font:400 clamp(110px,14vw,200px)/.85 "Anton";color:var(--y);transform:skewX(-10deg)}
+.big small{font-size:.3em;color:#fff}
+.rlist{display:grid;gap:10px}
+.rl{display:flex;justify-content:space-between;background:#121212;border-radius:12px;padding:12px 18px;font:700 22px "JetBrains Mono"}
+.rl b{color:var(--y)}
+.rank{font:400 44px "Anton";margin-top:14px}.rank span{color:var(--y)}
+.rec{display:inline-block;background:var(--r);color:#fff;font:400 34px "Anton";padding:6px 18px;border-radius:10px;transform:skewX(-10deg);animation:pulse .6s ease-in-out infinite alternate}
+@keyframes pulse{to{transform:skewX(-10deg) scale(1.06)}}
+/* settings */
+.ov{position:fixed;inset:0;background:#000c;display:none;place-items:center;z-index:9}.ov.on{display:grid}
+.panel{background:#111;border:2px solid var(--y);border-radius:16px;padding:24px 28px;width:min(560px,92vw)}
+.panel h3{margin:0 0 14px;font:400 30px "Anton";color:var(--y)}
+.panel label{display:block;font:700 13px "JetBrains Mono";color:#bbb;letter-spacing:.12em;margin:14px 0 6px}
+.seg{display:flex;gap:8px}.seg button{flex:1;padding:12px;border-radius:10px;border:2px solid #333;background:#000;color:#fff;font:700 16px "Chakra Petch";cursor:pointer}
+.seg button.on{border-color:var(--y);color:var(--y)}
+.panel input{width:100%;font:700 18px "JetBrains Mono";background:#000;color:#fff;border:2px solid #333;border-radius:10px;padding:10px 12px}
+.panel p{font-size:13px;color:#aaa;line-height:1.5}
+.panel .btns{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
+.panel .btns button{padding:10px 16px;border-radius:10px;border:0;font:700 14px "Chakra Petch";cursor:pointer}
+.ok{background:var(--y);color:#000}.danger{background:#2a0a0a;color:var(--r);border:1px solid var(--r)!important}.plain{background:#222;color:#fff}
+a{color:var(--y)}
+</style></head><body>
+<div id="speed"></div>
+<header>
+  <div class="logo">KEYBOARD FURY <span>OVERCLOCKED</span></div>
+  <span class="pill">0x04</span>
+  <span class="sp"></span>
+  <span class="pill" id="shiftPill">SHIFT</span>
+  <span class="pill" id="netPill"><i class="dot" id="netDot"></i><span id="netTxt">LOCAL</span></span>
+  <button class="gear" id="gear" aria-label="Staff settings">⚙</button>
+</header>
+<main>
+  <!-- name -->
+  <section class="scr on" id="sName">
+    <h1>Type like the<br><em>build is failing</em></h1>
+    <div class="sub ar">اكتب كأن البناء ينهار · غضب الكيبورد</div>
+    <div class="rounds">
+      <div class="rd"><b>R1</b><div>Plain text. Warm up.</div><div class="ar">نص عادي للإحماء</div></div>
+      <div class="rd"><b>R2</b><div>Code symbols { } ( ) ; =&gt;</div><div class="ar">رموز برمجية</div></div>
+      <div class="rd r3"><b>R3</b><div>Multithreading: one hand types, the other keeps the balloon up.</div><div class="ar">اكتب بيد وأبقِ البالون في الهواء</div></div>
+    </div>
+    <div class="row">
+      <input class="name" id="name" maxlength="18" placeholder="your name · اسمك" autocomplete="off" spellcheck="false">
+      <button class="go" id="start" disabled>START ▶</button>
+    </div>
+    <p class="hint">Enter = start · each round is up to 40 seconds · your best score counts on the leaderboard</p>
+  </section>
+  <!-- countdown -->
+  <section class="scr" id="sCd"><div id="cd"><div class="lights" id="lights"><i></i><i></i><i></i></div><div id="cdText">READY</div></div></section>
+  <!-- typing -->
+  <section class="scr" id="sType">
+    <div class="top">
+      <div class="rtag" id="rTag">ROUND 1<small id="rSub">PLAIN TEXT</small></div>
+      <div class="stats"><div class="st"><b id="wpm">0</b><span>WPM</span></div><div class="st"><b id="acc">100</b><span>ACC %</span></div><div class="st t"><b id="time">40</b><span>SEC</span></div></div>
+    </div>
+    <div class="bar"><b id="prog"></b></div>
+    <div class="text" id="txt"></div>
+    <div class="r3note" id="r3note" style="display:none">BALLOON DROPPED? STAFF PRESS ESC · سقط البالون؟ المنظّم يضغط ESC</div>
+    <input id="cap" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+  </section>
+  <!-- results -->
+  <section class="scr" id="sRes">
+    <div class="res">
+      <div><div class="hint" id="resName" style="font-size:22px;color:#fff">—</div><div class="big" id="resWpm">0<small> WPM</small></div><div class="rank" id="resRank"></div><div id="resRec"></div></div>
+      <div class="rlist" id="resList"></div>
+    </div>
+    <div class="row" style="margin-top:30px"><button class="go" id="next">NEXT CONTESTANT ▶</button><span class="hint">Enter = next · النتيجة ظهرت على الشاشة الكبيرة</span></div>
+  </section>
+</main>
+<div class="ov" id="ovSet"><div class="panel">
+  <h3>STAFF SETTINGS</h3>
+  <label>SHIFT · الفترة</label>
+  <div class="seg"><button data-s="girls">Girls · الطالبات</button><button data-s="boys">Boys · الطلاب</button></div>
+  <label>ROOM CODE (only if the projector runs on another device)</label>
+  <input id="room" maxlength="24" placeholder="leave empty for same laptop">
+  <p>Same laptop: open <a href="board.html" target="_blank">board.html</a> in a second window and drag it to the projector. Nothing else needed.<br>Different devices: type the same room code here and on the board (board.html?room=CODE). Needs internet.</p>
+  <div class="btns"><button class="ok" id="saveSet">SAVE</button><button class="plain" id="openBoard">OPEN BOARD</button><button class="danger" id="resetShift">RESET THIS SHIFT</button><button class="plain" id="closeSet">CLOSE</button></div>
+</div></div>
+<script src="sync.js"></script>
+<script>
+(() => {
+const $ = s => document.querySelector(s);
+const POOL = {
+ 1: ["shadow lotus caught ali baba at two forty seven in the morning and the whole club cheered",
+     "the computer club booted the theater today and every student became a programmer for one hour",
+     "keep calm and commit often because the release bar is filling and the finale is close",
+     "renad locked the vault, ahmad checked the logs, and mohammed was only a little bit sus"],
+ 2: ["if (vault.locked) { tryAgain(); } else { alert(\"open\"); }",
+     "for (let i = 0; i < 7; i++) { crack(ring[i]); }",
+     "const agent = { name: \"lotus\", level: 99, sus: false };",
+     "while (bugs > 0) { coffee++; bugs -= 1; } // [x]",
+     "SELECT name FROM members WHERE role = 'Treasurer';"],
+ 3: ["one hand on the keys and one hand in the air, the balloon must never touch the floor",
+     "multithreading means doing two things at once without dropping either of them",
+     "type with one hand, save the balloon with the other, and do not panic"]
+};
+const SUB = {1:'PLAIN TEXT · نص عادي',2:'CODE SYMBOLS · رموز برمجية',3:'MULTITHREADING · البالون'};
+const LIMIT = 40;
+let set = Fury.settings();
+let name = '', round = 0, target = '', typed = '', t0 = 0, keys = 0, good = 0, timer = null, results = [], running = false;
+
+// speed lines
+const sp = $('#speed'); for (let i = 0; i < 18; i++) { const e = document.createElement('i'); e.style.top = (Math.random()*100)+'vh'; e.style.width = (120+Math.random()*380)+'px'; e.style.animationDuration = (0.6+Math.random()*1.4)+'s'; e.style.animationDelay = (-Math.random()*2)+'s'; if (i%5==0) e.style.background='linear-gradient(90deg,transparent,#ff2a2a)'; sp.appendChild(e); }
+
+function show(id){ document.querySelectorAll('.scr').forEach(s => s.classList.toggle('on', s.id === id)); }
+function pills(){ const p=$('#shiftPill'); p.className='pill '+set.shift; p.textContent = set.shift==='girls'?'GIRLS · الطالبات':'BOYS · الطلاب';
+  const st = Fury.status(); $('#netDot').className='dot '+(set.room?st:''); $('#netTxt').textContent = set.room ? ('ROOM '+set.room.toUpperCase()+' · '+st.toUpperCase()) : 'SAME LAPTOP'; }
+Fury.on(m => { if (m.t==='status') pills(); });
+Fury.connect(); pills();
+
+$('#name').addEventListener('input', () => { $('#start').disabled = !$('#name').value.trim(); });
+$('#name').addEventListener('keydown', e => { if (e.key==='Enter' && $('#name').value.trim()) begin(); });
+$('#start').onclick = begin;
+$('#next').onclick = reset;
+document.addEventListener('keydown', e => { if ($('#sRes').classList.contains('on') && e.key==='Enter') reset(); });
+
+function reset(){ show('sName'); $('#name').value=''; $('#start').disabled=true; setTimeout(()=>$('#name').focus(),50); Fury.send({t:'live',state:'idle',shift:set.shift}); }
+function begin(){ name = $('#name').value.trim().slice(0,18); results=[]; round=0; nextRound(); }
+function nextRound(){ round++; if (round>3) return finish();
+  show('sCd'); const L=$('#lights'); L.className='lights'; [...L.children].forEach(i=>i.className='');
+  $('#cdText').textContent = 'ROUND '+round; let k=0;
+  Fury.send({t:'live',state:'ready',name,round,wpm:0,progress:0,shift:set.shift});
+  const iv = setInterval(()=>{ if(k<3){ L.children[k].className='on'; beep(440,.12); k++; } else { clearInterval(iv); L.className='lights go'; $('#cdText').textContent='GO!'; beep(880,.25); setTimeout(startRound,350);} },550);
+}
+function startRound(){
+  const pool = POOL[round]; target = pool[Math.floor(Math.random()*pool.length)];
+  typed=''; keys=0; good=0; t0=0; running=true;
+  $('#rTag').firstChild.textContent='ROUND '+round; $('#rSub').textContent=SUB[round];
+  $('#r3note').style.display = round===3?'block':'none';
+  $('#time').textContent=LIMIT; $('#wpm').textContent='0'; $('#acc').textContent='100';
+  show('sType'); render(); const c=$('#cap'); c.value=''; c.focus();
+  clearInterval(timer); timer=setInterval(tick,100);
+}
+function netWpm(){ const el = t0? (performance.now()-t0)/60000 : 0; if(!el) return 0; let c=0; for(let i=0;i<typed.length;i++) if(typed[i]===target[i]) c++; return Math.max(0,Math.round(c/5/el)); }
+function tick(){ if(!running) return; const el = t0?(performance.now()-t0)/1000:0; const left=Math.max(0,LIMIT-el);
+  $('#time').textContent = Math.ceil(left); const w=netWpm(); $('#wpm').textContent=w; $('#acc').textContent = keys?Math.round(good/keys*100):100;
+  if (Math.floor(el*10)%5===0) Fury.send({t:'live',state:'typing',name,round,wpm:w,progress:typed.length/target.length,shift:set.shift});
+  if (t0 && left<=0) endRound(); }
+function render(){ let h=''; for(let i=0;i<target.length;i++){ const ch=target[i]; const esc = ch==='<'?'&lt;':ch==='>'?'&gt;':ch==='&'?'&amp;':ch;
+  let cls = i<typed.length ? (typed[i]===ch?'c':'x') : 'p'; if(i===typed.length) cls+=' cur'; h+=`<span class="${cls}">${ch===' '&&cls.startsWith('x')?'·':esc}</span>`; }
+  if (typed.length>=target.length) h+='<span class="cur"> </span>';
+  $('#txt').innerHTML=h; $('#prog').style.width=(typed.length/target.length*100)+'%'; }
+// typing capture (keydown so we control everything; no paste)
+document.addEventListener('keydown', e => {
+  if (!running) return;
+  if (e.key==='Escape' && round===3){ e.preventDefault(); return endRound(true); }
+  if (e.ctrlKey||e.metaKey||e.altKey) { if (e.key.toLowerCase()==='v') e.preventDefault(); return; }
+  if (e.key==='Backspace'){ e.preventDefault(); typed=typed.slice(0,-1); render(); return; }
+  if (e.key.length!==1) return;
+  e.preventDefault(); if (e.repeat) return;
+  if (!t0) t0=performance.now();
+  if (typed.length>=target.length) return;
+  keys++; if (e.key===target[typed.length]) good++; else beep(160,.05,'sawtooth',.03);
+  typed+=e.key; render();
+  if (typed.length>=target.length) endRound();
+});
+document.addEventListener('paste', e => e.preventDefault());
+document.addEventListener('click', () => { if(running) $('#cap').focus(); });
+function endRound(dropped){
+  if(!running) return; running=false; clearInterval(timer);
+  if(!t0) t0=performance.now()-LIMIT*1000;
+  const w=netWpm(), a=keys?Math.round(good/keys*100):0;
+  results.push({r:round,wpm:w,acc:a,dropped:!!dropped});
+  beep(dropped?200:660,.18); setTimeout(nextRound, 700);
+}
+function finish(){
+  const wpm = Math.round(results.reduce((s,r)=>s+r.wpm,0)/3);
+  const acc = Math.round(results.reduce((s,r)=>s+r.acc,0)/3);
+  const before = Fury.ranked(set.shift)[0];
+  const msg = {t:'result', id: Date.now().toString(36)+Math.random().toString(36).slice(2,6), name, shift:set.shift, wpm, acc, rounds:results, ts:Date.now()};
+  Fury.send(msg); Fury.send({t:'live',state:'done',name,wpm,shift:set.shift});
+  const list = Fury.ranked(set.shift); const pos = list.findIndex(r=>r.name.trim().toLowerCase()===name.toLowerCase())+1;
+  $('#resName').textContent = name.toUpperCase()+' · FINAL SCORE (avg of 3 rounds)';
+  $('#resWpm').innerHTML = wpm+'<small> WPM</small>';
+  $('#resRank').innerHTML = 'RANK <span>#'+pos+'</span> OF '+list.length+' THIS SHIFT';
+  $('#resRec').innerHTML = (!before || wpm>before.wpm) ? '<span class="rec">NEW RECORD · رقم قياسي!</span>' : '';
+  $('#resList').innerHTML = results.map(r=>`<div class="rl"><span>ROUND ${r.r}${r.dropped?' · balloon dropped':''}</span><span><b>${r.wpm}</b> wpm · ${r.acc}%</span></div>`).join('')+`<div class="rl"><span>ACCURACY</span><span><b>${acc}%</b></span></div>`;
+  show('sRes'); if(!before || wpm>before.wpm){ [523,659,784,1046].forEach((f,i)=>setTimeout(()=>beep(f,.15),i*110)); }
+}
+// audio
+let AC; function beep(f,d=.1,type='square',g=.05){ try{ AC=AC||new (window.AudioContext||window.webkitAudioContext)(); const o=AC.createOscillator(),v=AC.createGain(); o.type=type;o.frequency.value=f; v.gain.setValueAtTime(g,AC.currentTime); v.gain.exponentialRampToValueAtTime(.0001,AC.currentTime+d); o.connect(v);v.connect(AC.destination);o.start();o.stop(AC.currentTime+d);}catch(e){} }
+// settings
+function openSet(){ $('#ovSet').classList.add('on'); $('#room').value=set.room||''; document.querySelectorAll('.seg button').forEach(b=>b.classList.toggle('on',b.dataset.s===set.shift)); }
+$('#gear').onclick=openSet; $('#closeSet').onclick=()=>$('#ovSet').classList.remove('on');
+document.querySelectorAll('.seg button').forEach(b=>b.onclick=()=>{ document.querySelectorAll('.seg button').forEach(x=>x.classList.remove('on')); b.classList.add('on'); });
+$('#saveSet').onclick=()=>{ const sb=document.querySelector('.seg button.on'); set={shift: sb?sb.dataset.s:'girls', room: $('#room').value.trim()}; Fury.saveSettings(set); Fury.connect(); pills(); $('#ovSet').classList.remove('on'); Fury.send({t:'live',state:'idle',shift:set.shift}); };
+$('#openBoard').onclick=()=>window.open('board.html'+(set.room?'?room='+encodeURIComponent(set.room):''),'furyboard');
+$('#resetShift').onclick=()=>{ if(confirm('Clear the leaderboard for the '+set.shift+' shift? This cannot be undone.')) Fury.send({t:'reset',shift:set.shift,ts:Date.now()}); };
+$('#name').focus();
+})();
+</script>
+</body></html>
