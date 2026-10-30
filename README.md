@@ -13,3 +13,8 @@ Two static pages, no build step.
 4. After a minute the links are:
    - `https://YOUR-USERNAME.github.io/workshop-resources/ccna/`
    - `https://YOUR-USERNAME.github.io/workshop-resources/sql/`
+
+## Programmer's Day (5 Nov 2026)
+- `pd/arcade/` Club Arcade 2077: VAULT-7: RELOCKED (booth laptop game, works offline once loaded)
+- `pd/vault/<slug>/` 8 Binary Vault exhibit pages, one per QR poster (slugs are fixed; do not rename or the QR codes break)
+- `pd/fonts/` self-hosted fonts shared by both

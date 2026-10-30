@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>VAULT-7: RELOCKED · Club Arcade 2077</title>
+<meta name="description" content="Club Arcade 2077 · Computer Club, Arab Open University Jeddah. Crack the 7 rings Ali Baba left on VAULT-7.">
+<link rel="stylesheet" href="../fonts/fonts.css">
+<style>
+:root{--bg:#07040f;--cy:#00f0ff;--mg:#ff2bd6;--yl:#f5ff3b;--rd:#ff3b5c;--gn:#2ee59d;--ink:#e9e6ff;--dim:#8f88b8}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:"Chakra Petch",system-ui,sans-serif;overflow:hidden;user-select:none;-webkit-user-select:none}
+.ar{font-family:"Changa","IBM Plex Sans Arabic",sans-serif;direction:rtl}
+.mono{font-family:"JetBrains Mono",ui-monospace,monospace}
+#bg{position:fixed;inset:0;background:radial-gradient(ellipse at 50% 110%,#3b0a52 0%,#10061f 45%,#05020b 100%)}
+#grid{position:fixed;left:-50%;right:-50%;bottom:-30%;height:60%;transform:perspective(420px) rotateX(64deg);background:linear-gradient(#ff2bd6 2px,transparent 2px) 0 0/100% 60px,linear-gradient(90deg,#00f0ff55 2px,transparent 2px) 0 0/90px 100%;opacity:.45;animation:gy 1.2s linear infinite}
+@keyframes gy{to{background-position:0 60px,0 0}}
+#scan{position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,.22) 0 2px,transparent 2px 4px);z-index:50}
+#app{position:relative;z-index:2;height:100%;display:grid;grid-template-rows:auto 1fr auto}
+header{display:flex;align-items:center;gap:16px;padding:14px 22px;border-bottom:1px solid #2a1f47;background:#0b0718cc}
+.logo{font:900 22px "Orbitron",sans-serif;letter-spacing:.06em;text-shadow:0 0 12px var(--cy)}
+.logo span{color:var(--mg)}
+.pill{font:700 12px "JetBrains Mono";letter-spacing:.14em;color:var(--dim);border:1px solid #2a1f47;border-radius:999px;padding:5px 12px}
+.sp{flex:1}
+main{position:relative;display:grid;place-items:center;min-height:0}
+canvas{width:min(78vh,92vw);height:min(78vh,92vw);display:block;touch-action:manipulation;cursor:pointer}
+.hud{position:absolute;left:22px;top:18px;display:grid;gap:10px}
+.hud .k{font:700 11px "JetBrains Mono";letter-spacing:.18em;color:var(--dim)}
+.hud .v{font:900 26px "Orbitron";color:#fff}
+.rings{display:flex;gap:6px}.rings i{width:26px;height:10px;border-radius:3px;background:#1d1636;border:1px solid #3a2d63}.rings i.on{background:var(--cy);box-shadow:0 0 10px var(--cy)}.rings i.cur{background:var(--mg);box-shadow:0 0 10px var(--mg)}
+.log{position:absolute;right:22px;top:18px;width:min(360px,30vw);font:400 12.5px/1.6 "JetBrains Mono";color:#9fe9ff;opacity:.9}
+.log div{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.log .r{color:var(--rd)}.log .y{color:var(--yl)}.log .g{color:var(--gn)}.log .m{color:var(--mg)}
+footer{display:flex;justify-content:center;gap:22px;padding:10px;font:700 12px "JetBrains Mono";letter-spacing:.12em;color:var(--dim);border-top:1px solid #2a1f47;background:#0b0718cc}
+footer b{color:var(--cy)}
+.ov{position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:#05020bd9;z-index:20;padding:20px}
+.ov.on{display:flex}
+.panel{width:min(980px,96vw);max-height:92vh;overflow:auto;background:#0d0820f2;border:2px solid var(--mg);border-radius:18px;padding:28px 34px;box-shadow:0 0 40px #ff2bd655,inset 0 0 40px #00f0ff10}
+.panel h1{margin:0;font:900 clamp(30px,5vw,58px)/1 "Orbitron";letter-spacing:.03em;text-shadow:0 0 14px var(--cy),3px 0 #ff2bd6aa,-3px 0 #00f0ffaa}
+.panel h2{margin:.3em 0 0;font:800 clamp(22px,3vw,34px) "Changa";color:var(--yl);direction:rtl;text-align:left}
+.story{margin:18px 0;display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.story p{margin:0;font-size:15.5px;line-height:1.6;color:#d8d3f5}
+.story .ar{font-family:"IBM Plex Sans Arabic";font-size:15.5px;line-height:1.8;text-align:right}
+.story b{color:var(--cy)}
+.rules{display:flex;flex-wrap:wrap;gap:10px;margin:8px 0 18px}
+.rules span{font:700 13px "JetBrains Mono";border:1px solid #3a2d63;border-radius:8px;padding:8px 12px;background:#140d2b}
+.row{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+input{font:700 18px "JetBrains Mono";background:#05020b;color:#fff;border:2px solid var(--cy);border-radius:10px;padding:12px 14px;width:260px;outline:none}
+button{font:900 16px "Orbitron";letter-spacing:.08em;background:var(--mg);color:#fff;border:0;border-radius:10px;padding:14px 22px;cursor:pointer;box-shadow:0 0 18px #ff2bd688}
+button.ghost{background:transparent;border:2px solid var(--cy);color:var(--cy);box-shadow:none}
+.hof{margin-top:20px;border-top:1px dashed #3a2d63;padding-top:14px}
+.hof h3{margin:0 0 8px;font:900 16px "Orbitron";letter-spacing:.12em;color:var(--yl)}
+.hof table{width:100%;border-collapse:collapse;font:400 14px "JetBrains Mono"}
+.hof td{padding:5px 8px;border-bottom:1px solid #1f1838}
+.hof td:first-child{color:var(--mg);width:40px}.hof td.n{text-align:right;color:var(--cy)}
+.big{font:900 clamp(40px,8vw,92px)/1 "Orbitron";text-align:center}
+.sub{text-align:center;font:700 18px "JetBrains Mono";color:var(--dim);margin-top:10px}
+.quip{text-align:center;margin:18px auto;max-width:640px;font-size:17px;line-height:1.6}
+.quip .ar{font-family:"IBM Plex Sans Arabic";display:block;margin-top:6px;color:#cfc8f2}
+.rank{display:inline-block;margin-top:10px;font:900 18px "Orbitron";padding:8px 16px;border-radius:999px;border:2px solid currentColor}
+.toast{position:fixed;left:50%;bottom:70px;transform:translateX(-50%);background:#0d0820;border:2px solid var(--yl);color:var(--yl);padding:12px 20px;border-radius:12px;font:700 15px "JetBrains Mono";z-index:60;display:none;max-width:90vw;text-align:center}
+.glitch{animation:gl .35s steps(2) 1}
+@keyframes gl{0%{transform:translate(0)}25%{transform:translate(-8px,2px) skewX(8deg)}50%{transform:translate(6px,-3px)}75%{transform:translate(-3px,1px) skewX(-6deg)}100%{transform:none}}
+.ali{font:400 12px/1.15 "JetBrains Mono";color:var(--rd);white-space:pre;text-align:center;margin:10px 0}
+@media (max-width:760px){.story{grid-template-columns:1fr}.log{display:none}}
+</style></head><body>
+<div id="bg"></div><div id="grid"></div><div id="scan"></div>
+<div id="app">
+<header>
+  <div class="logo">VAULT-7<span>:</span> RELOCKED</div>
+  <span class="pill">CLUB ARCADE 2077 · 0x02</span>
+  <span class="sp"></span>
+  <span class="pill" id="agentPill">AGENT: —</span>
+  <span class="pill">NEO-JEDDAH</span>
+</header>
+<main id="main">
+  <div class="hud">
+    <div><div class="k">RING · الحلقة</div><div class="v" id="hRing">1 / 7</div></div>
+    <div class="rings" id="hRings"></div>
+    <div><div class="k">PINS CRACKED</div><div class="v" id="hPins">0 / 14</div></div>
+    <div><div class="k">BEST TODAY</div><div class="v" id="hBest">—</div></div>
+  </div>
+  <div class="log mono" id="log"></div>
+  <canvas id="cv" width="900" height="900" aria-label="Lock ring. Press space, click or tap when the needle is inside the cyan arc."></canvas>
+
+  <div class="ov on" id="ovStart"><div class="panel">
+    <h1>VAULT-7: RELOCKED</h1>
+    <h2>الخزنة 7: أُعيد قفلها</h2>
+    <div class="story">
+      <p>NEO-JEDDAH · 2077. Shadow Lotus caught <b>Ali Baba</b>, the Treasurer, and suspended him. But before his account was deleted, he slipped one last script into the dark net: <b>VAULT-7 is locked again</b>, behind 7 spinning rings. Each ring has 2 pins. Hit the cyan window. Miss once, and he wins.</p>
+      <p class="ar">نيو جدة · 2077. فريق <b>Shadow Lotus</b> قبض على <b>علي بابا</b> أمين الصندوق وأوقف حسابه. لكن قبل حذف الحساب، زرع سكربتًا أخيرًا: <b>الخزنة VAULT-7 أُقفلت من جديد</b> خلف 7 حلقات تدور. كل حلقة فيها قفلان. اضغط عندما يكون المؤشر داخل النافذة الزرقاء. خطأ واحد.. ويفوز هو.</p>
+    </div>
+    <div class="rules"><span>SPACE / CLICK / TAP = crack</span><span>1 miss = game over</span><span>7 rings · 14 pins</span><span>no coding needed · بدون برمجة</span></div>
+    <div class="row">
+      <input id="alias" maxlength="16" placeholder="agent alias" autocomplete="off" spellcheck="false">
+      <button id="go">JACK IN ▶</button>
+      <span class="mono" style="color:var(--dim);font-size:12px">enter = start</span>
+    </div>
+    <div class="hof"><h3>HALL OF FAME · لوحة الشرف</h3><table id="hof"></table></div>
+  </div></div>
+
+  <div class="ov" id="ovOver"><div class="panel" style="border-color:var(--rd);box-shadow:0 0 40px #ff3b5c55">
+    <div class="big" style="color:var(--rd);text-shadow:0 0 18px var(--rd)" id="oTitle">TRACE DETECTED</div>
+    <div class="sub" id="oSub">ring 3 · 5 pins</div>
+    <div style="text-align:center"><span class="rank" id="oRank">SCRIPT KIDDIE</span></div>
+    <div class="quip" id="oQuip"></div>
+    <div class="row" style="justify-content:center"><button id="again">RETRY ▶</button><button class="ghost" id="menu">HALL OF FAME</button></div>
+    <div class="sub" style="font-size:12px">space = retry instantly</div>
+  </div></div>
+
+  <div class="ov" id="ovWin"><div class="panel" style="border-color:var(--gn);box-shadow:0 0 60px #2ee59d66">
+    <div class="big" style="color:var(--gn);text-shadow:0 0 20px var(--gn)">VAULT-7 OPEN</div>
+    <div class="sub ar" style="font-family:'IBM Plex Sans Arabic'">الخزنة مفتوحة. علي بابا خرج من الشبكة نهائيًا.</div>
+    <div style="text-align:center"><span class="rank" style="color:var(--yl)">ZERO-DAY LEGEND</span></div>
+    <div class="quip">Do not touch anything. Call a booth agent now and show this screen.<span class="ar">لا تلمس شيئًا. نادِ أحد منظمي الركن الآن وأرِه هذه الشاشة.</span></div>
+    <div class="big mono" style="font-size:42px;color:var(--yl)" id="wCode">LOTUS-0000</div>
+    <div class="sub" id="wSub"></div>
+    <div class="row" style="justify-content:center;margin-top:16px"><button class="ghost" id="wDone">STAFF: CONTINUE</button></div>
+  </div></div>
+</main>
+<footer><span>SPACE <b>crack</b></span><span>ESC <b>menu</b></span><span>SHADOW LOTUS // COMPUTER CLUB · AOU JEDDAH</span></footer>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+(()=>{
+const $=s=>document.querySelector(s);
+const cv=$('#cv'),cx=cv.getContext('2d');const W=900,C=450;
+const store={get(k,d){try{const v=localStorage.getItem('v7_'+k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem('v7_'+k,JSON.stringify(v))}catch(e){}}};
+// ---- difficulty table: ring -> speed deg/s, window deg
+const R=[
+ {sp:120,w:62,name:'ALPHA-1'},{sp:165,w:48,name:'BETA-2'},{sp:215,w:38,name:'GAMMA-9',flip:true},
+ {sp:265,w:30,name:'DELTA-4',flip:true},{sp:320,w:23,name:'IT-OPS',flip:true,drift:30},
+ {sp:385,w:17,name:'FINANCE',flip:true,drift:45},{sp:450,w:12,name:'VAULT-7',flip:true,drift:55,wobble:.28,decoy:true}];
+const RANKS=['SCRIPT KIDDIE','SCRIPT KIDDIE','PACKET SNIFFER','PACKET SNIFFER','GHOST IN THE WIRES','GHOST IN THE WIRES','ZERO-DAY LEGEND?','ZERO-DAY LEGEND'];
+const RANK_C=['#8f88b8','#8f88b8','#00f0ff','#00f0ff','#ff2bd6','#ff2bd6','#f5ff3b','#2ee59d'];
+const QUIPS=[
+ ['Ali Baba laughs somewhere on the dark net.','علي بابا يضحك في مكان ما على الشبكة المظلمة.'],
+ ['Mohammed 67 missed once too. He was only sus.','محمد 67 أخطأ مرة أيضًا.. كان مجرد مشتبه به.'],
+ ['Renad Zaki revoked your clearance. Ask nicely and try again.','Renad Zaki سحبت صلاحيتك. اطلبها بلطف وحاول من جديد.'],
+ ['Ahmad Bakhateeb: "Again, agent. The vault is waiting."','Ahmad Bakhateeb: "مرة ثانية يا عميل.. الخزنة تنتظر."'],
+ ['Miss Asl3 says: HAVING saved me. Timing will save you.','Miss Asl3 تقول: HAVING أنقذتني.. والتوقيت سينقذك.'],
+ ['6 failed logins got Ali Baba caught. You have unlimited retries.','6 محاولات دخول فاشلة كشفت علي بابا.. أما أنت فمحاولاتك بلا حد.'],
+ ['Brute force worked for him. It will work for you. Probably.','القوة الغاشمة نجحت معه.. وستنجح معك. غالبًا.'],
+ ['1,365 MB stolen. 0 rings cracked. Again.','1,365 ميجابايت مسروقة.. وصفر حلقات. مرة ثانية.']];
+const LINKUP=['ping link-up.club ... Request timed out','▲ signal: LINK UP · 12.11 · routers waking up','interface Gi0/1 ... down (next Thursday: up)','ARP who-has 12.11? tell Shadow Lotus'];
+// ---- audio
+let AC=null;function ac(){if(!AC){try{AC=new (window.AudioContext||window.webkitAudioContext)()}catch(e){}}return AC}
+function beep(f,d=.08,type='square',g=.06,slide=0){const a=ac();if(!a)return;const o=a.createOscillator(),v=a.createGain();o.type=type;o.frequency.setValueAtTime(f,a.currentTime);if(slide)o.frequency.exponentialRampToValueAtTime(Math.max(30,f*slide),a.currentTime+d);v.gain.setValueAtTime(g,a.currentTime);v.gain.exponentialRampToValueAtTime(.0001,a.currentTime+d);o.connect(v);v.connect(a.destination);o.start();o.stop(a.currentTime+d)}
+const sHit=r=>{beep(520+r*90,.07,'square',.05);setTimeout(()=>beep(780+r*120,.09,'square',.04),55)};
+const sRing=()=>[0,1,2,3].forEach(i=>setTimeout(()=>beep([440,554,659,880][i],.12,'sawtooth',.05),i*70));
+const sFail=()=>{beep(220,.5,'sawtooth',.08,.25);beep(233,.5,'square',.04,.3)};
+const sWin=()=>[0,1,2,3,4,5,6,7].forEach(i=>setTimeout(()=>beep([523,659,784,1046,784,1046,1318,1568][i],.16,'square',.05),i*110));
+// ---- state
+let alias=store.get('alias','');let hof=store.get('hof',[]);
+let st='menu',ring=0,pin=0,ang=0,dir=1,tgt=0,drift=0,decoy=null,t0=0,last=0,pause=0,flash=0,flashC='#00f0ff',shake=0,runStart=0,totalPins=0,clock=0,parts=[];
+function logl(txt,c=''){const l=$('#log');const d=document.createElement('div');d.className=c;d.textContent='> '+txt;l.appendChild(d);while(l.children.length>14)l.removeChild(l.firstChild)}
+function toast(t,ms=2600){const e=$('#toast');e.textContent=t;e.style.display='block';clearTimeout(e._t);e._t=setTimeout(()=>e.style.display='none',ms)}
+function norm(a){a%=360;return a<0?a+360:a}
+function diff(a,b){let d=norm(a-b);return d>180?d-360:d}
+function newTarget(){const r=R[ring];let c;let tries=0;do{c=Math.random()*360;tries++}while(Math.abs(diff(c,ang))<100&&tries<50);tgt=c;drift=(r.drift||0)*(Math.random()<.5?-1:1);
+  decoy=null;if(r.decoy){let d;do{d=Math.random()*360}while(Math.abs(diff(d,tgt))<60||Math.abs(diff(d,ang))<50);decoy=d}}
+function hudRings(){const h=$('#hRings');h.innerHTML='';for(let i=0;i<7;i++){const e=document.createElement('i');if(i<ring)e.className='on';else if(i==ring&&st==='play')e.className='cur';h.appendChild(e)}
+  $('#hRing').textContent=Math.min(7,ring+1)+' / 7';$('#hPins').textContent=totalPins+' / 14';const b=hof[0];$('#hBest').textContent=b?(b.p+' pins'):'—'}
+function start(){alias=($('#alias').value||alias||'AGENT').trim().slice(0,16).toUpperCase();store.set('alias',alias);$('#agentPill').textContent='AGENT: '+alias;
+  ac();['#ovStart','#ovOver','#ovWin'].forEach(s=>$(s).classList.remove('on'));
+  st='play';ring=0;pin=0;totalPins=0;ang=Math.random()*360;dir=1;newTarget();runStart=performance.now();pause=.6;
+  $('#log').innerHTML='';logl('jack in: '+alias,'m');logl('target: VAULT-7 · 7 rings','y');logl('ring 1 · '+R[0].name);hudRings()}
+function crack(){if(st!=='play'||pause>0)return;const r=R[ring];
+  if(decoy!=null&&Math.abs(diff(ang,decoy))<=10){fail('trap');return}
+  if(Math.abs(diff(ang,tgt))<=r.w/2){pin++;totalPins++;sHit(ring);flash=1;flashC='#00f0ff';burst(ang,'#00f0ff');
+    logl(`pin ${pin}/2 cracked @ ${Math.round(norm(ang))}°`,'g');
+    if(pin>=2){ring++;pin=0;if(ring>=7){win();return}sRing();flash=1;flashC='#ff2bd6';pause=.75;
+      logl(`ring ${ring} down · next: ${R[ring].name}`,'y');
+      if(ring==5){logl(LINKUP[Math.floor(Math.random()*LINKUP.length)],'g')}
+      if(ring==6){logl('WARNING: open_sesame trap armed (red arc)','r');toast('FINAL RING · VAULT-7 · avoid the red open_sesame trap')}}
+    if(r.flip||R[Math.min(6,ring)].flip)dir*=-1;newTarget();hudRings()}
+  else fail('miss')}
+function fail(kind){st='over';sFail();shake=1;flash=1;flashC='#ff3b5c';const ms=performance.now()-runStart;record(ms);
+  const q=kind==='trap'?['You typed open_sesame. That is literally Ali Baba\'s backdoor.','ضغطت على open_sesame.. هذا باب علي بابا الخلفي حرفيًا.']:QUIPS[Math.floor(Math.random()*QUIPS.length)];
+  logl(kind==='trap'?'TRAP: open_sesame triggered':'TRACE DETECTED · connection dropped','r');
+  setTimeout(()=>{$('#oTitle').textContent=kind==='trap'?'IT\'S A TRAP':'TRACE DETECTED';$('#oSub').textContent=`ring ${ring+1} · ${totalPins} / 14 pins · ${(ms/1000).toFixed(1)}s`;
+    const rk=$('#oRank');rk.textContent=RANKS[ring];rk.style.color=RANK_C[ring];$('#oQuip').innerHTML=q[0]+'<span class="ar">'+q[1]+'</span>';$('#ovOver').classList.add('on');renderHof()},450);hudRings()}
+function win(){st='win';sWin();const ms=performance.now()-runStart;record(ms);
+  const code='LOTUS-'+(((Date.now()/1000|0)^0x5A7)%10000).toString().padStart(4,'0');$('#wCode').textContent=code;$('#wSub').textContent=alias+' · 14 / 14 pins · '+(ms/1000).toFixed(1)+'s · '+new Date().toLocaleTimeString();
+  logl('VAULT-7 OPEN · Ali Baba ejected for good','g');for(let i=0;i<120;i++)burst(Math.random()*360,['#2ee59d','#f5ff3b','#ff2bd6','#00f0ff'][i%4]);
+  setTimeout(()=>$('#ovWin').classList.add('on'),900)}
+function record(ms){hof.push({a:alias,p:totalPins,ms:Math.round(ms),d:Date.now()});hof.sort((x,y)=>y.p-x.p||x.ms-y.ms);hof=hof.slice(0,10);store.set('hof',hof);hudRings()}
+function renderHof(){const t=$('#hof');if(!hof.length){t.innerHTML='<tr><td>—</td><td>no agent has cracked a pin yet. be the first.</td></tr>';return}
+  t.innerHTML=hof.map((h,i)=>`<tr><td>#${i+1}</td><td>${h.a.replace(/[<>&]/g,'')}</td><td>${RANKS[Math.min(7,Math.floor(h.p/2))]}</td><td class="n">${h.p}/14</td><td class="n">${(h.ms/1000).toFixed(1)}s</td></tr>`).join('')}
+function burst(a,c){const r=330;const x=C+Math.cos(a*Math.PI/180)*r,y=C+Math.sin(a*Math.PI/180)*r;for(let i=0;i<14;i++){const s=2+Math.random()*7,th=Math.random()*Math.PI*2;parts.push({x,y,vx:Math.cos(th)*s,vy:Math.sin(th)*s,l:1,c})}}
+// ---- draw
+function arc(r,a0,a1,col,wd,glow){cx.beginPath();cx.arc(C,C,r,a0*Math.PI/180,a1*Math.PI/180);cx.strokeStyle=col;cx.lineWidth=wd;cx.shadowColor=col;cx.shadowBlur=glow||0;cx.stroke();cx.shadowBlur=0}
+function draw(){cx.save();cx.clearRect(0,0,W,W);if(shake>0){cx.translate((Math.random()-.5)*30*shake,(Math.random()-.5)*30*shake)}
+  // outer rings progress
+  for(let i=0;i<7;i++){const rr=410-i*0;}
+  for(let i=0;i<7;i++){const a0=-90+i*(360/7)+3,a1=-90+(i+1)*(360/7)-3;arc(420,a0,a1,i<ring?'#00f0ff':(i==ring&&st==='play'?'#ff2bd6':'#2a1f47'),10,i<ring?14:0)}
+  // track
+  arc(330,0,360,'#1a1233',46,0);
+  for(let k=0;k<72;k++){const a=k*5*Math.PI/180,r1=300,r2=k%6==0?286:294;cx.beginPath();cx.moveTo(C+Math.cos(a)*r1,C+Math.sin(a)*r1);cx.lineTo(C+Math.cos(a)*r2,C+Math.sin(a)*r2);cx.strokeStyle='#3a2d63';cx.lineWidth=2;cx.stroke()}
+  if(st==='play'||st==='over'){const r=R[Math.min(6,ring)];
+    arc(330,tgt-r.w/2,tgt+r.w/2,'#00f0ff',46,26);
+    if(decoy!=null)arc(330,decoy-10,decoy+10,'#ff3b5c',46,22);
+    // needle
+    const a=ang*Math.PI/180;cx.beginPath();cx.moveTo(C+Math.cos(a)*250,C+Math.sin(a)*250);cx.lineTo(C+Math.cos(a)*372,C+Math.sin(a)*372);cx.strokeStyle='#f5ff3b';cx.lineWidth=9;cx.shadowColor='#f5ff3b';cx.shadowBlur=20;cx.lineCap='round';cx.stroke();cx.shadowBlur=0}
+  // core
+  const g=cx.createRadialGradient(C,C,10,C,C,240);g.addColorStop(0,'#1b0f38');g.addColorStop(1,'#07040f');cx.fillStyle=g;cx.beginPath();cx.arc(C,C,240,0,7);cx.fill();
+  cx.strokeStyle='#ff2bd655';cx.lineWidth=2;cx.beginPath();cx.arc(C,C,240,0,7);cx.stroke();
+  cx.textAlign='center';cx.fillStyle='#fff';cx.font='900 64px Orbitron';cx.shadowColor='#00f0ff';cx.shadowBlur=18;
+  const label=st==='win'?'OPEN':(st==='play'?R[ring].name:'VAULT-7');cx.fillText(label,C,C+8);cx.shadowBlur=0;
+  cx.font='700 22px "JetBrains Mono"';cx.fillStyle='#8f88b8';
+  cx.fillText(st==='play'?`RING ${ring+1} · PIN ${pin+1}/2`:(st==='menu'?'PRESS START':(st==='win'?'14 / 14':'LOCKED')),C,C+56);
+  // pin dots
+  for(let i=0;i<2;i++){cx.beginPath();cx.arc(C-22+i*44,C+100,11,0,7);cx.fillStyle=i<pin?'#2ee59d':'#2a1f47';cx.fill()}
+  // particles
+  parts.forEach(p=>{cx.globalAlpha=Math.max(0,p.l);cx.fillStyle=p.c;cx.fillRect(p.x,p.y,5,5)});cx.globalAlpha=1;
+  if(flash>0){cx.globalAlpha=flash*.25;cx.fillStyle=flashC;cx.fillRect(-50,-50,W+100,W+100);cx.globalAlpha=1}
+  cx.restore()}
+function loop(now){const dt=Math.min(.05,(now-(last||now))/1000);last=now;clock+=dt;
+  if(st==='play'){if(pause>0)pause-=dt;else{const r=R[ring];let sp=r.sp;if(r.wobble)sp*=1+r.wobble*Math.sin(clock*3.1);ang=norm(ang+dir*sp*dt);tgt=norm(tgt+drift*dt);if(decoy!=null)decoy=norm(decoy-drift*.6*dt)}}
+  else if(st==='menu'){ang=norm(ang+40*dt)}
+  parts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.12;p.l-=dt*1.4});parts=parts.filter(p=>p.l>0);
+  flash=Math.max(0,flash-dt*3);shake=Math.max(0,shake-dt*2.5);draw();requestAnimationFrame(loop)}
+// ---- input + easter eggs
+let buf='';
+const EGGS={
+ 'open_sesame':()=>{toast('ACCESS DENIED. Nice try, Ali Baba. 🚫  · محاولة جميلة يا علي بابا');document.body.classList.add('glitch');setTimeout(()=>document.body.classList.remove('glitch'),400);logl('open_sesame: ACCESS DENIED','r')},
+ 'alibaba':()=>{toast('SUSPECT #A40 · status: suspended · last seen: this arcade 👀');logl('whois ali_baba -> Treasurer · clearance 2 · suspended','r')},
+ 'sus':()=>toast('Mohammed 67 was only sus. Not guilty. 😅'),
+ '67':()=>toast('Mohammed 67 failed one login. Just one. Still sus.'),
+ 'having':()=>toast('Miss Asl3: "HAVING saved me." · HAVING أنقذتني'),
+ 'linkup':()=>{toast('▲ LINK UP · 12.11 · stay connected. Cable Rookie → Route Master');logl('show ip int brief · LINK_UP ... up','g')},
+ 'shadowlotus':()=>toast('Shadow Lotus crew recognised. Welcome back, ethical hacker. 🪷'),
+ 'reset_hall':()=>{if(confirm('Staff: clear the Hall of Fame on this laptop?')){hof=[];store.set('hof',hof);renderHof();hudRings();toast('Hall of Fame cleared')}}};
+function eggCheck(k){if(k.length!==1)return;buf=(buf+k.toLowerCase()).slice(-16);for(const e in EGGS){if(buf.endsWith(e)){EGGS[e]();buf='';break}}}
+document.addEventListener('keydown',e=>{
+  const inInput=document.activeElement===$('#alias');
+  if(!inInput)eggCheck(e.key);
+  if(e.key==='Escape'){if(st!=='play'){$('#ovOver').classList.remove('on');$('#ovWin').classList.remove('on');$('#ovStart').classList.add('on');st='menu';renderHof()}return}
+  if(e.code==='Space'||e.key===' '){if(inInput)return;e.preventDefault();if(e.repeat)return;
+    if(st==='play')crack();else if(st==='over')start();return}
+  if(e.key==='Enter'){if(st==='menu'||($('#ovStart').classList.contains('on')))start();else if(st==='over')start()}});
+cv.addEventListener('pointerdown',e=>{e.preventDefault();if(st==='play')crack()});
+$('#go').onclick=start;$('#again').onclick=start;$('#menu').onclick=()=>{$('#ovOver').classList.remove('on');$('#ovStart').classList.add('on');st='menu';renderHof()};
+$('#wDone').onclick=()=>{$('#ovWin').classList.remove('on');$('#ovStart').classList.add('on');st='menu';renderHof()};
+$('#alias').value=alias;$('#agentPill').textContent='AGENT: '+(alias||'—');renderHof();hudRings();
+logl('NEO-JEDDAH · 2077 · 02:47 AM','y');logl('VAULT-7 status: RELOCKED','r');logl('suspect: ali_baba (suspended)','m');logl('awaiting Shadow Lotus agent...');
+requestAnimationFrame(loop);
+})();
+</script>
+</body></html>
