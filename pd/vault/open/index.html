@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The Binary Vault · Case 0x06</title><meta name="robots" content="noindex">
+<link rel="stylesheet" href="../../fonts/fonts.css">
+<style>
+:root{--ink:#2a241c;--man:#e9d9b5;--pap:#f4e7c8;--red:#b3261e;--gold:#e8c46a;--dark:#121110}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;background:var(--dark);color:var(--man);font-family:"IBM Plex Sans Arabic",system-ui,sans-serif;user-select:none}
+.el{font-family:"Special Elite",monospace}
+.am{font-family:"Amiri",serif;font-weight:700;direction:rtl}
+#spot{position:fixed;inset:0;background:radial-gradient(circle at var(--sx,50%) 40%,#3d352a 0%,#1b1916 34%,#090807 75%);transition:background .3s}
+#rain{position:fixed;inset:0;background:repeating-linear-gradient(100deg,transparent 0 22px,#ffffff05 22px 23px);pointer-events:none;animation:rain .7s linear infinite}
+@keyframes rain{to{background-position:-40px 120px}}
+.wrap{position:relative;z-index:2;height:100%;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:4vw;align-items:center;padding:3vh 5vw}
+@media(max-width:900px){.wrap{grid-template-columns:1fr;overflow:auto;height:auto;min-height:100%}}
+/* left: case file */
+.file{background:var(--man);color:var(--ink);border-radius:10px 26px 10px 10px;padding:34px 36px 30px;box-shadow:0 30px 70px #000;transform:rotate(-1.2deg);position:relative;background-image:repeating-linear-gradient(0deg,transparent 0 40px,#d8c59c 40px 42px)}
+.file:before{content:"";position:absolute;left:40px;top:-28px;width:190px;height:34px;background:var(--man);border-radius:14px 14px 0 0}
+.cf{font:400 15px "Special Elite";letter-spacing:.2em;color:#6b5c43;display:flex;justify-content:space-between}
+.file h1{margin:10px 0 0;font:400 clamp(44px,5vw,74px)/0.95 "Special Elite"}
+.file .am{font-size:clamp(34px,3.6vw,52px);text-align:right;margin-top:4px}
+.stamp{position:absolute;right:24px;top:62px;border:5px solid var(--red);color:var(--red);font:400 22px "Special Elite";padding:4px 12px;transform:rotate(9deg);opacity:.85}
+.brief{margin-top:16px;font:400 18px/1.5 "Special Elite"}
+.brief-ar{font-size:17px;line-height:1.8;direction:rtl;text-align:right;margin-top:6px}
+label.n{display:block;margin-top:18px;font:400 14px "Special Elite";letter-spacing:.16em;color:#6b5c43}
+input.name{width:100%;margin-top:6px;font:400 26px "Special Elite";background:var(--pap);color:var(--ink);border:3px solid var(--ink);border-radius:10px;padding:10px 14px;outline:none}
+.prizes{display:flex;gap:12px;margin-top:18px}
+.pz{flex:1;border:3px solid var(--ink);border-radius:12px;padding:10px 12px}
+.pz.first{background:var(--ink);color:var(--man)}
+.pz small{display:block;font:400 12px "Special Elite";letter-spacing:.12em;opacity:.8}
+.pz b{font-size:19px}
+/* right: vault */
+.vault{display:flex;flex-direction:column;align-items:center;gap:22px}
+.door{position:relative;width:min(560px,82vw);aspect-ratio:1;border-radius:50%;background:radial-gradient(circle at 35% 30%,#5b5348,#2b2621 55%,#151311);box-shadow:0 0 0 14px #1e1b17,0 0 0 18px #4a4237,0 40px 90px #000,inset 0 0 60px #000;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:transform 1.6s cubic-bezier(.6,0,.2,1)}
+.door:before{content:"";position:absolute;inset:6%;border-radius:50%;border:3px dashed #6d6355}
+.bolt{position:absolute;width:26px;height:26px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#a89a83,#4a4237)}
+.door .lbl{position:relative;font:400 clamp(14px,1.6vw,18px) "Special Elite";letter-spacing:.3em;color:#b9ab90}
+.bits{position:relative;display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(8px,1.2vw,14px);margin:16px 0}
+.bit{width:clamp(56px,6.2vw,84px);aspect-ratio:3/4;border-radius:10px;border:3px solid #8a7d66;background:var(--pap);color:var(--ink);font:400 clamp(38px,4.4vw,60px) "Special Elite";display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;box-shadow:0 6px 0 #0008;transition:transform .08s}
+.bit:active{transform:translateY(3px)}
+.bit small{position:absolute;left:6px;top:3px;font-size:12px;color:#8a7d66}
+.bit.cur{outline:4px solid var(--gold);outline-offset:3px}
+.bit.on{background:#fffaf0}
+.dial{position:relative;width:110px;height:110px;border-radius:50%;background:repeating-conic-gradient(#b9ab90 0 2deg,transparent 2deg 12deg),radial-gradient(#3d362e 55%,#25211c);border:6px solid #6d6355;transition:transform .6s}
+.dial:after{content:"";position:absolute;left:50%;top:6px;width:8px;height:30px;margin-left:-4px;background:var(--red);border-radius:4px}
+.row{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
+button.open{font:400 26px "Special Elite";letter-spacing:.12em;background:var(--gold);color:var(--ink);border:0;border-radius:12px;padding:16px 30px;cursor:pointer;box-shadow:0 6px 0 #7d6527}
+button.open:disabled{opacity:.45;cursor:not-allowed}
+button.ghost{font:400 18px "Special Elite";background:transparent;color:#b9ab90;border:2px solid #6d6355;border-radius:12px;padding:12px 18px;cursor:pointer}
+.hint{font:400 14px "Special Elite";color:#8a7d66;text-align:center}
+/* overlays */
+.ov{position:fixed;inset:0;z-index:10;display:none;align-items:center;justify-content:center;padding:20px}
+.ov.on{display:flex}
+#deny{background:#1a0605ee}
+#deny .card{text-align:center;max-width:820px}
+.dstamp{display:inline-block;border:10px solid #ff4b3e;color:#ff4b3e;font:400 clamp(54px,8vw,110px) "Special Elite";padding:6px 30px;transform:rotate(-6deg);animation:slam .35s cubic-bezier(.2,.8,.2,1)}
+@keyframes slam{from{transform:scale(2.6) rotate(-6deg);opacity:0}}
+.dq{margin-top:30px;font:400 clamp(24px,2.6vw,34px)/1.4 "Special Elite";color:var(--man)}
+.dqa{font-family:"Amiri",serif;font-weight:700;font-size:clamp(24px,2.6vw,34px);direction:rtl;color:#e9b9a5;margin-top:8px}
+.cool{margin-top:26px;font:400 20px "Special Elite";color:#b9ab90}
+.cool b{color:#ff4b3e;font-size:34px}
+#win{background:radial-gradient(circle at 50% 45%,#fff6d8 0%,#e8c46a 30%,#3a2e14 75%,#120f08 100%)}
+#win .card{text-align:center;color:var(--ink);max-width:900px}
+.wstamp{display:inline-block;border:10px solid var(--ink);font:400 clamp(54px,8vw,104px) "Special Elite";padding:6px 30px;transform:rotate(-4deg);animation:slam .4s cubic-bezier(.2,.8,.2,1)}
+.wname{font:400 clamp(30px,3.4vw,46px) "Special Elite";margin-top:24px}
+.prize{display:inline-block;margin-top:22px;background:var(--ink);color:var(--gold);border-radius:18px;padding:18px 34px}
+.prize small{display:block;font:400 18px "Special Elite";letter-spacing:.2em;color:var(--man)}
+.prize b{font:400 clamp(40px,5vw,66px) "Special Elite"}
+.prize .am{display:block;font-size:30px;color:var(--man)}
+.wq{margin-top:20px;font:400 22px "Special Elite"}
+.wqa{font-family:"Amiri",serif;font-weight:700;font-size:26px;direction:rtl}
+#staff{background:#000c}
+.panel{background:var(--man);color:var(--ink);border-radius:16px;padding:24px 28px;width:min(620px,94vw);max-height:90vh;overflow:auto}
+.panel h3{margin:0 0 10px;font:400 30px "Special Elite"}
+.seg{display:flex;gap:8px;margin:8px 0 14px}.seg button{flex:1;padding:12px;border-radius:10px;border:3px solid var(--ink);background:transparent;font:700 16px "IBM Plex Sans Arabic";cursor:pointer}
+.seg button.on{background:var(--ink);color:var(--man)}
+.log{font:400 15px/1.7 "Special Elite";border-top:2px dashed #8a7d66;padding-top:10px;margin-top:6px}
+.panel .btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.panel .btns button{padding:10px 16px;border-radius:10px;border:2px solid var(--ink);background:transparent;font:400 16px "Special Elite";cursor:pointer}
+.panel .btns .red{border-color:var(--red);color:var(--red)}
+.gear{position:fixed;right:14px;bottom:12px;z-index:5;background:none;border:1px solid #3d362e;color:#6d6355;border-radius:8px;padding:6px 10px;font:400 12px "Special Elite";cursor:pointer}
+.shake{animation:shake .45s}
+@keyframes shake{20%{transform:translateX(-18px) rotate(-2deg)}40%{transform:translateX(16px) rotate(2deg)}60%{transform:translateX(-10px)}80%{transform:translateX(6px)}}
+.door.opening{transform:perspective(1200px) rotateY(-75deg) translateX(-30%)}
+</style></head><body>
+<div id="spot"></div><div id="rain"></div>
+<div class="wrap">
+  <section class="file">
+    <div class="stamp">EYES ONLY</div>
+    <div class="cf"><span>CASE FILE · 0x06</span><span>PROGRAMMER'S DAY</span></div>
+    <h1>THE BINARY VAULT</h1>
+    <div class="am">الخزنة الثنائية</div>
+    <div class="brief">Eight posters. Eight suspects. Each piece of code was either clean (1) or guilty of a bug (0). Line up your verdicts in order, detective, and the vault will tell you if you read the evidence right.</div>
+    <div class="brief-ar">ثمانية ملصقات.. ثمانية مشتبه بهم. كل كود إما بريء (1) أو مذنب بخطأ (0). رتّب أحكامك بالترتيب يا محقق، والخزنة ستخبرك إن كنت قرأت الأدلة صحيحًا.</div>
+    <label class="n" for="name">DETECTIVE NAME · اسم المحقق</label>
+    <input class="name" id="name" maxlength="20" autocomplete="off" spellcheck="false" placeholder="your name">
+    <div class="prizes"><div class="pz first" id="pzFirst"><small>FIRST TO OPEN IT · أول من يفتحها</small><b>Headphones · سماعة رأس</b></div><div class="pz"><small>EVERY SOLVER AFTER · من يحلها بعده</small><b>Keychain · ميدالية مفاتيح</b></div></div>
+  </section>
+  <section class="vault">
+    <div class="door" id="door">
+      <i class="bolt" style="left:8%;top:47%"></i><i class="bolt" style="right:8%;top:47%"></i><i class="bolt" style="left:47%;top:8%"></i><i class="bolt" style="left:47%;bottom:8%"></i>
+      <div class="lbl">ENTER THE 8 BITS</div>
+      <div class="bits" id="bits"></div>
+      <div class="dial" id="dial"></div>
+    </div>
+    <div class="row"><button class="ghost" id="clear">CLEAR · مسح</button><button class="open" id="openBtn" disabled>OPEN THE VAULT</button></div>
+    <div class="hint">tap a box to flip 0 / 1 · or type 0 and 1 on the keyboard · Backspace to undo<br>اضغط على الخانة لتبديلها أو اكتب 0 و 1 من لوحة المفاتيح</div>
+  </section>
+</div>
+<button class="gear" id="gear">staff</button>
+
+<div class="ov" id="deny"><div class="card">
+  <div class="dstamp">ACCESS DENIED</div>
+  <div class="dq" id="dq"></div><div class="dqa" id="dqa"></div>
+  <div class="cool">the vault is cooling down · <b id="cd">8</b> · الخزنة تبرد</div>
+</div></div>
+
+<div class="ov" id="win"><div class="card">
+  <div class="wstamp">CASE CLOSED</div>
+  <div class="wname" id="wname">—</div>
+  <div class="prize"><small id="wtag">FIRST TO CRACK IT</small><b id="wprize">HEADPHONES</b><span class="am" id="wprizeAr">سماعة رأس</span></div>
+  <div class="wq" id="wq"></div><div class="wqa" id="wqa"></div>
+  <div class="row" style="margin-top:26px"><button class="open" id="next">NEXT DETECTIVE</button></div>
+</div></div>
+
+<div class="ov" id="staff"><div class="panel">
+  <h3>STAFF DESK</h3>
+  <div>Shift · الفترة</div>
+  <div class="seg"><button data-s="girls">Girls · الطالبات</button><button data-s="boys">Boys · الطلاب</button></div>
+  <div class="log" id="solvers"></div>
+  <div class="btns"><button id="closeStaff">CLOSE</button><button class="red" id="resetShift">RESET THIS SHIFT</button></div>
+</div></div>
+
+<script>
+(() => {
+const $=s=>document.querySelector(s);
+// The code is never stored in plain text: only a slow PBKDF2 hash is checked.
+const SALT='shadow-lotus-0x06-pd2026', HASH='f7afdcc1cc81611cbe739e5457dc7926af48312146b16687153cc35d833eaafc', ITER=250000;
+const DENY=[
+ ["The evidence doesn't add up, detective.","الأدلة لا تتطابق يا محقق."],
+ ["Close. But close never closed a case.","قريب.. لكن «قريب» لم يُغلق قضية قط."],
+ ["That's exactly what Ali Baba would type.","هذا بالضبط ما كان سيكتبه علي بابا."],
+ ["One of your witnesses is lying. Maybe more.","أحد شهودك يكذب.. وربما أكثر."],
+ ["A bug slipped past you. Go back to the scene.","خطأ ما أفلت منك. عد إلى مسرح الجريمة."],
+ ["Wrong vault, wrong verdict. Check the posters again.","خزنة خاطئة وحكم خاطئ. راجع الملصقات."],
+ ["open_sesame won't work here either.","حتى open_sesame لن تنفع هنا."],
+ ["Even Mohammed 67 looked less suspicious than that code.","حتى محمد 67 كان أقل إثارة للشبهة من هذا الرمز."]];
+const WIN=[["Every bug left a fingerprint, and you found them all.","كل خطأ ترك بصمة.. وأنت وجدتها كلها."],
+ ["Sharp eyes. The vault never stood a chance.","عين حادة.. والخزنة لم تكن لها فرصة."],
+ ["Case closed. Shadow Lotus would be proud.","أُغلقت القضية. فريق Shadow Lotus فخور بك."]];
+const LS={get(k,d){try{const v=localStorage.getItem('vault_'+k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem('vault_'+k,JSON.stringify(v))}catch(e){}}};
+let shift=LS.get('shift','girls'); let bits=[]; let busy=false; let fails=0;
+const B=$('#bits'); for(let i=0;i<8;i++){const d=document.createElement('div');d.className='bit';d.innerHTML=`<small>${i+1}</small><span></span>`;d.onclick=()=>tap(i);B.appendChild(d)}
+function render(){[...B.children].forEach((d,i)=>{d.querySelector('span').textContent=bits[i]??'_';d.classList.toggle('cur',i===bits.length);d.classList.toggle('on',bits[i]!==undefined)});
+  $('#openBtn').disabled = bits.length<8 || busy || !$('#name').value.trim(); $('#dial').style.transform=`rotate(${bits.length*45}deg)`;
+  const s=LS.get('solvers_'+shift,[]); $('#pzFirst').style.opacity = s.length? .45 : 1; }
+function tap(i){ if(busy) return; if(i<bits.length){ bits[i]= bits[i]==='1'?'0':'1'; } else if(i===bits.length){ bits.push('1'); } click(); render(); }
+function click(){ beep(900+Math.random()*200,.03,'square',.03) }
+document.addEventListener('keydown',e=>{
+  if(document.activeElement===$('#name')){ if(e.key==='Enter'){ $('#name').blur(); } setTimeout(render); return; }
+  if(busy) return;
+  if((e.key==='0'||e.key==='1') && bits.length<8){ bits.push(e.key); click(); render(); }
+  else if(e.key==='Backspace'){ bits.pop(); render(); }
+  else if(e.key==='Enter' && !$('#openBtn').disabled){ attempt(); }
+});
+$('#name').addEventListener('input',render);
+$('#clear').onclick=()=>{ if(!busy){ bits=[]; render(); } };
+$('#openBtn').onclick=attempt;
+async function hash(code){
+  if(!(window.crypto&&crypto.subtle)) throw new Error('crypto unavailable');
+  const k=await crypto.subtle.importKey('raw',new TextEncoder().encode(code),'PBKDF2',false,['deriveBits']);
+  const buf=await crypto.subtle.deriveBits({name:'PBKDF2',hash:'SHA-256',salt:new TextEncoder().encode(SALT),iterations:ITER},k,256);
+  return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+async function attempt(){
+  if(busy||bits.length<8) return; busy=true; render();
+  // suspense: dial spins
+  const dial=$('#dial'); let a=0; const spin=setInterval(()=>{a+=37;dial.style.transform=`rotate(${a}deg)`;beep(300+Math.random()*80,.02,'square',.02)},70);
+  let ok=false; try{ ok = (await hash(bits.join('')))===HASH; }catch(e){ ok=false; }
+  await new Promise(r=>setTimeout(r,1300)); clearInterval(spin);
+  ok ? win() : deny();
+}
+function deny(){
+  fails++; const q=DENY[Math.floor(Math.random()*DENY.length)]; $('#dq').textContent='“'+q[0]+'”'; $('#dqa').textContent='«'+q[1]+'»';
+  document.querySelector('.vault').classList.add('shake'); setTimeout(()=>document.querySelector('.vault').classList.remove('shake'),500);
+  beep(120,.6,'sawtooth',.09); beep(90,.6,'square',.05);
+  $('#deny').classList.add('on'); let t=Math.min(20,6+fails*2); $('#cd').textContent=t;
+  const iv=setInterval(()=>{ t--; $('#cd').textContent=t; if(t<=0){ clearInterval(iv); $('#deny').classList.remove('on'); busy=false; bits=[]; render(); } },1000);
+}
+function win(){
+  const name=$('#name').value.trim(); const list=LS.get('solvers_'+shift,[]); const first=list.length===0;
+  list.push({name,t:new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}); LS.set('solvers_'+shift,list);
+  $('#door').classList.add('opening'); [392,523,659,784,1046].forEach((f,i)=>setTimeout(()=>beep(f,.25,'triangle',.07),i*140));
+  setTimeout(()=>{
+    $('#wname').textContent='Detective '+name+' · #'+list.length+' to crack it this shift';
+    $('#wtag').textContent= first?'FIRST TO CRACK IT · أول من يفتحها':'SOLVED · تم الحل';
+    $('#wprize').textContent= first?'HEADPHONES':'KEYCHAIN'; $('#wprizeAr').textContent= first?'سماعة رأس':'ميدالية مفاتيح';
+    const q=WIN[Math.floor(Math.random()*WIN.length)]; $('#wq').textContent='“'+q[0]+'”'; $('#wqa').textContent='«'+q[1]+'»';
+    $('#win').classList.add('on');
+  },1400);
+}
+$('#next').onclick=()=>{ $('#win').classList.remove('on'); $('#door').classList.remove('opening'); bits=[]; busy=false; fails=0; $('#name').value=''; render(); $('#name').focus(); };
+// staff desk
+function staff(){ document.querySelectorAll('.seg button').forEach(b=>b.classList.toggle('on',b.dataset.s===shift));
+  const s=LS.get('solvers_'+shift,[]); $('#solvers').innerHTML = s.length ? s.map((x,i)=>`${i+1}. ${x.name.replace(/[<>&]/g,'')} · ${x.t} · ${i===0?'HEADPHONES':'keychain'}`).join('<br>') : 'No one has cracked it this shift yet.'; }
+$('#gear').onclick=()=>{ staff(); $('#staff').classList.add('on'); };
+$('#closeStaff').onclick=()=>{ $('#staff').classList.remove('on'); render(); };
+document.querySelectorAll('.seg button').forEach(b=>b.onclick=()=>{ shift=b.dataset.s; LS.set('shift',shift); staff(); });
+$('#resetShift').onclick=()=>{ if(confirm('Clear all solvers for the '+shift+' shift? The next solver will be FIRST again.')){ LS.set('solvers_'+shift,[]); staff(); } };
+// spotlight follows the mouse
+addEventListener('pointermove',e=>$('#spot').style.setProperty('--sx',(e.clientX/innerWidth*100)+'%'));
+let AC; function beep(f,d=.1,type='square',g=.05){ try{ AC=AC||new (window.AudioContext||window.webkitAudioContext)(); const o=AC.createOscillator(),v=AC.createGain(); o.type=type;o.frequency.value=f; v.gain.setValueAtTime(g,AC.currentTime); v.gain.exponentialRampToValueAtTime(.0001,AC.currentTime+d); o.connect(v);v.connect(AC.destination);o.start();o.stop(AC.currentTime+d);}catch(e){} }
+render(); $('#name').focus();
+})();
+</script>
+</body></html>
