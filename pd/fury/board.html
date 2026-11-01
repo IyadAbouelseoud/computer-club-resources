@@ -92,7 +92,7 @@ const sp=$('#speed'); for(let i=0;i<16;i++){const e=document.createElement('i');
 const esc=s=>String(s).replace(/[<>&"]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]));
 function render(){
   const sh=$('#shift'); sh.className='shift '+shift; sh.textContent= shift==='girls'?'GIRLS · الطالبات':'BOYS · الطلاب';
-  const st=Fury.status(); $('#net').textContent = set.room ? 'ROOM '+set.room.toUpperCase()+' · '+st.toUpperCase() : 'SAME LAPTOP';
+  const st=Fury.status(); $('#net').textContent = set.room!=='local' ? 'LIVE · '+st.toUpperCase() : 'SAME LAPTOP';
   const list=Fury.ranked(shift); const max=Math.max(60,...list.map(r=>r.wpm));
   $('#lb').innerHTML = list.length ? list.slice(0,8).map((r,i)=>`<div class="row ${i==0?'first':''} ${r.id===flashId?'flash':''}"><div class="fill" style="width:${Math.round(r.wpm/max*100)}%"></div><div class="rk">${i+1}</div><div class="nm">${esc(r.name)}</div><div class="ac">${r.acc}%</div><div class="wp">${r.wpm}<small> WPM</small></div></div>`).join('')
     : '<div class="empty">&gt; leaderboard empty. be the first legend._</div>';
@@ -102,16 +102,16 @@ function render(){
 function live(m){
   if(m.shift && m.shift!==shift) return;
   const idle=(m.state==='idle'||m.state==='done'); $('#idle').style.display=idle?'flex':'none'; $('#now').classList.toggle('live',!idle);
-  if(!idle){ liveT=Date.now(); $('#who').textContent=m.name||'—'; $('#rnd').textContent= m.state==='ready'?'ROUND '+m.round+' · GET READY':'ROUND '+m.round+' OF 3';
+  if(!idle){ liveT=Date.now(); $('#who').textContent=m.name||'—'; $('#rnd').textContent= m._net?'TYPING NOW · 3 ROUNDS':(m.state==='ready'?'ROUND '+m.round+' · GET READY':'ROUND '+m.round+' OF 3');
     const w=m.wpm||0; $('#lw').textContent=w; $('#nd').style.transform=`rotate(${135+Math.min(w,160)/160*270}deg)`; $('#pb').style.width=Math.round((m.progress||0)*100)+'%'; }
 }
 function record(r){ $('#recTxt').textContent=r.name.toUpperCase()+' · '+r.wpm+' WPM'; const e=$('#rec'); e.classList.remove('on'); void e.offsetWidth; e.classList.add('on'); setTimeout(()=>e.classList.remove('on'),3500); }
 Fury.on(m=>{
   if(m.t==='live') return live(m);
-  if(m.t==='result' && m.shift===shift){ const top=Fury.ranked(shift)[0]; flashId=m.id; if(top && top.id===m.id && (lastTop===null || m.wpm>lastTop)) record(m); lastTop=top?top.wpm:null; }
+  if(m.t==='result' && m.shift===shift){ liveT=Date.now()-236000; const top=Fury.ranked(shift)[0]; flashId=m.id; if(top && top.id===m.id && (lastTop===null || m.wpm>lastTop)) record(m); lastTop=top?top.wpm:null; }
   render();
 });
-setInterval(()=>{ if(Date.now()-liveT>15000){ $('#idle').style.display='flex'; $('#now').classList.remove('live'); } },2000);
+setInterval(()=>{ if(Date.now()-liveT>240000){ $('#idle').style.display='flex'; $('#now').classList.remove('live'); } },2000);
 addEventListener('keydown',e=>{ const k=e.key.toLowerCase(); if(k==='g'||k==='b'){ shift=k==='g'?'girls':'boys'; lastTop=(Fury.ranked(shift)[0]||{}).wpm??null; render(); } if(k==='f'){ document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen().catch(()=>{}); } });
 Fury.connect(); lastTop=(Fury.ranked(shift)[0]||{}).wpm??null; render(); setInterval(render,5000);
 })();

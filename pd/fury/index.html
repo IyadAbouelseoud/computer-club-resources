@@ -130,9 +130,9 @@ a{color:var(--y)}
   <h3>STAFF SETTINGS</h3>
   <label>SHIFT · الفترة</label>
   <div class="seg"><button data-s="girls">Girls · الطالبات</button><button data-s="boys">Boys · الطلاب</button></div>
-  <label>ROOM CODE (only if the projector runs on another device)</label>
-  <input id="room" maxlength="24" placeholder="leave empty for same laptop">
-  <p>Same laptop: open <a href="board.html" target="_blank">board.html</a> in a second window and drag it to the projector. Nothing else needed.<br>Different devices: type the same room code here and on the board (board.html?room=CODE). Needs internet.</p>
+  <label>ROOM CODE (must match the projector)</label>
+  <input id="room" maxlength="40" placeholder="leave empty = default room">
+  <p>Default: this laptop and the projector laptop connect automatically over the internet. Just open board.html on the projector device. Leave the room code empty unless you changed it on the board too. Type <b>local</b> to work offline on one laptop only (board in a second window).</p>
   <div class="btns"><button class="ok" id="saveSet">SAVE</button><button class="plain" id="openBoard">OPEN BOARD</button><button class="danger" id="resetShift">RESET THIS SHIFT</button><button class="plain" id="closeSet">CLOSE</button></div>
 </div></div>
 <script src="sync.js"></script>
@@ -163,8 +163,8 @@ const sp = $('#speed'); for (let i = 0; i < 18; i++) { const e = document.create
 
 function show(id){ document.querySelectorAll('.scr').forEach(s => s.classList.toggle('on', s.id === id)); }
 function pills(){ const p=$('#shiftPill'); p.className='pill '+set.shift; p.textContent = set.shift==='girls'?'GIRLS · الطالبات':'BOYS · الطلاب';
-  const st = Fury.status(); $('#netDot').className='dot '+(set.room?st:''); $('#netTxt').textContent = set.room ? ('ROOM '+set.room.toUpperCase()+' · '+st.toUpperCase()) : 'SAME LAPTOP'; }
-Fury.on(m => { if (m.t==='status') pills(); });
+  set = Fury.settings(); const st = Fury.status(); const on = set.room!=='local'; $('#netDot').className='dot '+(on?st:''); const pend=Fury.pending(); $('#netTxt').textContent = on ? ('LIVE TO PROJECTOR · '+st.toUpperCase()+(pend?' · '+pend+' WAITING':'')) : 'SAME LAPTOP ONLY'; }
+Fury.on(m => { if (m.t==='status') pills(); }); setInterval(pills, 4000);
 Fury.connect(); pills();
 
 $('#name').addEventListener('input', () => { $('#start').disabled = !$('#name').value.trim(); });
@@ -239,11 +239,11 @@ function finish(){
 // audio
 let AC; function beep(f,d=.1,type='square',g=.05){ try{ AC=AC||new (window.AudioContext||window.webkitAudioContext)(); const o=AC.createOscillator(),v=AC.createGain(); o.type=type;o.frequency.value=f; v.gain.setValueAtTime(g,AC.currentTime); v.gain.exponentialRampToValueAtTime(.0001,AC.currentTime+d); o.connect(v);v.connect(AC.destination);o.start();o.stop(AC.currentTime+d);}catch(e){} }
 // settings
-function openSet(){ $('#ovSet').classList.add('on'); $('#room').value=set.room||''; document.querySelectorAll('.seg button').forEach(b=>b.classList.toggle('on',b.dataset.s===set.shift)); }
+function openSet(){ $('#ovSet').classList.add('on'); $('#room').value=(set.room===Fury.DEFAULT_ROOM?'':set.room)||''; document.querySelectorAll('.seg button').forEach(b=>b.classList.toggle('on',b.dataset.s===set.shift)); }
 $('#gear').onclick=openSet; $('#closeSet').onclick=()=>$('#ovSet').classList.remove('on');
 document.querySelectorAll('.seg button').forEach(b=>b.onclick=()=>{ document.querySelectorAll('.seg button').forEach(x=>x.classList.remove('on')); b.classList.add('on'); });
 $('#saveSet').onclick=()=>{ const sb=document.querySelector('.seg button.on'); set={shift: sb?sb.dataset.s:'girls', room: $('#room').value.trim()}; Fury.saveSettings(set); Fury.connect(); pills(); $('#ovSet').classList.remove('on'); Fury.send({t:'live',state:'idle',shift:set.shift}); };
-$('#openBoard').onclick=()=>window.open('board.html'+(set.room?'?room='+encodeURIComponent(set.room):''),'furyboard');
+$('#openBoard').onclick=()=>window.open('board.html'+(set.room!==Fury.DEFAULT_ROOM?'?room='+encodeURIComponent(set.room):''),'furyboard');
 $('#resetShift').onclick=()=>{ if(confirm('Clear the leaderboard for the '+set.shift+' shift? This cannot be undone.')) Fury.send({t:'reset',shift:set.shift,ts:Date.now()}); };
 $('#name').focus();
 })();
