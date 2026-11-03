@@ -167,7 +167,7 @@ footer .in{display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-betwee
 
 <header class="top"><div class="in">
  <a class="brand" href="#top">SHADOW LOTUS // LOOT DROP<small dir="rtl" lang="ar">عملية الاختراق الأخلاقي</small></a>
- <nav aria-label="Sections"><a href="#debrief">Debrief</a><a href="#arsenal">Arsenal</a><a href="#paths">Paths</a><a href="#training">Training</a><a href="#certs">Certs</a><a href="#quests">Quests</a></nav>
+ <nav aria-label="Sections"><a href="#debrief">Debrief</a><a href="#replay">Replay</a><a href="#arsenal">Arsenal</a><a href="#paths">Paths</a><a href="#training">Training</a><a href="#certs">Certs</a><a href="#quests">Quests</a></nav>
 </div></header>
 
 <main id="top">
@@ -177,7 +177,7 @@ footer .in{display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-betwee
   <h1>HEIST COMPLETE</h1>
   <p class="lead">Vault-7 is sealed, the data is back and Ali Baba is out and the Computer Club is safe. You did it with <code>SELECT</code>, <code>JOIN</code>, <code>GROUP BY</code> and a few careful <code>UPDATE</code>s. Analysts, developers and security teams run on those same commands, so this is a good place to keep going.</p>
   <span class="arb" dir="rtl" lang="ar">أحسنتم أيها العملاء! اكتملت المهمة.</span>
-  <div class="cta"><a class="btn pri" href="#arsenal">Install a real database</a><a class="btn" href="#paths">Choose your next rank</a></div>
+  <div class="cta"><a class="btn pri" href="#replay">Watch the recording</a><a class="btn" href="#arsenal">Install a real database</a><a class="btn" href="#paths">Choose your next rank</a></div>
  </div>
  <div class="term" role="img" aria-label="Status readout: Vault-7 sealed, stolen files recovered, intruder Ali Baba removed, next mission loading">
 <span class="p">operator@lotus:~$</span> status vault-7
@@ -198,6 +198,13 @@ footer .in{display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-betwee
   <div class="ph"><div class="h"><b>02</b><span>Data Decryption</span><i>DONE</i></div><div class="b"><p>The evidence was scattered across tables. You connected club members to logs and counted what each one touched.</p><div class="kw"><span>JOIN</span><span>GROUP BY</span><span>HAVING</span><span>COUNT</span></div></div></div>
   <div class="ph"><div class="h"><b>03</b><span>Restore</span><i>DONE</i></div><div class="b"><p>You changed the data itself, restored what was taken and locked the evidence away.</p><div class="kw"><span>INSERT</span><span>UPDATE</span><span>DELETE</span><span>CREATE TABLE</span></div></div></div>
  </div>
+</div></section>
+
+<section class="sec" id="replay"><div class="in">
+ <div class="eyebrow">Mission replay</div>
+ <h2>Watch the workshop again</h2>
+ <p class="lead">Missed a step or want to follow along at your own speed? The full Cyberpunk Heist SQL workshop is recorded. Pause it, rewind it, and type each query yourself.</p>
+ <div class="box good" style="max-width:640px"><h3>Cyberpunk Heist SQL workshop</h3><p style="font-size:14px;color:#bccbea">Full session recording on YouTube. Open it beside the heist console or your own database and run every command as it appears.</p><div class="cta" style="margin-top:14px"><a class="btn pri" href="https://youtu.be/zTWfixKvPWA" target="_blank" rel="noopener noreferrer">Watch on YouTube</a></div></div>
 </div></section>
 
 <section class="sec" id="arsenal"><div class="in">
@@ -410,7 +417,7 @@ tabs($('#pathtabs'));
 function ext(u,t,tag){return '<a href="'+u+'" target="_blank" rel="noopener noreferrer">'+t+(tag?'<span>'+tag+'</span>':'')+'</a>'}
 var L=[
 ['Play and learn',[['SQL Murder Mystery','https://mystery.knightlab.com/','Game'],['SQLBolt','https://sqlbolt.com/','Interactive'],['SQLZoo','https://sqlzoo.net/wiki/SQL_Tutorial','Interactive'],['PostgreSQL Exercises','https://pgexercises.com/','Free exercises'],['Kaggle: Intro to SQL','https://www.kaggle.com/learn/intro-to-sql','BigQuery']]],
-['Full courses',[['CS50 SQL, Harvard','https://cs50.harvard.edu/sql/','Free course'],['Google Data Analytics','https://www.coursera.org/professional-certificates/google-data-analytics','About 6 months'],['roadmap.sh SQL projects','https://roadmap.sh/sql/projects','Projects']]],
+['Full courses',[['Cyberpunk Heist workshop recording','https://youtu.be/zTWfixKvPWA','Our session'],['CS50 SQL, Harvard','https://cs50.harvard.edu/sql/','Free course'],['Google Data Analytics','https://www.coursera.org/professional-certificates/google-data-analytics','About 6 months'],['roadmap.sh SQL projects','https://roadmap.sh/sql/projects','Projects']]],
 ['Reference',[['SQLite Tutorial','https://www.sqlitetutorial.net/','Guide'],['PostgreSQL Tutorial','https://www.postgresqltutorial.com/','Guide'],['SQLite SQL syntax','https://www.sqlite.org/lang.html','Official docs'],['PostgreSQL docs','https://www.postgresql.org/docs/','Official docs'],['MySQL docs','https://dev.mysql.com/doc/','Official docs']]],
 ['Interview practice',[['LeetCode SQL 50','https://leetcode.com/studyplan/top-sql-50/','50 questions']]],
 ['Security labs',[['PortSwigger: SQL injection','https://portswigger.net/web-security/sql-injection','Web Security Academy'],['TryHackMe','https://tryhackme.com/','Guided rooms'],['OverTheWire: Bandit','https://overthewire.org/wargames/bandit/','Linux wargame']]],
