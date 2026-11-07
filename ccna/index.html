@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oxanium:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Arabic:wght@400;600&display=swap">
 <style>
 /* LINK UP Field Kit. Night Ops palette from HexNet Lab (single dark theme by design).
-   Layout: sticky bar, hero beside a live topology of Mawja HQ, then one lab station per section. */
+   Layout: sticky bar, hero beside a live topology of Club HQ, then one lab station per section. */
 :root{--void:#050A18;--deck:#0B1532;--deck-2:#112048;--rule:#21346A;--ice:#E8EFFF;--mist:#93A5D3;--signal:#4A7DFF;--signal-t:#7FA2FF;--signal-fill:#2350D8;--flux:#3CC8FF;--silver:#C9D6EC;--up:#2EE59D;--wait:#FFB547;--down:#FF5A6E;--dhcp:#B59CFF;--dns:#FF86CB;--well:#02050D;
 --f-d:"Oxanium","Chakra Petch",system-ui,sans-serif;--f-s:"IBM Plex Sans",system-ui,sans-serif;--f-m:"IBM Plex Mono",ui-monospace,Menlo,monospace;--f-a:"IBM Plex Sans Arabic",Tahoma,sans-serif;
 --r-xs:2px;--r-sm:6px;--r-md:10px;color-scheme:dark}
@@ -197,23 +197,24 @@ footer .in{display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-betwee
  <nav aria-label="Sections"><a href="#covered">Covered</a><a href="#install">Install</a><a href="#paths">Paths</a><a href="#exam">Exam</a><a href="#library">Library</a><a href="#certs">Certs</a><a href="#next">Next 30 days</a></nav>
 </div></header>
 
+<!-- Reading the source? Ali Baba was here once. Type 'alibaba' in any HexNet PC's Command Prompt. 10110100 -->
 <main id="top">
 <section class="hero"><div class="in">
  <div>
   <div class="eyebrow">CCNA Fundamentals · Computer Club</div>
   <h1>Mission complete. <span>Your network is up.</span></h1>
-  <p class="lead">You cabled two PCs, subnetted an office, split a switch into VLANs, routed between floors, switched on DHCP and DNS, locked down a console and fixed a broken network before Monday 9:00 AM. Then you built Mawja HQ from an empty floor plan. That is real CCNA work, and this page is where it goes next.</p>
-  <span class="ar" dir="rtl" lang="ar">مبروك! أنهيتم ورشة LINK UP. هذه بداية الطريق.</span>
-  <div class="cta"><a class="btn primary" href="#install">Install Packet Tracer</a><a class="btn ghost" href="#paths">Pick a career path</a></div>
+  <p class="lead">Ali Baba's last trap pulled every cable in the Computer Club. You plugged it all back in: you cabled the officer laptops, moved his old Treasurer PC onto the club network, gave the Treasury its own VLAN, routed to the Vault Room, switched on DHCP and DNS, locked down a console and cleared his four parting gifts. Then you rebuilt Club HQ from an empty floor. That is real CCNA work, and this page is where it goes next.</p>
+  <span class="ar" dir="rtl" lang="ar">مبروك! أعدتم توصيل النادي وأنهيتم ورشة LINK UP. هذه بداية الطريق.</span>
+  <div class="cta"><a class="btn primary" href="#install">Install Packet Tracer</a><a class="btn ghost" href="lab/">Open HexNet Lab</a><a class="btn ghost" href="#paths">Pick a career path</a></div>
   <div class="ranks" aria-label="Lab ranks">
-   <span class="rank on"><i>1</i>Cable Rookie</span><span class="rank on"><i>2</i>Packet Pusher</span><span class="rank on"><i>3</i>Subnet Slayer</span><span class="rank on"><i>4</i>Route Master</span>
+   <span class="rank on"><i>1</i>Cable Rookie</span><span class="rank on"><i>2</i>Packet Pusher</span><span class="rank on"><i>3</i>Switch Sheriff</span><span class="rank on"><i>4</i>Route Master</span>
   </div>
  </div>
  <figure class="topo" style="margin:0">
-  <svg viewBox="0 0 520 318" role="img" aria-label="Topology of Mawja HQ: an ISP, one router, a staff switch with two PCs and a server, and a guest switch with two PCs">
+  <svg viewBox="0 0 520 318" role="img" aria-label="Topology of Club HQ: an ISP, one router, a members switch with two PCs and a server, and a guests switch with two PCs">
    <rect class="nd" x="392" y="14" width="112" height="36" rx="6"/><text class="tx" x="448" y="36">ISP</text>
    <path class="ln" d="M448 50V74H270V98"/><text class="sm" x="360" y="68">203.0.113.0/30</text>
-   <rect class="nd r" x="212" y="98" width="116" height="44" rx="6"/><text class="tx" x="270" y="125">MAWJA-R1</text>
+   <rect class="nd r" x="212" y="98" width="116" height="44" rx="6"/><text class="tx" x="270" y="125">CLUB-R1</text>
    <path class="ln" d="M240 142V164H140V188"/><path class="ln" d="M300 142V164H400V188"/>
    <rect class="nd" x="92" y="188" width="96" height="34" rx="6"/><text class="tx" x="140" y="209">S1</text>
    <rect class="nd" x="352" y="188" width="96" height="34" rx="6"/><text class="tx" x="400" y="209">S2</text>
@@ -224,10 +225,10 @@ footer .in{display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-betwee
    <rect class="nd" x="204" y="252" width="48" height="28" rx="4"/><text class="sm" x="228" y="270">SRV</text>
    <rect class="nd" x="326" y="252" width="48" height="28" rx="4"/><text class="sm" x="350" y="270">PC</text>
    <rect class="nd" x="426" y="252" width="48" height="28" rx="4"/><text class="sm" x="450" y="270">PC</text>
-   <text class="sm" x="140" y="302">STAFF · 192.168.10.0/24</text><text class="sm" x="400" y="302">GUEST · 192.168.20.0/24 · DHCP</text>
+   <text class="sm" x="140" y="302">MEMBERS · 192.168.10.0/24</text><text class="sm" x="400" y="302">GUESTS · 192.168.20.0/24 · DHCP</text>
    <g class="led"><polygon points="270,86 275,94 265,94"/><polygon points="448,62 453,70 443,70"/><polygon points="140,176 145,184 135,184"/><polygon points="400,176 405,184 395,184"/></g>
   </svg>
-  <figcaption><span class="tri"></span>Mawja HQ, the network you built in mission 9. All links up.</figcaption>
+  <figcaption><span class="tri"></span>Club HQ, the network you rebuilt in mission 9. All links up. Ali Baba: still ejected.</figcaption>
  </figure>
 </div></section>
 
@@ -239,7 +240,7 @@ footer .in{display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-betwee
  <div class="ahead">
   <b>On the exam, not in the workshop yet</b>
   <p class="note" style="margin-top:4px">The workshop gave you the base. These topics are part of CCNA and are the next ones to learn.</p>
-  <div class="chips"><span>OSPF</span><span>STP</span><span>EtherChannel</span><span>Trunks</span><span>NAT</span><span>ACLs</span><span>Port security</span><span>SSH</span><span>IPv6</span><span>Wireless</span><span>SNMP and syslog</span><span>REST APIs and JSON</span><span>Ansible</span></div>
+  <div class="chips"><span>Subnetting</span><span>OSPF</span><span>STP</span><span>EtherChannel</span><span>Trunks</span><span>NAT</span><span>ACLs</span><span>Port security</span><span>SSH</span><span>IPv6</span><span>Wireless</span><span>SNMP and syslog</span><span>REST APIs and JSON</span><span>Ansible</span></div>
  </div>
 </div></section>
 
@@ -281,14 +282,14 @@ sudo apt install ./CiscoPacketTracer*.deb</pre><button class="copy" data-copy="c
    <ol class="steps">
     <li><div><h4>Sign in</h4><p>Start Packet Tracer and sign in with the same Networking Academy account.</p></div></li>
     <li><div><h4>Rebuild mission 1</h4><p>Drag in two PCs and a switch, join them with copper straight-through cables, set <code>192.168.1.10</code> and <code>192.168.1.11</code> with mask <code>255.255.255.0</code>, then run <code>ping 192.168.1.11</code> from PC1's command prompt.</p></div></li>
-    <li><div><h4>Then take on the bigger one</h4><p>Rebuild Mawja HQ in Packet Tracer, save it as a <code>.pkt</code> file and show it to the club. The commands are the same ones you typed in HexNet Lab.</p></div></li>
+    <li><div><h4>Then take on the bigger one</h4><p>Rebuild Club HQ in Packet Tracer, save it as a <code>.pkt</code> file and show it to the club. The commands are the same ones you typed in HexNet Lab.</p></div></li>
    </ol>
   </div>
   <aside>
    <div class="box"><h3>Before you start</h3><ul><li>A 64-bit computer running Windows, macOS or Ubuntu.</li><li>Around 4 GB of RAM and a couple of GB of free disk space is plenty. Check the download page for the exact current figures.</li><li>A free Networking Academy account.</li></ul></div>
    <div class="box warn"><h3>Download from netacad.com only</h3><p style="font-size:14px;color:var(--silver)">Search results are full of mirror sites and cracked installers. Those can carry malware. The official download is free, so there is no reason to use them.</p></div>
    <div class="box"><h3>If something goes wrong</h3><ul><li><b>Cannot sign in:</b> reset the password from the Networking Academy login page.</li><li><b>Installer will not start:</b> it is 64-bit only. Check your operating system version.</li><li><b>Download blocked:</b> some campus or office networks filter it. Try your home or mobile connection.</li></ul></div>
-   <div class="box good"><h3>No laptop handy?</h3><p style="font-size:14px;color:var(--silver)">Keep practising in HexNet Lab. It runs in any browser, including your phone.</p></div>
+   <div class="box good"><h3>No laptop handy?</h3><p style="font-size:14px;color:var(--silver)">Keep practising in <a href="lab/">HexNet Lab</a>. It runs in any browser, including your phone. Your progress from the workshop is still saved on the device you used.</p></div>
   </aside>
  </div>
 </div></section>
@@ -361,7 +362,7 @@ sudo apt install ./CiscoPacketTracer*.deb</pre><button class="copy" data-copy="c
 </main>
 
 <footer><div class="in">
- <span>Built for the Computer Club LINK UP workshop.</span>
+ <span>Built for the Computer Club LINK UP workshop. P.S. Ali Baba hid a few commands in HexNet Lab. Start with the name of his backdoor.</span>
  <span>Links checked 24 October 2026. If one breaks, tell a club officer.</span>
 </div></footer>
 
@@ -382,13 +383,13 @@ var DOM={nf:['Network Fundamentals',20,'var(--flux)'],na:['Network Access',20,'v
 var M=[
 ['First Contact','nf','Cabled two PCs, set addresses and pinged across a LAN.'],
 ['Packet’s Journey','nf','Stepped through ARP, TCP and HTTP in Simulation mode and opened PDUs.'],
-['Address the Office','nf','Set addresses, masks and gateways, then practised /26 subnetting.'],
-['Switch On','na','Read a MAC address table and split a switch into two VLANs.'],
-['Two Floors, One Router','ic','Brought up router interfaces and added a static route to the branch.'],
+['Address the Club','nf','Set addresses, masks and gateways, and moved Ali Baba’s old PC onto the club network.'],
+['Switch On','na','Read a MAC address table and gave Members and the Treasury their own VLANs.'],
+['Route to the Vault','ic','Brought up router interfaces and added a static route to the Vault Room.'],
 ['Auto-Pilot','is','Ran DHCP on the router and DNS on the server, then opened the intranet by name.'],
 ['Lock It Down','sec','Secured a switch with passwords, a banner and a management IP, then saved to NVRAM.'],
-['Network Down!','ic','Found four hidden faults using ping, tracert and show commands.'],
-['Mawja HQ','nf','Built the whole office network, with LANs, DHCP, DNS and an Internet route.']
+['Network Down!','ic','Found Ali Baba’s four hidden faults using ping, tracert and show commands.'],
+['Club HQ','nf','Rebuilt the whole club network, with two LANs, DHCP, DNS and an Internet route.']
 ];
 var allDom='All five domains';
 $('#missions').innerHTML=M.map(function(m,i){
@@ -400,7 +401,7 @@ tabs($('#ostabs'));
 /* paths */
 var P=[
 {n:'Network Engineer',id:'net',roles:['NOC technician','Network administrator','Network engineer'],certs:['CCNA','CCNP Enterprise'],rm:[['Network Engineer roadmap','https://roadmap.sh/network-engineer']],
- s:[['Network fundamentals','OSI and TCP/IP, IPv4 subnetting, cabling and basic device setup. You finished this in missions 1 to 3.',1],['Switching and routing','VLANs, trunks, STP, EtherChannel, static routes and OSPF.'],['Network services','DHCP, DNS, NAT, NTP, access control lists and first-hop redundancy.'],['Security and wireless','Port security, DHCP snooping, SSH, WLAN architecture and VPN basics.'],['Monitoring and automation','SNMP, syslog, REST APIs, JSON, Python basics and Ansible.'],['Specialise','CCNP Enterprise, network design, SD-WAN, data-centre or service-provider tracks.']]},
+ s:[['Network fundamentals','OSI and TCP/IP, IPv4 addressing, cabling and basic device setup. You finished this in missions 1 to 3. Subnetting is the next step.',1],['Switching and routing','VLANs, trunks, STP, EtherChannel, static routes and OSPF.'],['Network services','DHCP, DNS, NAT, NTP, access control lists and first-hop redundancy.'],['Security and wireless','Port security, DHCP snooping, SSH, WLAN architecture and VPN basics.'],['Monitoring and automation','SNMP, syslog, REST APIs, JSON, Python basics and Ansible.'],['Specialise','CCNP Enterprise, network design, SD-WAN, data-centre or service-provider tracks.']]},
 {n:'Cybersecurity',id:'sec',roles:['SOC analyst','Security analyst','Penetration tester'],certs:['Security+','CCNA','Cisco security track'],rm:[['Cyber Security roadmap','https://roadmap.sh/cyber-security'],['Linux roadmap','https://roadmap.sh/linux']],
  s:[['Network fundamentals','Protocols, addressing and traffic flow. Attackers and defenders both start here, and you already have it.',1],['Operating systems','Linux and Windows command line, users, permissions and services.'],['Security principles','Confidentiality, integrity, availability, common threats, cryptography and authentication basics.'],['Traffic analysis','Capture and read packets in Wireshark. Spot ARP, DNS and TCP behaviour you saw in the lab.'],['Defend or attack','Monitoring and SIEM on the blue side, or legal practice labs on TryHackMe for the red side.'],['Certify','Security+ first, then a Cisco security certification or a hands-on exam.']]},
 {n:'Cloud and DevOps',id:'cld',roles:['Cloud engineer','DevOps engineer','Site reliability engineer'],certs:['AWS Cloud Practitioner','Associate-level cloud exam'],rm:[['DevOps roadmap','https://roadmap.sh/devops'],['AWS roadmap','https://roadmap.sh/aws'],['Linux roadmap','https://roadmap.sh/linux']],
@@ -443,7 +444,7 @@ var C=[
 ];
 $('#certgrid').innerHTML=C.map(function(c){return '<div class="cc'+(c[6]?' me':'')+'" style="--dc:'+c[5]+'"><span class="lv">'+esc(c[0])+'</span><h3>'+esc(c[1])+'</h3><span class="code">'+esc(c[2])+'</span><p>'+esc(c[3])+'</p><a class="btn ghost" href="'+c[4]+'" target="_blank" rel="noopener noreferrer">Official page</a></div>'}).join('');
 /* checklist */
-var CK=['Install Packet Tracer and sign in','Rebuild Mawja HQ in Packet Tracer and save the .pkt file','Do ten subnetting problems on paper, no calculator','Install Wireshark and capture one ping','Start one free video course and finish its first module','Pick a career path above and open its roadmap','Book your study plan: set two lab sessions in your calendar'];
+var CK=['Install Packet Tracer and sign in','Rebuild Club HQ in Packet Tracer and save the .pkt file','Do ten subnetting problems on paper, no calculator','Install Wireshark and capture one ping','Start one free video course and finish its first module','Pick a career path above and open its roadmap','Book your study plan: set two lab sessions in your calendar'];
 var KEY='linkup-field-kit-v1',st={};
 try{st=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){st={}}
 function paint(){var n=CK.filter(function(_,i){return st[i]}).length;$('#pt').textContent=n+' of '+CK.length;$('#pb').style.width=(n/CK.length*100)+'%';$('#dm').hidden=n!==CK.length}

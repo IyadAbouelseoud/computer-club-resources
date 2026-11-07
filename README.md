@@ -3,6 +3,7 @@
 Two static pages, no build step.
 
 - `ccna/` LINK UP Field Kit (CCNA Fundamentals workshop)
+- `ccna/lab/` HexNet Lab, the browser Cisco lab used in LINK UP (9 missions, Episode 3 of the Ali Baba story)
 - `sql/` Shadow Lotus Loot Drop (Cyberpunk Heist SQL workshop)
 - `index.html` small landing page that links to both
 
