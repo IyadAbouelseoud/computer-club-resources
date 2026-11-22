@@ -1,0 +1,496 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>حرّاس كهف الكنز — أنا طفل ذكي وآمن على الإنترنت</title>
+<meta name="description" content="لعبة تعليمية للأطفال (٦–١٢ سنة) عن الأمان الرقمي مع علي بابا المشاغب. نادي الحاسب ونادي التطوع.">
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="../../pd/fonts/fonts.css">
+<link rel="stylesheet" href="../shared/kids.css">
+<style>
+.hero-title{font-size:44px;color:var(--gold);text-shadow:0 4px 0 rgba(0,0,0,.35);text-align:center}
+.hero-sub{font-size:26px;text-align:center;color:var(--cream)}
+.center{display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center}
+.bigcard{background:var(--cream);color:var(--ink);border:5px solid var(--gold);border-radius:30px;padding:18px 26px;text-align:center;min-width:min(86vw,360px);box-shadow:0 10px 0 rgba(0,0,0,.2);margin:0 auto}
+.bigcard .emo{font-size:92px;line-height:1.1}
+.bigcard .lbl{font-size:30px;font-family:var(--head)}
+.bigcard.good{border-color:var(--green);background:#eaffef}
+.steal{animation:steal .8s ease-in forwards}
+@keyframes steal{to{transform:translate(260px,-60px) scale(.2) rotate(40deg);opacity:0}}
+.btns{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-top:6px}
+.btns .btn{flex:1 1 220px;max-width:420px}
+.chat{display:flex;flex-direction:column;gap:10px;align-items:flex-start}
+.chat .who{font-size:18px;opacity:.85}
+.chat .msg{background:#fff;color:var(--ink);border:4px solid var(--ink);border-radius:24px 24px 24px 6px;padding:12px 18px;font-size:27px;max-width:100%}
+.mapgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media (max-width:760px){.mapgrid{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:760px){.door{min-height:150px}.door .ic{font-size:46px}.door .nm{font-size:21px}}
+@media (max-width:330px){.mapgrid{grid-template-columns:1fr}}
+.door{background:linear-gradient(180deg,#fff4d6,#ffe2a1);color:var(--ink);border:5px solid var(--gold);border-radius:30px 30px 18px 18px;padding:14px 10px 12px;text-align:center;box-shadow:0 10px 0 rgba(0,0,0,.22);position:relative;transition:transform .12s;min-height:200px;display:flex;flex-direction:column;align-items:center;gap:4px;justify-content:center}
+.door:active{transform:translateY(6px)}
+.door .ic{font-size:60px;line-height:1.1}
+.door .nm{font-family:var(--head);font-size:25px;line-height:1.2}
+.door .st{font-size:28px;letter-spacing:2px;filter:drop-shadow(0 2px 0 rgba(0,0,0,.2))}
+.door.next{animation:glow 1.4s infinite;border-color:var(--cyan)}
+@keyframes glow{50%{box-shadow:0 10px 0 rgba(0,0,0,.22),0 0 28px 6px rgba(34,230,255,.65)}}
+.door .num{position:absolute;top:-14px;inset-inline-start:-8px;background:var(--coral);color:#fff;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;font-family:var(--head);font-size:24px;border:4px solid var(--ink)}
+.locks{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media (max-width:700px){.locks{grid-template-columns:1fr}}
+.lockc{background:var(--cream);color:var(--ink);border:5px solid var(--gold);border-radius:26px;padding:12px;text-align:center;min-height:170px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;box-shadow:0 8px 0 rgba(0,0,0,.2)}
+.lockc:active{transform:translateY(5px)}
+.lockc .art{width:54px;height:62px}
+.lockc .pw{font-family:'Cairo',monospace;font-size:28px;direction:rtl;unicode-bidi:plaintext;word-break:break-word}
+.lockc .res{font-size:22px;min-height:30px}
+.lockc.sel-bad{border-color:var(--coral);background:#fff0ef}
+.lockc.sel-good{border-color:var(--green);background:#eaffef}
+.slotrow{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.slot{width:110px;height:84px;border-radius:20px;border:4px dashed rgba(255,255,255,.5);display:grid;place-items:center;font-size:20px;text-align:center;line-height:1.15;padding:4px;background:rgba(255,255,255,.08)}
+.slot.full{border-style:solid;border-color:var(--gold);background:var(--cream);color:var(--ink);animation:pop .25s}
+.chips{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.chip{background:var(--cream);color:var(--ink);border:4px solid var(--teal);border-radius:20px;padding:10px 16px;font-size:26px;font-family:var(--head);box-shadow:0 6px 0 rgba(0,0,0,.2);min-height:64px}
+.chip:active{transform:translateY(4px)}
+.chip.used{opacity:.3;pointer-events:none}
+.meter{height:30px;border-radius:16px;background:rgba(255,255,255,.15);border:3px solid rgba(255,255,255,.35);overflow:hidden}
+.meter i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--coral),var(--gold),var(--green));background-size:400px 100%;transition:width .5s}
+.inbox{background:#fff;color:var(--ink);border:5px solid var(--ink);border-radius:26px;padding:14px 18px;box-shadow:0 8px 0 rgba(0,0,0,.2);text-align:right}
+.inbox .from{font-size:19px;opacity:.8;border-bottom:3px dotted #bbb;padding-bottom:6px;margin-bottom:8px}
+.inbox .txt{font-size:28px;line-height:1.5}
+.inbox .lnk{margin-top:10px;display:inline-flex;gap:8px;align-items:center;background:#eef3ff;border-radius:16px;padding:8px 14px;font-size:20px;direction:ltr;font-family:monospace}
+.inbox .lnk button{background:var(--gold);border-radius:12px;padding:4px 10px;font-size:22px;border:3px solid var(--ink)}
+.scen{font-size:28px;text-align:center}
+.faces{font-size:64px;text-align:center}
+.bars{display:grid;gap:10px}
+.barrow{display:grid;grid-template-columns:150px 1fr;gap:10px;align-items:center;font-size:22px}
+.barrow .meter i{background:var(--teal);width:50%}
+.pick3{display:grid;gap:12px}
+.opt{display:flex;align-items:center;gap:14px;background:var(--cream);color:var(--ink);border:5px solid var(--gold);border-radius:24px;padding:12px 18px;font-size:27px;font-family:var(--head);text-align:right;min-height:78px;box-shadow:0 7px 0 rgba(0,0,0,.2);width:100%}
+.opt:active{transform:translateY(5px)}
+.opt .e{font-size:44px;line-height:1}
+.opt.bad{border-color:var(--coral);background:#fff0ef;animation:shake .45s}
+.opt.good{border-color:var(--green);background:#eaffef}
+.cert{background:var(--cream);color:var(--ink);border:10px double var(--gold2);border-radius:20px;padding:22px;text-align:center;max-width:720px;margin:0 auto;box-shadow:0 12px 0 rgba(0,0,0,.25)}
+.cert h2{font-size:38px;color:#7a3b00}
+.cert .who{display:flex;justify-content:center;gap:14px;align-items:center;margin:8px 0}
+.cert .who .art{width:120px;height:130px}
+.cert .line{border-bottom:3px dotted #9b8a5a;display:inline-block;min-width:240px;height:34px;vertical-align:bottom}
+.rulebox{font-size:26px;line-height:1.6;text-align:right}
+.rulebox .mn{margin-top:10px;font-size:34px;text-align:center;font-family:var(--head);color:#7a3b00;background:#fff1c2;border-radius:18px;padding:8px}
+.starsbig{font-size:50px;letter-spacing:6px}
+.stafftip{font-size:16px;opacity:.7;text-align:center;margin-top:14px}
+@media print{
+  body{background:#fff!important}.sky,.top,.noprint{display:none!important}
+  .cert{box-shadow:none;max-width:none;margin:0}
+}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script src="../shared/kids.js"></script>
+<script>
+'use strict';
+const { h, $, shuffle, store, sfx, say, sayBtn, ART, art, AVATARS, wait, confetti } = Kids;
+Kids.sky(); Kids.initAssets('../assets/');
+const app = $('#app');
+
+/* ---- state ---- */
+let me = store.get('cave.me', null);           // {g:'f'|'m', av:'falcon'}
+let prog = store.get('cave.prog', {});         // {r1:3,...}
+const G = (m, f) => (me && me.g === 'm') ? m : f;
+const avName = k => (AVATARS.find(a => a[0] === k) || ['', 'الصقر'])[1];
+
+/* ---- art helpers ---- */
+const aliArt = mood => art('ali-' + mood, ART.ali(mood), '', 'width:100%;height:100%');
+const gemIc = c => art('gem', ART.gem(c), '', 'width:1em;height:1em');
+
+/* ---- rounds meta ---- */
+const ROUNDS = [
+  { id: 'r1', ic: '🌍', name: 'عالمنا الرقمي', rule: 'العالم الرقمي مثل مدينة كبيرة: فيه أشياء رائعة نتعلّم بها ونلعب ونتواصل، وفيه ناس لا نعرفهم. لذلك نحتاج قواعد أمان!', mn: '📖 نتعلّم · 🎮 نلعب · 💬 نتواصل — بأمان' },
+  { id: 'r2', ic: '🤐', name: 'أسرار الكنز', rule: 'معلوماتي الخاصة (اسمي الكامل، عنواني، مدرستي، رقم جوّالي، صوري) تبقى في جيبي. لا أعطيها لأحد على الإنترنت. أمّا لوني المفضّل ولعبتي المفضّلة فلا بأس!', mn: 'سرّي في جيبي 🤐' },
+  { id: 'r3', ic: '🔐', name: 'القفل السحري', rule: 'أربع كلمات عجيبة معًا تصنع قفلًا قويًّا جدًّا. لا أخبر كلمة سرّي أحدًا إلا كبيرًا أثق به، وأستخدم كلمة مختلفة لكل مكان.', mn: '٤ كلمات عجيبة = قفل قوي 💪' },
+  { id: 'r4', ic: '📬', name: 'الرسائل الغريبة', rule: 'إذا وصلتني رسالة أو رابط غريب أو عرض «مجاني»: لا أفتحه! أخبر كبيرًا أثق به مثل مشرفتي أو معلّمتي.', mn: 'قِف ✋ فكّر 🧠 اسأل 🙋' },
+  { id: 'r5', ic: '💛', name: 'الكلمة الطيّبة', rule: 'خلف كل شاشة إنسان حقيقي له مشاعر. قبل أن أكتب أسأل نفسي: هل كلمتي لطيفة؟ هل هي صادقة؟ هل ستؤذي أحدًا؟ وإذا رأيت من يؤذي غيره أبلّغ كبيرًا.', mn: 'لطيفة؟ صادقة؟ ما تؤذي؟ 💛' },
+  { id: 'r6', ic: '⚖️', name: 'يوم متوازن', rule: 'الأجهزة ممتعة، لكن جسمي يحتاج لعبًا وحركة ونومًا كافيًا. أجعل الشاشة جزءًا صغيرًا من يومي، وأبعدها عني قبل النوم.', mn: 'شاشة قليلة · حركة · نوم هادئ 😴' }
+];
+const stars = n => '⭐'.repeat(n) + '☆'.repeat(3 - n);
+const totalStars = () => ROUNDS.reduce((a, r) => a + (prog[r.id] || 0), 0);
+
+/* ---- frame (top bar + stage) ---- */
+function frame(title, opts) {
+  opts = opts || {};
+  app.innerHTML = '';
+  const F = { alive: true };
+  const mute = h('button', { class: 'iconbtn' + (Kids.isMuted() ? ' off' : ''), 'aria-label': 'الصوت', onclick: () => { const m = Kids.toggleMute(); mute.textContent = m ? '🔇' : '🔊'; mute.classList.toggle('off', m); } }, [Kids.isMuted() ? '🔇' : '🔊']);
+  const dots = h('div', { class: 'prog' });
+  const top = h('div', { class: 'top' }, [
+    opts.back ? h('button', { class: 'iconbtn', 'aria-label': 'رجوع', onclick: () => { F.alive = false; Kids.sfx.tap(); showMap(); } }, ['🏠']) : null,
+    h('div', { class: 'title' }, [title || '']), dots, mute]);
+  const aliBox = h('div', { class: 'art ali-box' });
+  const side = h('div', { class: 'side' }, [aliBox]);
+  const bub = h('div', { class: 'bubble' });
+  const zone = h('div', { class: 'zone' });
+  const btns = h('div', { class: 'btns' });
+  const main = h('div', { class: 'main' }, [bub, zone, btns]);
+  app.append(top, h('div', { class: 'stage' }, [side, main]));
+  F.zone = zone; F.btns = btns; F.main = main;
+  F.say = (mood, text, cls) => {
+    aliBox.innerHTML = aliArt(mood); Kids.upgradeArt(aliBox);
+    bub.className = 'bubble ' + (cls || ''); bub.innerHTML = ''; bub.append(h('span', null, [text]), sayBtn(text));
+    bub.classList.remove('pop'); void bub.offsetWidth; bub.classList.add('pop');
+  };
+  F.dots = (n, i) => { dots.innerHTML = ''; for (let k = 0; k < n; k++) dots.append(h('i', { class: k < i ? 'on' : k === i ? 'cur' : '' })); };
+  F.pick = list => new Promise(res => {
+    btns.innerHTML = '';
+    list.forEach(o => btns.append(h('button', { class: 'btn ' + (o.cls || '') + (o.big ? ' big' : ''), onclick: ev => { if (!F.alive) return; sfx.tap(); Array.from(btns.children).forEach(b => b.disabled = true); res(o.v); } }, [o.t])));
+  });
+  F.clearBtns = () => { btns.innerHTML = ''; };
+  F.go = async label => { await F.pick([{ t: label || 'هيا نكمل ➜', v: 1, cls: 'green' }]); F.clearBtns(); };
+  return F;
+}
+
+/* ===================== TITLE ===================== */
+function showTitle() {
+  app.innerHTML = '';
+  const aliBox = h('div', { class: 'art', style: 'width:230px;height:265px;animation:float 3.4s ease-in-out infinite', html: aliArt('sly') });
+  const bub = h('div', { class: 'bubble', style: 'max-width:640px' });
+  const say1 = 'هيهيهي! أنا علي بابا! سأدخل كهف الكنز الرقمي وآخذ كل أسراركم! … إلا إذا أوقفتموني! هل أنتم مستعدون يا حرّاس الكنز؟';
+  bub.append(h('span', null, [say1]), sayBtn(say1));
+  app.append(h('div', { class: 'center', style: 'flex:1;justify-content:center;padding-top:10px' }, [
+    h('div', { class: 'hero-sub' }, ['مغامرتي في العالم الرقمي']),
+    h('h1', { class: 'hero-title' }, ['🗝️ حرّاس كهف الكنز']),
+    h('div', { class: 'hero-sub', style: 'color:var(--teal)' }, ['أنا طفل ذكي وآمن على الإنترنت']),
+    aliBox, bub,
+    h('button', { class: 'btn big', onclick: () => { sfx.ok(); me ? showMap() : showSetup(); } }, ['هيا نبدأ المغامرة! ✨']),
+    h('div', { class: 'row' }, [h('button', { class: 'iconbtn', 'aria-label': 'الصوت', onclick: ev => { const m = Kids.toggleMute(); ev.currentTarget.textContent = m ? '🔇' : '🔊'; } }, [Kids.isMuted() ? '🔇' : '🔊'])]),
+    h('div', { class: 'stafftip' }, ['لعبة نادي الحاسب بالتعاون مع نادي التطوع — لا تطلب أي معلومات شخصية ولا تحفظ شيئًا خارج هذا الجهاز'])
+  ]));
+  Kids.upgradeArt(app);
+}
+
+/* ===================== SETUP ===================== */
+function showSetup() {
+  const sel = { g: (me && me.g) || 'f', av: (me && me.av) || 'falcon' };
+  app.innerHTML = '';
+  const heroBox = h('div', { class: 'row', style: 'gap:18px' });
+  const avBox = h('div', { class: 'row', style: 'gap:12px' });
+  const go = h('button', { class: 'btn big green', onclick: () => { me = { g: sel.g, av: sel.av }; store.set('cave.me', me); sfx.ok(); showIntroMap(); } }, ['هيا بنا! 🚀']);
+  function draw() {
+    heroBox.innerHTML = '';
+    [['f', 'أنا بنت'], ['m', 'أنا ولد']].forEach(a => heroBox.append(h('button', { class: 'door' + (sel.g === a[0] ? ' next' : ''), style: 'min-height:0;width:170px;padding:8px', onclick: () => { sel.g = a[0]; sfx.tap(); draw(); } }, [art('hero-' + a[0], ART.hero(a[0]), '', 'width:110px;height:126px'), h('div', { class: 'nm' }, [a[1]])])));
+    avBox.innerHTML = '';
+    AVATARS.forEach(a => avBox.append(h('button', { class: 'door' + (sel.av === a[0] ? ' next' : ''), style: 'min-height:0;width:120px;padding:8px', onclick: () => { sel.av = a[0]; sfx.tap(); draw(); } }, [art('av-' + a[0], ART.avatar(a[0]), '', 'width:80px;height:80px'), h('div', { style: 'font-size:20px' }, [a[1]])])));
+    Kids.upgradeArt(app);
+  }
+  app.append(h('div', { class: 'center', style: 'flex:1;justify-content:center' }, [
+    h('h2', { class: 'hero-title', style: 'font-size:36px' }, ['من هو حارس الكنز؟']),
+    h('div', null, ['اختر شخصيتك:']), heroBox,
+    h('div', null, ['واختر رفيقك:']), avBox, go,
+    h('div', { class: 'stafftip' }, ['لا نسأل عن الاسم الحقيقي — شخصيتك ورفيقك فقط 🌟'])
+  ]));
+  draw();
+}
+
+function showIntroMap() { showMap(true); }
+
+/* ===================== MAP ===================== */
+function showMap(first) {
+  const F = frame('خريطة الكنز 🗺️');
+  const done = ROUNDS.filter(r => prog[r.id]).length;
+  const nextId = (ROUNDS.find(r => !prog[r.id]) || {}).id;
+  F.dots(ROUNDS.length, done);
+  if (done === 0) F.say('sly', G('هاه! ستة أبواب فيها كنوزي… سأدخل منها كلها! جرّب أن توقفني يا حارس!', 'هاه! ستة أبواب فيها كنوزي… سأدخل منها كلها! جرّبي أن توقفيني يا حارسة!'));
+  else if (done < ROUNDS.length) F.say('oops', 'أوه! أوقفتني في ' + done + ' من ٦ أبواب! لكن عندي حيل أخرى… 😏');
+  else F.say('sad', G('خلاص خلاص! استسلمت يا حارس الكنز! 😭', 'خلاص خلاص! استسلمت يا حارسة الكنز! 😭'));
+  const grid = h('div', { class: 'mapgrid' });
+  ROUNDS.forEach((r, i) => grid.append(h('button', { class: 'door' + (r.id === nextId ? ' next' : ''), onclick: () => { sfx.tap(); startRound(r); } }, [
+    h('div', { class: 'num' }, [String(i + 1)]), h('div', { class: 'ic' }, [r.ic]), h('div', { class: 'nm' }, [r.name]), h('div', { class: 'st' }, [prog[r.id] ? stars(prog[r.id]) : '☆☆☆'])
+  ])));
+  F.zone.append(grid);
+  if (done === ROUNDS.length) F.btns.append(h('button', { class: 'btn big green', onclick: () => { sfx.win(); showCert(); } }, ['🏆 شهادتي']));
+  F.btns.append(h('button', { class: 'btn ghost', onclick: () => { me = null; store.set('cave.me', null); showSetup(); } }, ['🎭 غيّر الشخصية']));
+}
+
+/* ===================== ROUND RUNNER ===================== */
+const RUN = { r1, r2, r3, r4, r5, r6 };
+async function startRound(r) {
+  const F = frame(r.ic + ' ' + r.name, { back: true });
+  const mis = await RUN[r.id](F);
+  if (!F.alive) return;
+  const st = mis === 0 ? 3 : mis <= 2 ? 2 : 1;
+  prog[r.id] = Math.max(prog[r.id] || 0, st); store.set('cave.prog', prog);
+  sfx.win(); confetti(34);
+  F.say(st === 3 ? 'sad' : 'oops', st === 3 ? G('آخ! ما قدرت آخذ شيئًا! أنت حارس ذكي جدًّا!', 'آخ! ما قدرت آخذ شيئًا! أنتِ حارسة ذكية جدًّا!') : 'هه! أخذت قليلًا… لكنك أوقفتني في النهاية! 😅', 'good');
+  F.zone.innerHTML = '';
+  F.zone.append(h('div', { class: 'card pop', style: 'text-align:center' }, [
+    h('div', { class: 'starsbig' }, [stars(st)]),
+    h('h2', { style: 'color:#7a3b00' }, ['🗝️ قاعدة الكنز']),
+    h('div', { class: 'rulebox' }, [h('span', null, [r.rule]), sayBtn(r.rule), h('div', { class: 'mn' }, [r.mn])])
+  ]));
+  F.btns.innerHTML = '';
+  const nxt = ROUNDS[ROUNDS.indexOf(r) + 1];
+  F.btns.append(h('button', { class: 'btn big green', onclick: () => { sfx.tap(); (nxt && !prog[nxt.id]) ? startRound(nxt) : showMap(); } }, [(nxt && !prog[nxt.id]) ? 'الباب التالي ➜' : 'إلى الخريطة 🗺️']),
+    h('button', { class: 'btn ghost', onclick: () => startRound(r) }, ['🔁 أعد المحاولة']));
+}
+
+const hit = (el, cls) => { el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls); };
+
+/* ---------- R1: online or offline ---------- */
+async function r1(F) {
+  const pool = [
+    { e: '📱', t: 'هاتف ذكي', on: 1, yes: 'صح! الهاتف الذكي يدخل الإنترنت.', hint: 'الهاتف الذكي يمكنه فتح مواقع وألعاب.' },
+    { e: '🎮', t: 'لعبة أونلاين مع أصدقاء', on: 1, yes: 'تمام! اللعب الأونلاين يحتاج إنترنت.', hint: 'أونلاين معناها «على الإنترنت».' },
+    { e: '📹', t: 'مكالمة فيديو', on: 1, yes: 'أحسنت! المكالمات المرئية تمرّ عبر الإنترنت.', hint: 'نرى صديقنا ونسمعه عبر الإنترنت.' },
+    { e: '⌚', t: 'ساعة ذكية', on: 1, yes: 'صح! الساعة الذكية تتصل بالإنترنت.', hint: 'الساعة الذكية ترسل الرسائل وتستقبلها.' },
+    { e: '🖥️', t: 'فيديو تعليمي على الحاسوب', on: 1, yes: 'ممتاز! نتعلّم أشياء كثيرة من الإنترنت.', hint: 'الفيديو يأتي من الإنترنت.' },
+    { e: '📚', t: 'كتاب ورقي', on: 0, yes: '', no: 'صح! الكتاب الورقي لا يحتاج إنترنت.', hint: 'الكتاب الورقي نقرأه بدون كهرباء.' },
+    { e: '⚽', t: 'كرة قدم', on: 0, no: 'تمام! نلعب الكرة بدون إنترنت.', hint: 'الكرة نركلها في الساحة.' },
+    { e: '🎨', t: 'تلوين على الورق', on: 0, no: 'أحسنت! الألوان والورق بلا إنترنت.', hint: 'الألوان والورق لا يحتاجان إنترنت.' },
+    { e: '🚲', t: 'دراجة', on: 0, no: 'صح! الدراجة تمشي بقدميك.', hint: 'الدراجة تمشي بقدميك لا بالإنترنت.' },
+    { e: '🧩', t: 'أحجية خشبية', on: 0, no: 'صح! الأحجية الخشبية بلا إنترنت.', hint: 'الأحجية قطع نركّبها بأيدينا.' }
+  ];
+  const items = shuffle(shuffle(pool.filter(x => x.on)).slice(0, 3).concat(shuffle(pool.filter(x => !x.on)).slice(0, 3)));
+  let mis = 0;
+  F.say('happy', 'أنا علي بابا! أنا جديد في العالم الرقمي 🙈 ساعدوني: أيّ هذه الأشياء يدخل الإنترنت؟');
+  for (let i = 0; i < items.length; i++) {
+    F.dots(items.length, i); const it = items[i];
+    F.zone.innerHTML = ''; const card = h('div', { class: 'bigcard pop' }, [h('div', { class: 'emo' }, [it.e]), h('div', { class: 'lbl' }, [it.t])]); F.zone.append(card);
+    for (; ;) {
+      const v = await F.pick([{ t: '🌐 يدخل الإنترنت', v: 1, cls: 'teal' }, { t: '📴 بدون إنترنت', v: 0, cls: 'coral' }]);
+      if (!F.alive) return;
+      if (v === it.on) { sfx.ok(); card.classList.add('good'); F.say('happy', it.on ? it.yes : it.no, 'good'); F.clearBtns(); await wait(1500); break; }
+      mis++; sfx.no(); hit(card, 'shake'); F.say('oops', 'همم! فكّروا مرة ثانية… ' + it.hint, 'bad');
+    }
+    if (!F.alive) return;
+  }
+  F.dots(items.length, items.length);
+  F.zone.innerHTML = ''; F.clearBtns();
+  F.say('laugh', 'ههه! الآن فهمت! الإنترنت عالم كبير: نتعلّم فيه، ونلعب، ونتواصل! لكن… أنا سأبحث عن أسراركم هناك! 😈');
+  F.zone.append(h('div', { class: 'row' }, [['📖', 'نتعلّم'], ['🎮', 'نلعب'], ['💬', 'نتواصل']].map(a => h('div', { class: 'bigcard pop', style: 'min-width:150px;margin:0' }, [h('div', { class: 'emo', style: 'font-size:56px' }, [a[0]]), h('div', { class: 'lbl' }, [a[1]])]))));
+  await F.go(); return mis;
+}
+
+/* ---------- R2: share or keep secret ---------- */
+async function r2(F) {
+  const ok = [
+    { e: '🎨', q: 'ما لونك المفضّل؟', ok: 1, why: 'تمام! اللون المفضّل ليس سرًّا مهمًّا.' },
+    { e: '🎮', q: 'ما لعبتك المفضّلة؟', ok: 1, why: 'لا بأس! اللعبة المفضّلة معلومة عامة.' },
+    { e: '🍕', q: 'ما أكلتك المفضّلة؟', ok: 1, why: 'صح! الأكلة المفضّلة معلومة عامة.' },
+    { e: '🐪', q: 'ما حيوانك المفضّل؟', ok: 1, why: 'لا بأس! هذا ليس سرًّا.' }
+  ];
+  const sec = [
+    { e: '🏠', q: 'ما عنوان بيتك؟', ok: 0, why: 'سرّ! العنوان يدلّ الغريب على مكاني.' },
+    { e: '📞', q: 'ما رقم جوّال أحد المشرفين عندكم؟', ok: 0, why: 'سرّ! أرقام الجوّال لا نعطيها للغرباء.' },
+    { e: '🏫', q: 'في أيّ مدرسة تدرس؟', ok: 0, why: 'سرّ! اسم المدرسة يدلّ على مكاني.' },
+    { e: '📸', q: 'أرسل لي صورة وجهك!', ok: 0, why: 'سرّ! صوري لا أرسلها لمن لا أعرفه.' },
+    { e: '🪪', q: 'ما اسمك الكامل؟', ok: 0, why: 'سرّ! نستخدم اسمًا مستعارًا في الألعاب.' },
+    { e: '🧍', q: 'هل أنت وحدك الآن؟', ok: 0, why: 'سرّ! لا أخبر أحدًا غريبًا أني وحدي.' }
+  ];
+  const items = shuffle(shuffle(ok).slice(0, 3).concat(shuffle(sec).slice(0, 4))); let mis = 0;
+  F.say('sly', 'أنا الآن «لاعب جديد» 🎭 سأسألكم أسئلة في الدردشة… وأنتم قرّروا: أُشارك أم لا؟');
+  for (let i = 0; i < items.length; i++) {
+    F.dots(items.length, i); const it = items[i];
+    F.zone.innerHTML = '';
+    const msg = h('div', { class: 'chat pop' }, [h('div', { class: 'who' }, ['🎭 لاعب جديد']), h('div', { class: 'msg' }, [it.e + ' ' + it.q])]);
+    F.zone.append(msg);
+    for (; ;) {
+      const v = await F.pick([{ t: '✅ أُشارك', v: 1, cls: 'teal' }, { t: '🛑 لا أُشارك', v: 0, cls: 'coral' }]);
+      if (!F.alive) return;
+      if (v === it.ok) { sfx.ok(); F.say('oops', it.why, 'good'); F.clearBtns(); await wait(1700); break; }
+      mis++;
+      if (v === 1 && !it.ok) { sfx.laugh(); msg.classList.add('steal'); F.say('laugh', 'هاهاها! أخذت سرّك! … ' + it.why + ' لا بأس، سنجرّب مرة ثانية.', 'bad'); await wait(1300); msg.classList.remove('steal'); }
+      else { sfx.no(); hit(msg, 'shake'); F.say('oops', 'ما في مشكلة! ' + it.why.replace('سرّ!', 'هذا ليس سرًّا مهمًّا.'), 'bad'); }
+    }
+    if (!F.alive) return;
+  }
+  F.dots(items.length, items.length); F.clearBtns();
+  F.say('sad', 'آخ! أسراركم كلها بقيت في جيوبكم 🤐 ما أخذت شيئًا!');
+  F.zone.innerHTML = ''; F.zone.append(h('div', { class: 'bigcard pop' }, [h('div', { class: 'emo' }, ['🤐']), h('div', { class: 'lbl' }, ['سرّي في جيبي'])]));
+  await F.go(); return mis;
+}
+
+/* ---------- R3: passwords ---------- */
+async function r3(F) {
+  let mis = 0;
+  const sets = [
+    [{ p: '123456', k: 0, r: '⚡ يخمّنها فورًا!' }, { p: 'اسمي + سنة ميلادي', k: 0, r: '⏱️ دقائق فقط!' }, { p: 'نخلة-صاروخ-مانجو-قمر', k: 1, r: '🐢 وقت طويل جدًّا!' }],
+    [{ p: 'password', k: 0, r: '⚡ يخمّنها فورًا!' }, { p: 'نخلة-كوب-جمل-بطيخ', k: 1, r: '🐢 وقت طويل جدًّا!' }, { p: 'اسم صديقي 123', k: 0, r: '⏱️ دقائق فقط!' }]
+  ];
+  F.dots(4, 0);
+  F.say('sly', 'عندي «آلة التخمين» السحرية 🤖 تفتح الأقفال الضعيفة بسرعة! اختاروا القفل الأقوى لتغلبوا الآلة!');
+  for (let s = 0; s < 2; s++) {
+    F.dots(4, s); F.zone.innerHTML = ''; F.clearBtns();
+    const set = shuffle(sets[s]); const row = h('div', { class: 'locks' }); F.zone.append(row);
+    let done = false;
+    await new Promise(res => {
+      set.forEach(o => {
+        const c = h('button', { class: 'lockc', onclick: () => {
+          if (done) return; sfx.tap();
+          c.querySelector('.res').textContent = o.r;
+          if (o.k) { done = true; sfx.ok(); c.classList.add('sel-good'); F.say('sad', 'يا ويلي! آلتي ما قدرت تفتح قفل «' + o.p + '»! 😭', 'good'); setTimeout(res, 2000); }
+          else { mis++; sfx.no(); c.classList.add('sel-bad'); hit(c, 'shake'); F.say('laugh', 'هاهاها! فتحت هذا القفل بسهولة! اختاروا قفلًا أقوى!', 'bad'); }
+        } }, [art('lock', ART.lock(), ''), h('div', { class: 'pw' }, [o.p]), h('div', { class: 'res' })]);
+        row.append(c);
+      });
+    });
+    if (!F.alive) return;
+  }
+  /* build a passphrase */
+  F.dots(4, 2); F.clearBtns();
+  const words = shuffle([['🌴', 'نخلة'], ['🚀', 'صاروخ'], ['🥭', 'مانجو'], ['🌙', 'قمر'], ['🐪', 'جمل'], ['🍉', 'بطيخ'], ['🐢', 'سلحفاة'], ['☁️', 'سحابة'], ['🎈', 'بالون'], ['🍪', 'كعكة'], ['🦉', 'بومة'], ['🪁', 'طائرة ورقية']]).slice(0, 8);
+  F.say('happy', 'الآن اصنعوا كلمة سرّكم السحرية! اختاروا ٤ كلمات عجيبة… بدون اسمكم وبدون تاريخ ميلادكم!');
+  const picked = []; const slotRow = h('div', { class: 'slotrow' }); const meter = h('div', { class: 'meter' }, [h('i')]);
+  const chips = h('div', { class: 'chips' });
+  F.zone.innerHTML = ''; F.zone.append(slotRow, h('div', { style: 'height:10px' }), meter, h('div', { style: 'height:6px' }), chips);
+  const redraw = () => {
+    slotRow.innerHTML = ''; for (let i = 0; i < 4; i++) slotRow.append(h('div', { class: 'slot' + (picked[i] ? ' full' : '') }, [picked[i] ? picked[i][0] + ' ' + picked[i][1] : (i + 1) + '']));
+    meter.firstChild.style.width = picked.length * 25 + '%';
+    Array.from(chips.children).forEach((c, i) => c.classList.toggle('used', picked.includes(words[i])));
+  };
+  words.forEach(w => chips.append(h('button', { class: 'chip', onclick: () => { if (picked.length < 4) { sfx.gem(); picked.push(w); redraw(); if (picked.length === 4) fin(); } } }, [w[0] + ' ' + w[1]])));
+  redraw();
+  await new Promise(res => { window.__r3fin = res; });
+  async function fin() {
+    sfx.ok(); F.say('oops', 'آلة التخمين تحاول… ⚙️⚙️⚙️', ''); meter.firstChild.style.width = '100%';
+    await wait(1600); if (!F.alive) return; sfx.laugh();
+    F.say('sad', 'يا ويلي! ما قدرت! كلمة سرّكم قوية جدًّا 💪 (وتذكروا: لا تكتبوها لأحد!)', 'good');
+    await wait(1500); window.__r3fin();
+  }
+  if (!F.alive) return;
+  /* who to tell */
+  F.dots(4, 3); F.zone.innerHTML = ''; F.clearBtns();
+  F.say('sly', 'سؤال أخير… أنا أريد كلمة سرّكم! مع من يمكن أن تتشاركوا كلمة السرّ؟ 😏');
+  const opts = shuffle([{ e: '🎮', t: 'لاعب جديد في اللعبة', k: 0, w: 'حتى لو كان لطيفًا! الغريب لا نعطيه كلمة السرّ.' }, { e: '👫', t: 'صديقي المقرّب', k: 0, w: 'الأصدقاء قد يخطئون أو يتخاصمون. كلمة السرّ لي وحدي.' }, { e: '🧑‍🏫', t: 'كبير أثق به (مشرفتي أو معلّمتي)', k: 1, w: 'صح! الكبير الذي أثق به يساعدني ويحمي سرّي.' }]);
+  const box = h('div', { class: 'pick3' }); F.zone.append(box);
+  await new Promise(res => {
+    opts.forEach(o => { const b = h('button', { class: 'opt', onclick: () => {
+      if (o.k) { sfx.ok(); b.classList.add('good'); F.say('sad', o.w, 'good'); setTimeout(res, 2200); } else { mis++; sfx.no(); b.classList.add('bad'); F.say('laugh', o.w, 'bad'); setTimeout(() => b.classList.remove('bad'), 600); }
+    } }, [h('span', { class: 'e' }, [o.e]), o.t]); box.append(b); });
+  });
+  F.dots(4, 4); return mis;
+}
+
+/* ---------- R4: suspicious messages ---------- */
+async function r4(F) {
+  const msgs = shuffle([
+    { from: '🎭 مجهول', t: '🎁 مبروك! ربحت جوّالًا مجانيًّا! اضغط الآن قبل أن ينتهي العرض!', link: 'free-phone.win-now.xyz', bad: 1, why: 'كلمات مثل «مجانًا» و«بسرعة» حيلة لتوقعنا في الفخّ!' },
+    { from: '🎮 لاعب لا تعرفه', t: 'أنا صديقك الجديد! تعال نلتقي وحدنا ولا تخبر أحدًا 🤫', bad: 1, why: 'من يطلب منا سرًّا أو لقاءً وحدنا لا نصدّقه. نخبر كبيرًا نثق به!' },
+    { from: '👩‍🏫 معلّمتك (تعرفها)', t: 'لا تنسوا واجب الغد. بالتوفيق للجميع!', bad: 0, why: 'هذه رسالة من شخص أعرفه ولا تطلب أي سرّ. تمام!' },
+    { from: '📢 إعلان', t: 'حمّل هذه اللعبة لتحصل على جواهر بلا نهاية!', link: 'gems-hack.apk.zip', bad: 1, why: 'التحميل من مكان غريب قد يُتلف الجهاز ويسرق أسرارنا!' },
+    { from: '🧒 صديقك في الفصل (تعرفه)', t: 'شكرًا لأنك ساعدتني اليوم! 🌟', bad: 0, why: 'رسالة لطيفة من صديق أعرفه. تمام!' },
+    { from: '🏢 «الإدارة»', t: 'حسابك سيُغلق! أرسل كلمة سرّك الآن!', bad: 1, why: 'لا أحد يطلب كلمة سرّي أبدًا، حتى لو قال إنه «الإدارة»!' }
+  ]);
+  let mis = 0;
+  F.say('sly', G('أرسلت لكم رسائل في صندوق الرسائل! بعضها حيلة مني… هل تعرف أيها هو؟ 😈', 'أرسلت لكم رسائل في صندوق الرسائل! بعضها حيلة مني… هل تعرفين أيها هو؟ 😈'));
+  for (let i = 0; i < msgs.length; i++) {
+    F.dots(msgs.length, i); const m = msgs[i]; F.zone.innerHTML = '';
+    const card = h('div', { class: 'inbox pop' }, [h('div', { class: 'from' }, ['من: ' + m.from]), h('div', { class: 'txt' }, [m.t])]);
+    if (m.link) {
+      const real = h('span', null, [m.link]);
+      card.append(h('div', { class: 'lnk' }, [real, h('button', { type: 'button', 'aria-label': 'افحص الرابط', onclick: () => { sfx.tap(); real.textContent = '⚠️ ' + m.link + ' ← موقع غريب!'; } }, ['🔍'])]));
+    }
+    F.zone.append(card);
+    for (; ;) {
+      const v = await F.pick([{ t: '📬 أفتحها', v: 0, cls: 'teal' }, { t: '🙋 لا أفتحها وأخبر كبيرًا أثق به', v: 1, cls: 'coral' }]);
+      if (!F.alive) return;
+      if (v === m.bad) { sfx.ok(); card.style.borderColor = 'var(--green2)'; F.say(m.bad ? 'sad' : 'happy', (m.bad ? 'آخ! أوقفتم حيلتي! ' : '') + m.why, 'good'); F.clearBtns(); await wait(2200); break; }
+      mis++; sfx.no(); hit(card, 'shake');
+      if (m.bad) F.say('laugh', 'هاهاها! لو فتحتها لوقعت في فخي! ' + m.why, 'bad'); else F.say('oops', 'هذه رسالة آمنة من شخص تعرفه! ' + m.why, 'bad');
+    }
+    if (!F.alive) return;
+  }
+  F.dots(msgs.length, msgs.length); F.zone.innerHTML = ''; F.clearBtns();
+  F.say('sad', 'لا لا لا! كل حيلي فشلت!! 😭');
+  F.zone.append(h('div', { class: 'row' }, [['✋', 'قِف'], ['🧠', 'فكّر'], ['🙋', 'اسأل']].map(a => h('div', { class: 'bigcard pop', style: 'min-width:150px;margin:0' }, [h('div', { class: 'emo', style: 'font-size:56px' }, [a[0]]), h('div', { class: 'lbl' }, [a[1]])]))));
+  await F.go(); return mis;
+}
+
+/* ---------- R5: kindness ---------- */
+async function r5(F) {
+  const sc = shuffle([
+    { q: 'زميلك نشر صورة محرجة لصديقك في مجموعة الفصل.', f: '😳', o: [{ e: '😂', t: 'أضحك وأرسلها لغيري', k: 0, w: 'هذا يؤذي صاحب الصورة. لا نضحك على أحد ولا نشارك ما يحرجه.' }, { e: '🙋', t: 'أطلب حذفها وأخبر كبيرًا أثق به', k: 1, w: 'ممتاز! هكذا نحمي صديقنا ونتصرّف بشجاعة.' }, { e: '🙈', t: 'أتجاهل وأمشي', k: 0, w: 'التجاهل لا يوقف الأذى. الأفضل أن نساعد.' }] },
+    { q: 'شخص كتب لصديقك كلمة جارحة في دردشة اللعبة.', f: '😢', o: [{ e: '😡', t: 'أكتب له كلمة جارحة أكثر', k: 0, w: 'الكلمة الجارحة تزيد الأذى. لا نردّ بالأذى.' }, { e: '💛', t: 'أكتب لصديقي كلمة لطيفة وأبلّغ عن الرسالة', k: 1, w: 'رائع! الكلمة اللطيفة تدعم صديقك، والتبليغ يحميه.' }, { e: '🤐', t: 'أغلق اللعبة وأسكت', k: 0, w: 'السكوت يترك صديقنا وحده. نقف معه ونخبر كبيرًا.' }] },
+    { q: 'صديقك فاز عليك في اللعبة.', f: '🎮', o: [{ e: '😠', t: 'أكتب له: غشّاش!', k: 0, w: 'لا نتّهم أحدًا بغير دليل. الخسارة جزء من اللعب.' }, { e: '🏆', t: 'أقول له: مبروك! لعبة حلوة', k: 1, w: 'أحسنت! الروح الرياضية تجعل الجميع سعداء.' }, { e: '💥', t: 'أرمي الجهاز غاضبًا', k: 0, w: 'الجهاز لا ذنب له! نأخذ نفسًا عميقًا ونلعب من جديد.' }] },
+    { q: 'رأيت كلمة سرّ صديقك على شاشة جهازه.', f: '🔑', o: [{ e: '😈', t: 'أجرّب الدخول إلى حسابه', k: 0, w: 'الدخول إلى حساب غيرك بدون إذنه ليس أمانة.' }, { e: '🤝', t: 'أخبره بهدوء ليغيّرها ولا أستخدمها', k: 1, w: 'ممتاز! الأمانة من أجمل أخلاق الحارس.' }, { e: '📝', t: 'أكتبها وأعطيها لأصدقائنا', k: 0, w: 'كلمة سرّ غيرنا أمانة عندنا. لا ننشرها.' }] }
+  ]);
+  let mis = 0; let kind = 0;
+  const meter = h('div', { class: 'meter' }, [h('i')]);
+  F.say('sly', 'سأكون مشاغبًا في الدردشة 😜 هل ستكونون ألطف مني؟ اختاروا الكلمة الطيبة!');
+  for (let i = 0; i < sc.length; i++) {
+    F.dots(sc.length, i); const s = sc[i]; F.zone.innerHTML = '';
+    F.zone.append(h('div', { class: 'faces pop' }, [s.f]), h('div', { class: 'scen' }, [s.q]), h('div', { style: 'text-align:center;font-size:20px' }, ['عدّاد اللطف 💛']), meter);
+    meter.firstChild.style.width = (kind / sc.length * 100) + '%';
+    const box = h('div', { class: 'pick3' }); F.zone.append(box);
+    await new Promise(res => {
+      shuffle(s.o).forEach(o => { const b = h('button', { class: 'opt', onclick: () => {
+        sfx.tap();
+        if (o.k) { sfx.ok(); b.classList.add('good'); kind++; meter.firstChild.style.width = (kind / sc.length * 100) + '%'; F.say('happy', o.w, 'good'); setTimeout(res, 2400); }
+        else { mis++; sfx.no(); b.classList.add('bad'); F.say('oops', o.w, 'bad'); setTimeout(() => b.classList.remove('bad'), 600); }
+      } }, [h('span', { class: 'e' }, [o.e]), o.t]); box.append(b); });
+    });
+    if (!F.alive) return;
+  }
+  F.dots(sc.length, sc.length); F.zone.innerHTML = ''; F.clearBtns();
+  F.say('happy', G('حتى أنا تعلّمت اليوم! سأكتب كلمات طيبة فقط 🥹', 'حتى أنا تعلّمت اليوم! سأكتب كلمات طيبة فقط 🥹'));
+  F.zone.append(h('div', { class: 'bigcard pop' }, [h('div', { class: 'emo' }, ['💛']), h('div', { class: 'lbl' }, ['لطيفة؟ صادقة؟ ما تؤذي؟'])]));
+  await F.go(); return mis;
+}
+
+/* ---------- R6: balanced day ---------- */
+async function r6(F) {
+  const slots = [
+    { n: 'بعد المدرسة 🏫', o: [{ e: '⚽', t: 'ألعب كرة مع أصدقائي', b: 2, m: 1, s: 0, scr: 0 }, { e: '📱', t: 'ألعب على التابلت', b: -1, m: 1, s: 0, scr: 1 }, { e: '📖', t: 'أقرأ قصة ممتعة', b: 0, m: 2, s: 0, scr: 0 }] },
+    { n: 'العصر ☀️', o: [{ e: '🚶', t: 'أمشي في الحديقة', b: 2, m: 1, s: 0, scr: 0 }, { e: '🎮', t: 'أكمل ألعاب الفيديو', b: -1, m: 1, s: 0, scr: 1 }, { e: '🎨', t: 'أرسم وألوّن', b: 0, m: 2, s: 0, scr: 0 }] },
+    { n: 'المساء 🌇', o: [{ e: '📺', t: 'أشاهد فيديوهات', b: -1, m: 0, s: 0, scr: 1 }, { e: '🍽️', t: 'أتعشّى مع الجميع', b: 1, m: 2, s: 0, scr: 0 }, { e: '🧩', t: 'ألعب لعبة طاولة مع صديقي', b: 0, m: 2, s: 0, scr: 0 }] },
+    { n: 'قبل النوم 🌙', o: [{ e: '📱', t: 'أستمر على الجهاز', b: 0, m: -1, s: -2, scr: 1 }, { e: '📖', t: 'أقرأ قصة قصيرة', b: 0, m: 1, s: 2, scr: 0 }, { e: '🪥', t: 'أنظّف أسناني وأستعد للنوم', b: 1, m: 0, s: 2, scr: 0 }] }
+  ];
+  let mis = 0;
+  F.say('sly', 'سأسرق وقتكم! 🕰️ سأجعل اليوم كله على الشاشة! لكن أنتم تختارون ماذا تفعلون في كل وقت…');
+  for (; ;) {
+    const st = { b: 50, m: 50, s: 50 }; let scr = 0; let lastScr = false;
+    const bars = h('div', { class: 'bars' });
+    const mk = (id, lbl) => { const f = h('i'); bars.append(h('div', { class: 'barrow' }, [h('span', null, [lbl]), h('div', { class: 'meter' }, [f])])); return f; };
+    const fb = mk('b', '💪 جسمي'), fm = mk('m', '😊 مزاجي'), fs = mk('s', '😴 نومي');
+    const upd = () => { fb.style.width = st.b + '%'; fm.style.width = st.m + '%'; fs.style.width = st.s + '%'; };
+    for (let i = 0; i < slots.length; i++) {
+      F.dots(slots.length, i); F.zone.innerHTML = '';
+      const box = h('div', { class: 'pick3' });
+      F.zone.append(h('div', { class: 'scen pop' }, ['⏰ ' + slots[i].n + ' — ماذا نفعل؟']), box, h('div', { style: 'height:8px' }), bars); upd();
+      const ch = await new Promise(res => slots[i].o.forEach(o => box.append(h('button', { class: 'opt', onclick: () => { sfx.tap(); res(o); } }, [h('span', { class: 'e' }, [o.e]), o.t]))));
+      if (!F.alive) return;
+      st.b = Math.max(10, Math.min(100, st.b + ch.b * 12)); st.m = Math.max(10, Math.min(100, st.m + ch.m * 12)); st.s = Math.max(10, Math.min(100, st.s + ch.s * 15)); scr += ch.scr; lastScr = !!ch.scr; upd();
+      if (ch.scr) { sfx.laugh(); F.say('laugh', 'هيهي! الشاشة أخذت ساعة من وقتكم 🕰️', ''); } else { sfx.ok(); F.say('oops', 'آخ! أبعدتم وقتًا عن الشاشة!', 'good'); }
+      await wait(1200);
+    }
+    F.dots(slots.length, slots.length);
+    const balanced = scr <= 1 && !lastScr;
+    F.zone.innerHTML = ''; F.zone.append(h('div', { class: 'scen' }, [balanced ? '🌟 يوم متوازن! جسم نشيط ومزاج جميل ونوم هادئ' : '😵 الشاشة أخذت أغلب اليوم!']), bars); upd();
+    if (balanced) { F.say('sad', 'يا للخسارة! يومكم متوازن ولا أستطيع سرقة وقتكم! 😭', 'good'); await F.go(); return mis; }
+    mis++; sfx.no(); F.say('laugh', 'هاهاها! اليوم الذي كله شاشة يتعب الجسم والمزاج والنوم! هل نجرّب يومًا أفضل؟', 'bad');
+    await F.pick([{ t: '🔁 نجرّب يومًا آخر', v: 1, cls: 'teal' }]); if (!F.alive) return;
+  }
+}
+
+/* ===================== CERTIFICATE ===================== */
+function showCert() {
+  const F = frame('🏆 شهادة الحارس', { back: true });
+  F.dots(6, 6); F.say('happy', 'تهانينا يا حرّاس الكنز! سأصير حارسًا مثلكم! 🎉');
+  confetti(60);
+  const ttl = G('حارس', 'حارسة');
+  F.zone.append(h('div', { class: 'cert pop' }, [
+    h('div', { style: 'font-size:22px;color:#7a3b00' }, ['نادي الحاسب · نادي التطوع']),
+    h('h2', null, ['شهادة ' + ttl + ' الكنز الرقمي']),
+    h('div', { class: 'who' }, [art('hero-' + (me ? me.g : 'f'), ART.hero(me ? me.g : 'f'), ''), art('av-' + (me ? me.av : 'falcon'), ART.avatar(me ? me.av : 'falcon'), '', 'width:100px;height:100px')]),
+    h('div', { style: 'font-size:28px' }, ['تُمنح إلى ' + ttl + ' الكنز: ', h('span', { class: 'line' })]),
+    h('div', { style: 'font-size:24px;margin-top:8px' }, ['لأنّه' + (me && me.g === 'm' ? '' : 'ا') + ' أوقف' + (me && me.g === 'm' ? '' : 'ت') + ' علي بابا بذكاء، وتعلّم' + (me && me.g === 'm' ? '' : 'ت') + ':']),
+    h('div', { style: 'font-size:22px;margin:8px 0;line-height:1.9' }, ['🌍 العالم الرقمي · 🤐 سرّي في جيبي · 🔐 القفل السحري', h('br'), '📬 قِف فكّر اسأل · 💛 الكلمة الطيّبة · ⚖️ يوم متوازن']),
+    h('div', { class: 'starsbig' }, [stars(totalStars() >= 16 ? 3 : totalStars() >= 11 ? 2 : 1)]),
+    h('div', { style: 'font-size:18px;margin-top:6px;color:#7a3b00' }, ['التاريخ: ', h('span', { class: 'line', style: 'min-width:140px' })])
+  ]));
+  F.btns.append(h('button', { class: 'btn big green noprint', onclick: () => window.print() }, ['🖨️ اطبع الشهادة']), h('button', { class: 'btn ghost noprint', onclick: showMap }, ['🗺️ للخريطة']), h('button', { class: 'btn ghost noprint', onclick: () => { prog = {}; store.set('cave.prog', prog); showMap(); } }, ['🔁 نلعب من جديد']));
+  Kids.upgradeArt(app);
+}
+
+showTitle();
+</script>
+</body>
+</html>

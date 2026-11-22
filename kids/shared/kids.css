@@ -1,0 +1,90 @@
+/* Computer Club x Volunteer Club — kids games shared styles (Arabic / RTL) */
+:root{
+  --ink:#2a1745; --night1:#120f35; --night2:#2a2468; --night3:#4a3a9a;
+  --gold:#ffc247; --gold2:#ff9f1c; --teal:#19d3c5; --teal2:#0fa89d; --coral:#ff6b6b; --coral2:#d94a4a;
+  --sand:#f6e3b4; --cream:#fff4d6; --green:#3ddc84; --green2:#22b363; --cyan:#22e6ff; --mag:#ff3df2; --sky:#6fb8ff;
+  --head:'Changa','Cairo',system-ui,sans-serif; --body:'Cairo','Changa',system-ui,sans-serif;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{background:#120f35}
+html,body{margin:0;min-height:100%;}
+body{font-family:var(--body);font-weight:700;font-size:22px;line-height:1.5;color:var(--cream);
+  background:linear-gradient(180deg,var(--night1) 0%,var(--night2) 55%,var(--night3) 100%) fixed;
+  overflow-x:hidden;user-select:none;-webkit-user-select:none;touch-action:manipulation}
+h1,h2,h3{font-family:var(--head);font-weight:800;margin:0;line-height:1.25}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+.sky{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.sky svg{position:absolute;inset:0;width:100%;height:100%}
+.star{animation:tw 3s ease-in-out infinite}
+@keyframes tw{0%,100%{opacity:.25}50%{opacity:1}}
+#app{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;max-width:1100px;margin:0 auto;padding:10px 14px 26px}
+.top{display:flex;align-items:center;gap:10px;padding:6px 0 10px}
+.top .title{font-family:var(--head);font-size:24px;color:var(--gold);flex:1;text-shadow:0 2px 0 rgba(0,0,0,.35)}
+.iconbtn{width:56px;height:56px;border-radius:18px;background:rgba(255,255,255,.12);border:3px solid rgba(255,255,255,.25);font-size:26px;display:grid;place-items:center;transition:transform .12s}
+.iconbtn:active{transform:scale(.92)}
+.iconbtn.off{opacity:.5}
+.prog{display:flex;gap:7px;align-items:center}
+.prog i{width:16px;height:16px;border-radius:50%;background:rgba(255,255,255,.2);border:2px solid rgba(255,255,255,.35);display:block;transition:all .3s}
+.prog i.on{background:var(--gold);border-color:#fff;box-shadow:0 0 12px var(--gold);transform:scale(1.15)}
+.prog i.cur{border-color:var(--gold);animation:pulse 1.2s infinite}
+@keyframes pulse{50%{transform:scale(1.35)}}
+
+/* chunky buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:68px;padding:10px 26px;border-radius:24px;font-family:var(--head);font-size:26px;font-weight:800;color:#2a1745;
+  background:var(--gold);border-bottom:8px solid var(--gold2);box-shadow:0 8px 0 rgba(0,0,0,.18);transition:transform .1s,border-bottom-width .1s;text-align:center;line-height:1.2}
+.btn:active{transform:translateY(5px);border-bottom-width:3px}
+.btn.teal{background:var(--teal);border-bottom-color:var(--teal2)}
+.btn.coral{background:var(--coral);border-bottom-color:var(--coral2);color:#fff}
+.btn.green{background:var(--green);border-bottom-color:var(--green2)}
+.btn.ghost{background:rgba(255,255,255,.14);border:3px solid rgba(255,255,255,.3);border-bottom-width:6px;color:var(--cream)}
+.btn.big{min-height:84px;font-size:32px;padding:12px 34px}
+.btn[disabled]{opacity:.45;pointer-events:none}
+
+/* cards & bubbles */
+.panel{background:rgba(20,15,60,.62);border:3px solid rgba(255,255,255,.18);border-radius:28px;padding:16px 18px;backdrop-filter:blur(3px)}
+.card{background:var(--cream);color:var(--ink);border-radius:26px;border:4px solid var(--gold);box-shadow:0 10px 0 rgba(0,0,0,.2);padding:18px 20px}
+.bubble{position:relative;background:#fff;color:var(--ink);border-radius:26px;padding:14px 20px;font-size:23px;border:4px solid var(--ink);box-shadow:0 6px 0 rgba(0,0,0,.18)}
+.bubble.good{background:#e8fff0;border-color:var(--green2)}
+.bubble.bad{background:#fff0ef;border-color:var(--coral2)}
+.say{display:inline-grid;place-items:center;width:44px;height:44px;border-radius:50%;background:var(--teal);border:3px solid var(--ink);font-size:20px;margin-inline-start:10px;vertical-align:middle}
+.say:active{transform:scale(.9)}
+
+.stage{display:grid;grid-template-columns:230px 1fr;gap:16px;align-items:start;flex:1}
+.side{display:flex;flex-direction:column;align-items:center;gap:8px;position:sticky;top:8px}
+.side .art,.ali-box{width:200px;height:230px;display:block;animation:float 3.4s ease-in-out infinite}
+@keyframes float{50%{transform:translateY(-8px)}}
+.main{display:flex;flex-direction:column;gap:14px;min-width:0}
+@media (max-width:760px){
+  body{font-size:20px}
+  .stage{grid-template-columns:1fr}
+  .side{flex-direction:row;position:static;justify-content:center}
+  .side .art,.ali-box{width:104px;height:120px}
+  .btn{font-size:23px;padding:8px 18px}
+  .btn.big{font-size:27px}
+}
+.art{display:inline-block;line-height:0}
+.art svg,.art img{width:100%;height:100%;display:block;object-fit:contain}
+
+/* animations */
+@keyframes pop{0%{transform:scale(.6);opacity:0}70%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-10px)}40%{transform:translateX(10px)}60%{transform:translateX(-7px)}80%{transform:translateX(7px)}}
+@keyframes wiggle{0%,100%{transform:rotate(0)}25%{transform:rotate(-6deg)}75%{transform:rotate(6deg)}}
+@keyframes bounce{0%,100%{transform:translateY(0)}40%{transform:translateY(-22px)}}
+@keyframes slidein{from{transform:translateY(30px);opacity:0}to{transform:none;opacity:1}}
+.pop{animation:pop .35s ease-out both}.shake{animation:shake .45s}.wiggle{animation:wiggle .5s}.bounce{animation:bounce .6s}.slidein{animation:slidein .35s ease-out both}
+
+/* confetti */
+.confetti{position:fixed;inset:0;pointer-events:none;z-index:50;overflow:hidden}
+.confetti b{position:absolute;top:-30px;font-size:30px;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(540deg)}}
+
+/* modal */
+.modal{position:fixed;inset:0;z-index:40;background:rgba(10,8,35,.78);display:grid;place-items:center;padding:16px}
+.modal .box{max-width:560px;width:100%;text-align:center;animation:pop .35s ease-out both}
+.modal .box h2{font-size:34px;margin-bottom:6px;color:var(--ink)}
+.muted{opacity:.75;font-size:.85em}
+.row{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;animation-iteration-count:1!important}}
+
+@media (max-width:760px){.moon{display:none}}

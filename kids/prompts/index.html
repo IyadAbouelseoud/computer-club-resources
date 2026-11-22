@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Kids games · Gemini image prompt library</title>
+<link rel="icon" href="data:,">
+<style>
+:root{color-scheme:dark;--bg:#0f0c2e;--panel:#1a1550;--line:#35307a;--gold:#ffc247;--teal:#19d3c5;--txt:#eef0ff;--dim:#a9acd6}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--txt);font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif;padding:24px 16px 60px}
+main{max-width:980px;margin:0 auto;min-width:0}
+h1{font-size:28px;margin:0 0 4px;color:var(--gold)} h2{font-size:20px;margin:30px 0 10px;color:var(--teal)}
+p,li{color:var(--dim)} b{color:var(--txt)}
+.box{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin:10px 0}
+.grid{display:grid;gap:12px;grid-template-columns:minmax(0,1fr)}
+.item{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.item h3{margin:0 0 2px;font-size:17px} .item .meta{font-size:13px;color:var(--dim);font-family:ui-monospace,Menlo,Consolas,monospace}
+.box pre,.item pre{white-space:pre-wrap;overflow-wrap:anywhere;word-break:break-word;background:#0b0925;border:1px solid var(--line);border-radius:10px;padding:10px;margin:8px 0;font:13px/1.55 ui-monospace,Menlo,Consolas,monospace;color:#d9dcff}
+button{background:var(--gold);color:#2a1745;border:0;border-radius:10px;padding:8px 14px;font-weight:700;cursor:pointer;font-size:14px}
+button.alt{background:var(--teal)} button:active{transform:scale(.97)}
+code{background:#0b0925;border-radius:6px;padding:1px 6px;color:#ffd978}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.ok{color:#3ddc84;font-size:13px;margin-inline-start:6px}
+</style>
+</head>
+<body>
+<main>
+  <h1>Gemini image prompt library</h1>
+  <p>For the kids games (Cave Guardians + Little Programmers Caravan). The games already ship with built-in vector art, so nothing is blocked: every image you add here simply replaces its built-in version.</p>
+
+  <div class="box">
+    <b>How to use (5 steps)</b>
+    <ol>
+      <li>Generate <b>Ali Baba (sly)</b> first. Keep the best result and use it as the <b>reference image</b> for every other Ali mood ("keep the exact same character").</li>
+      <li>Do the same with the two kids and the camel robot, so each character stays consistent across poses.</li>
+      <li>Use <b>1:1 square</b>. Every prompt asks for a <b>solid pure green (#00FF00) background</b>. Don't worry about transparency: send me the images as they are and I will cut the green out and wire them in.</li>
+      <li>Name each file exactly as shown in <code>file</code> (for example <code>ali-sly.png</code>). If you can't rename, send them in order and tell me which is which.</li>
+      <li>You don't need all of them. Priority: the <b>Ali Baba set</b>, the <b>two kids</b> and the <b>camel robot</b>. The rest are optional polish.</li>
+    </ol>
+    <p>Style rules baked into every prompt: bright children's picture-book cartoon, thick dark outlines, rounded shapes, Arabian-nights palette, friendly (Ali Baba must be goofy and harmless, never scary), no text inside the image.</p>
+  </div>
+
+  <div class="box">
+    <b>Style block</b> (already included in each prompt below; use it alone if you want to add your own subject)
+    <pre id="style"></pre>
+    <div class="row"><button onclick="copyText(STYLE,this)">Copy style block</button></div>
+  </div>
+
+  <div id="out"></div>
+</main>
+<script>
+const STYLE = "Children's picture-book cartoon illustration, clean vector look, thick dark indigo outlines (#2A1745), flat bright colors with simple cel-shading, rounded friendly shapes, warm Arabian-nights palette (deep indigo, gold, turquoise, coral, cream). Cheerful and completely safe for ages 6-12. Single subject centered with a comfortable margin, isolated on a flat solid pure green (#00FF00) background, no shadow on the background, no text, no letters, no watermark, no border. Square 1:1.";
+const ALI = "Ali Baba, a goofy, lovable and harmless cartoon trickster (NOT scary): round face, big curly black mustache, cream turban with a red ruby gem and a teal feather, indigo robe with a gold sash, a brown loot sack over his shoulder with a small magenta lotus emblem. Chest-up portrait, facing forward.";
+const REF = " Use the attached image as the character reference and keep the exact same character, outfit and proportions; only change the expression.";
+const G = [
+ ['Ali Baba (the main villain, 5 moods)', [
+  ['ali-sly', 'Ali Baba: sly (START HERE)', ALI + " Expression: one eyebrow raised, sneaky smirk, mischievous but friendly."],
+  ['ali-laugh', 'Ali Baba: laughing', ALI + " Expression: laughing out loud with his mouth wide open, eyes squeezed happy." + REF],
+  ['ali-oops', 'Ali Baba: caught / oops', ALI + " Expression: wide shocked eyes, small round mouth, one sweat drop, caught red-handed." + REF],
+  ['ali-sad', 'Ali Baba: defeated / pouting', ALI + " Expression: pouting with a single big tear, defeated but funny, not heartbreaking." + REF],
+  ['ali-happy', 'Ali Baba: happy / reformed', ALI + " Expression: big warm friendly smile, a little apologetic, eyebrows raised kindly." + REF]]],
+ ['The child heroes', [
+  ['hero-f', 'Hero: girl explorer', "A cheerful child explorer girl about 9 years old: turquoise headscarf with a small gold pin, bright pink top, big friendly eyes, wide smile. Chest-up portrait, facing forward."],
+  ['hero-m', 'Hero: boy explorer', "A cheerful child explorer boy about 9 years old: white kufi-style cap with coral and teal stripes, sky-blue top, big friendly eyes, wide smile. Chest-up portrait, facing forward." + " Match the art style of the girl explorer reference image if attached."]]],
+ ['Companion animals (head only, round, simple)', [
+  ['av-falcon', 'Avatar: falcon', "Cute round cartoon head of a brown falcon with a golden beak and a cream eyebrow stripe, big friendly eyes. Head only."],
+  ['av-leopard', 'Avatar: Arabian leopard', "Cute round cartoon head of an Arabian leopard cub with orange fur, dark spots and round ears, big friendly eyes. Head only."],
+  ['av-oryx', 'Avatar: Arabian oryx', "Cute round cartoon head of a white Arabian oryx with two long straight horns and dark brown face markings, big friendly eyes. Head only."],
+  ['av-gazelle', 'Avatar: gazelle', "Cute round cartoon head of a sand-colored gazelle with small curved horns, big ears and a white stripe down the nose, big friendly eyes. Head only."],
+  ['av-camel', 'Avatar: camel', "Cute round cartoon head of a friendly sandy camel with sleepy kind eyes and a soft muzzle. Head only."],
+  ['av-fox', 'Avatar: desert fox', "Cute round cartoon head of an orange desert fox with pointy ears, white muzzle and big friendly eyes. Head only."]]],
+ ['Game 2 characters and props', [
+  ['camelbot', 'Camel robot "Jammool" (TOP-DOWN view)', "A cute toy robot camel seen from DIRECTLY ABOVE (top-down view), facing UP so its head is at the top of the image: golden body, one round hump with a glowing cyan panel, small dark visor eyes with cyan lights, a short antenna with a magenta ball on its head, four stubby legs sticking out to the sides."],
+  ['chest', 'Treasure chest', "A wooden treasure chest with gold straps and a golden lock, closed, front three-quarter view, a tiny cyan sparkle on top."],
+  ['gem', 'Gem', "A single turquoise diamond-cut gemstone with white highlight shapes, simple and iconic."],
+  ['rock', 'Boulder', "A rounded gray-purple boulder with a small crack and a light highlight, friendly cartoon style."],
+  ['lantern-on', 'Lantern: ON (binary 1)', "An Arabian lantern (fanous) with golden top and base, glowing warm yellow, soft glow halo around it, front view, hanging ring on top."],
+  ['lantern-off', 'Lantern: OFF (binary 0)', "The same Arabian lantern (fanous) with golden top and base, but turned OFF: dark purple glass, no glow. Same shape and pose as the lit lantern reference." ],
+  ['lock', 'Padlock', "A chunky golden padlock with a round keyhole, closed, front view, simple and iconic."]]]
+];
+document.getElementById('style').textContent = STYLE;
+function copyText(t, btn) {
+  const done = () => { const o = btn.textContent; btn.textContent = 'Copied ✓'; setTimeout(() => btn.textContent = o, 1400); };
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(done, () => fallback(t, done)); else fallback(t, done);
+}
+function fallback(t, done) { const a = document.createElement('textarea'); a.value = t; document.body.append(a); a.select(); try { document.execCommand('copy'); } catch (e) {} a.remove(); done(); }
+const out = document.getElementById('out');
+G.forEach(grp => {
+  const h2 = document.createElement('h2'); h2.textContent = grp[0]; out.append(h2);
+  const grid = document.createElement('div'); grid.className = 'grid';
+  grp[1].forEach(it => {
+    const full = it[2] + ' ' + STYLE;
+    const d = document.createElement('div'); d.className = 'item';
+    d.innerHTML = '<h3></h3><div class="meta"></div><pre></pre><div class="row"><button>Copy prompt</button></div>';
+    d.querySelector('h3').textContent = it[1]; d.querySelector('.meta').textContent = 'file: ' + it[0] + '.png';
+    d.querySelector('pre').textContent = full; d.querySelector('button').onclick = e => copyText(full, e.target);
+    grid.append(d);
+  });
+  out.append(grid);
+});
+</script>
+</body>
+</html>

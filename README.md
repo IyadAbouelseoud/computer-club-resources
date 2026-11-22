@@ -7,6 +7,15 @@ Two static pages, no build step.
 - `sql/` Shadow Lotus Loot Drop (Cyberpunk Heist SQL workshop)
 - `index.html` small landing page that links to both
 
+## Kids games (Arabic, ages 6-12)
+Orphan-home visit with the Volunteer Club. No build step, no tracking, works offline once loaded.
+- `kids/` hub (`kids/index.html`) with a staff panel mapping the workshop topics to the game rounds
+- `kids/cave/` Cave Guardians (حرّاس كهف الكنز): 6 online-safety rounds, printable certificate
+- `kids/caravan/` Little Programmers Caravan (قافلة المبرمجين الصغار): 18 levels (sequences, loops, debugging, binary doors); `node kids/caravan/test.js` checks every level is solvable
+- `kids/shared/` common CSS, inline-SVG art, synth sound effects, read-aloud helper
+- `kids/assets/` optional PNG replacements for the built-in art: drop files named as in `kids/prompts/` and list them in `manifest.json`
+- `kids/prompts/` Gemini image prompt library for those PNGs
+
 ## Deploy on GitHub Pages
 1. Create a new public repository, for example `workshop-resources`.
 2. Upload everything in this folder (keep the `ccna` and `sql` folders and the `.nojekyll` file).
