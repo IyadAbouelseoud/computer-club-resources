@@ -150,7 +150,7 @@ function showTitle() {
 function showMap() {
   stopRun(); app.innerHTML = '';
   const nx = nextId(); const done = doneCount();
-  const st = strip(done === ALL.length ? 'happy' : 'sly', done === 0 ? 'اختاروا مرحلة وابدأوا! سأحاول أن أخلّط الأوامر… هيهي 😜' : done === ALL.length ? 'أنتم مبرمجون ماهرون! سأتعلّم منكم يا مبرمجين! 🥹' : 'أحسنتم! أنجزتم ' + done + ' من ' + ALL.length + ' مرحلة. الباقي أصعب… ولكن ممتع! 😎');
+  const st = strip(done === ALL.length ? 'happy' : 'sly', done === 0 ? 'اختاروا مرحلة وابدأوا! سأحاول أن أخلّط الأوامر… هيهي 😜' : done === ALL.length ? 'أنتم مبرمجون ماهرون! سأتعلّم منكم يا مبرمجين! 🥹' : 'أحسنتم! أنجزتم ' + done + ' من ' + ALL.length + ' مرحلة. كمّلوا، أنتم رائعون! 😎');
   const list = h('div', { class: 'worlds' });
   WORLDS.forEach((w, wi) => {
     const row = h('div', { class: 'lvls' });
@@ -219,12 +219,17 @@ function playLevel(L, fresh) {
       }
     });
     if (!P.length) box.append(h('div', { style: 'opacity:.6;font-size:20px;padding:20px 8px' }, ['اضغط على الأوامر في الأسفل لتضعها هنا 👇']));
-    cnt.textContent = '🎒 القطع: ' + used() + ' / ' + L.max;
+    cnt.textContent = L.loops ? '🎒 القطع: ' + used() + ' / ' + L.max : '';
     pal.querySelectorAll('button').forEach(b => b.classList.toggle('dis', used() >= L.max));
   }
   const pal = h('div', { class: 'pal', style: L.loops ? '' : 'grid-template-columns:repeat(3,1fr)' }, [palBtn('F', '⬆️', 'تقدّم', () => addCmd('F')), palBtn('L', '↶', 'لفّ يسار', () => addCmd('L')), palBtn('R', '↷', 'لفّ يمين', () => addCmd('R')),
     L.loops ? palBtn('LP', '🔁', 'كرّر', addLoop) : null]);
 
+  let fails = 0, helped = false;
+  const helpBtn = h('button', { class: 'btn big', style: 'display:none;grid-column:1/-1', onclick: () => {
+    if (running) return; sfx.ok(); helped = true; P = JSON.parse(JSON.stringify(L.sol)); target = null; resetBot(); draw(); helpBtn.style.display = 'none';
+    st.set('happy', 'هذا هو الحل! 🪄 اضغطوا ▶ لتروا جمّول يصل. ثم جرّبوا المرحلة التالية بأنفسكم!');
+  } }, ['🪄 أرني الحل']);
   const runBtn = h('button', { class: 'btn green', onclick: () => run() }, ['▶ شغّل']);
   const ctl = h('div', { class: 'ctl' }, [runBtn,
     h('button', { class: 'btn teal', onclick: () => { if (running) return; sfx.tap(); resetBot(); hint.textContent = ''; } }, ['↩ من البداية']),
@@ -232,7 +237,7 @@ function playLevel(L, fresh) {
     h('button', { class: 'btn ghost', onclick: () => { sfx.tap(); st.set('happy', L.hint); } }, ['💡 تلميح'])]);
 
   app.append(bar(w.ic + ' ' + w.name + ' — ' + idx, true), st,
-    h('div', { class: 'play' }, [h('div', { class: 'boardwrap' }, [board]), h('div', { class: 'side2' }, [h('div', { class: 'proghead' }, [h('b', null, ['📜 برنامج جمّول']), cnt]), box, hint, pal, ctl])]));
+    h('div', { class: 'play' }, [h('div', { class: 'boardwrap' }, [board]), h('div', { class: 'side2' }, [h('div', { class: 'proghead' }, [h('b', null, ['📜 برنامج جمّول']), cnt]), box, hint, pal, helpBtn, ctl])]));
   Kids.upgradeArt(app); resetBot(); draw();
 
   const hl = (p, l) => { app.querySelectorAll('.running').forEach(e => e.classList.remove('running')); if (p != null) { const b = app.querySelector('.blk[data-p="' + p + '"]'); if (b) b.classList.add('running'); } if (l != null) { const lp = app.querySelector('.loop[data-l="' + l + '"]'); if (lp) lp.classList.add('running'); } };
@@ -247,17 +252,17 @@ function playLevel(L, fresh) {
         sfx.bump(); const dx = (s.bc - s.c) * 0.35, dy = (s.br - s.r) * 0.35; place(s.r, s.c, s.deg, dx, dy); await wait(220); if (tok !== runToken) return; place(s.r, s.c, s.deg); botEl.classList.add('bumpfx'); await wait(450); botEl.classList.remove('bumpfx'); break;
       }
       place(s.r, s.c, s.deg); if (s.ev === null || s.ev === 'gem' || s.ev === 'win') { if (s.p != null && (s.r !== res.tl[i - 1].r || s.c !== res.tl[i - 1].c)) sfx.step(); }
-      await wait(380); if (tok !== runToken) return;
+      await wait(300); if (tok !== runToken) return;
       if (s.ev === 'gem' || s.gem) { sfx.gem(); const g = board.querySelector('.cell[data-r="' + s.r + '"][data-c="' + s.c + '"] .gem'); if (g) g.style.display = 'none'; }
     }
     if (tok !== runToken) return; hl(null, null); running = false; runBtn.disabled = false;
     if (res.ok) {
       board.querySelector('.chest').classList.add('open'); botEl.classList.add('bounce');
-      const u = used(); const n = u <= L.par ? 3 : u <= L.par + 2 ? 2 : 1; setStars(L.id, n); sfx.win(); confetti(34);
+      const u = used(); const n = helped ? 1 : u <= L.par + 2 ? 3 : 2; setStars(L.id, n); sfx.win(); confetti(34);
       const nxt = nextLevel(L.id);
       await wait(700); winModal({ stars: n, par: L.par, used: u, say: L.debug ? 'أصلحتم الخطأ! أنتم صيّادو أخطاء ماهرون 🐞' : 'يا سلام! وصل جمّول إلى الكنز! أنتم مبرمجون رائعون! 🎉', again: () => playLevel(L), next: nxt });
     } else {
-      sfx.no();
+      sfx.no(); fails++; if (fails >= 2) { helpBtn.style.display = ''; hit(helpBtn, 'pop'); }
       const msg = res.reason === 'bump' ? 'اصطدم جمّول بصخرة 🪨 أو بحافة الأرض! جرّبوا برنامجًا آخر.' : res.reason === 'gems' ? 'وصل جمّول إلى الكنز لكن نسي الجواهر 💎! اجمعوها أولًا.' : 'توقّف جمّول قبل أن يصل للكنز 🐪 زيدوا أوامر أو غيّروها.';
       st.set('laugh', 'هاهاها! ' + msg + ' (ولا تقلقوا، المحاولة مجانية)', 'bad'); hint.textContent = '';
       await wait(900); if (tok === runToken) resetBot();
@@ -272,7 +277,7 @@ function winModal(o) {
   const m = h('div', { class: 'modal' }, [h('div', { class: 'box card' }, [
     h('div', { class: 'starsbig' }, [stars(o.stars)]), h('h2', null, ['أحسنتم! 🎉']),
     h('div', { style: 'font-size:23px;margin-bottom:8px' }, [o.say, sayBtn(o.say)]),
-    o.par ? h('div', { style: 'font-size:19px;opacity:.8;margin-bottom:10px' }, ['استخدمتم ' + o.used + ' قطعة (الأفضل: ' + o.par + ')' + (o.stars < 3 ? ' — جرّبوا برنامجًا أقصر لتحصلوا على ⭐⭐⭐' : '')]) : null,
+    o.par && o.stars === 2 ? h('div', { style: 'font-size:19px;opacity:.8;margin-bottom:10px' }, ['جرّبوا برنامجًا أقصر لتحصلوا على ⭐⭐⭐']) : null,
     h('div', { class: 'row' }, [h('button', { class: 'btn green', onclick: () => { m.remove(); sfx.tap(); openById(o.next); } }, [o.next ? 'المرحلة التالية ➜' : 'إلى الخريطة 🗺️']),
       h('button', { class: 'btn teal', onclick: () => { m.remove(); o.again(); } }, ['🔁 مرة أخرى']), h('button', { class: 'btn ghost', style: 'color:var(--ink);background:#eee', onclick: () => { m.remove(); showMap(); } }, ['🗺️ الخريطة'])])])]);
   document.body.append(m);
@@ -308,7 +313,7 @@ function playDoor(D, i, fresh) {
     setTimeout(() => winModal({ stars: n, say: i === E.DOORS.length - 1 ? 'فتحتم باب النادي الكبير! أنتم تتكلمون لغة الحاسوب الآن: 0 و1! 💻' : 'أحسنتم! الفوانيس المضيئة تجمع الرقم المطلوب.', again: () => playDoor(D, i), next: nxt }), 900);
   }
   if (D.type === 'make') {
-    actions.append(h('button', { class: 'btn big green', onclick: () => { if (locked) return; sfx.tap(); if (calc() === D.target) done(); else { wrong++; sfx.no(); hit(arch, 'shake'); st.set('laugh', 'هاهاها! الباب ما زال مغلقًا! مجموعكم الآن ' + calc() + ' لا ' + D.target + ' 😜', 'bad'); } } }, ['🚪 افتح الباب'])
+    actions.append(h('button', { class: 'btn big green', onclick: () => { if (locked) return; sfx.tap(); if (calc() === D.target) done(); else { wrong++; sfx.no(); hit(arch, 'shake'); st.set(wrong >= 2 ? 'happy' : 'laugh', wrong >= 2 ? 'لا بأس! ' + D.hint : 'هاهاها! الباب ما زال مغلقًا! مجموعكم الآن ' + calc() + ' لا ' + D.target + ' 😜', wrong >= 2 ? 'good' : 'bad'); } } }, ['🚪 افتح الباب'])
       , h('button', { class: 'btn ghost', onclick: () => { if (locked) return; sfx.tap(); bits.fill(0); draw(); } }, ['🌑 أطفئ الكل']));
   } else {
     D.options.slice().sort(() => Math.random() - .5).forEach(o => actions.append(h('button', { class: 'btn big', onclick: ev => { if (locked) return; sfx.tap(); const right = D.bits.reduce((a, b, k) => a + b * D.vals[k], 0); if (o === right) { sfx.ok(); sign.textContent = '🔢 ' + o; sum.textContent = D.vals.filter((v, k) => bits[k]).join(' + ') + ' = ' + o; done(); } else { wrong++; sfx.no(); hit(arch, 'shake'); st.set('laugh', 'هاهاها! ليس ' + o + '! اجمعوا قيم الفوانيس المضيئة فقط.', 'bad'); } } }, [String(o)])));

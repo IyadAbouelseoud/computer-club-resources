@@ -11,7 +11,7 @@ Two static pages, no build step.
 Orphan-home visit with the Volunteer Club. No build step, no tracking, works offline once loaded.
 - `kids/` hub (`kids/index.html`) with a staff panel mapping the workshop topics to the game rounds
 - `kids/cave/` Cave Guardians (حرّاس كهف الكنز): 6 online-safety rounds, printable certificate
-- `kids/caravan/` Little Programmers Caravan (قافلة المبرمجين الصغار): 18 levels (sequences, loops, debugging, binary doors); `node kids/caravan/test.js` checks every level is solvable
+- `kids/caravan/` Little Programmers Caravan (قافلة المبرمجين الصغار): 11 short stages (sequences, loops, debugging, binary doors) with a "show me the solution" help button after two failed tries; `node kids/caravan/test.js` checks every level is solvable
 - `kids/shared/` common CSS, inline-SVG art, synth sound effects, read-aloud helper
 - `kids/assets/` optional PNG replacements for the built-in art: drop files named as in `kids/prompts/` and list them in `manifest.json`
 - `kids/prompts/` Gemini image prompt library for those PNGs
