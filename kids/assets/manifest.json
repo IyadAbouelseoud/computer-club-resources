@@ -1,1 +1,22 @@
-{}
+{
+ "lock": true,
+ "lantern-on": true,
+ "lantern-off": true,
+ "rock": true,
+ "gem": true,
+ "chest": true,
+ "camelbot": true,
+ "av-fox": true,
+ "av-camel": true,
+ "av-gazelle": true,
+ "av-oryx": true,
+ "av-leopard": true,
+ "av-falcon": true,
+ "hero-m": true,
+ "hero-f": true,
+ "ali-happy": true,
+ "ali-sad": true,
+ "ali-oops": true,
+ "ali-laugh": true,
+ "ali-sly": true
+}

@@ -314,7 +314,7 @@ function playDoor(D, i, fresh) {
     D.options.slice().sort(() => Math.random() - .5).forEach(o => actions.append(h('button', { class: 'btn big', onclick: ev => { if (locked) return; sfx.tap(); const right = D.bits.reduce((a, b, k) => a + b * D.vals[k], 0); if (o === right) { sfx.ok(); sign.textContent = '🔢 ' + o; sum.textContent = D.vals.filter((v, k) => bits[k]).join(' + ') + ' = ' + o; done(); } else { wrong++; sfx.no(); hit(arch, 'shake'); st.set('laugh', 'هاهاها! ليس ' + o + '! اجمعوا قيم الفوانيس المضيئة فقط.', 'bad'); } } }, [String(o)])));
   }
   const lesson = (first && D.id === 'd1') ? h('div', { class: 'card lesson' }, ['💡 الحاسوب يفهم شيئين فقط: ', h('b', null, ['مضيء = 1']), ' ، ', h('b', null, ['مطفأ = 0']), ' . لكل فانوس قيمة (4 ، 2 ، 1). نجمع قيم الفوانيس المضيئة لنصنع أي رقم!']) : null;
-  app.append(bar('🚪 الباب الثنائي — ' + (i + 1), true), st, h('div', { style: 'height:10px' }), lesson, h('div', { style: 'height:10px' }), zone, h('div', { style: 'height:6px' }), actions,
+  app.append(bar('🚪 الباب الثنائي — ' + (i + 1), true), st, h('div', { style: 'height:10px' }), lesson || '', h('div', { style: 'height:10px' }), zone, h('div', { style: 'height:6px' }), actions,
     h('div', { class: 'row', style: 'margin-top:12px' }, [h('button', { class: 'btn ghost', onclick: () => { sfx.tap(); st.set('happy', D.hint); } }, ['💡 تلميح'])]));
   Kids.upgradeArt(app); draw();
 }

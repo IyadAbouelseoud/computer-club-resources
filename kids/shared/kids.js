@@ -177,17 +177,24 @@
   function art(name, svg, cls, style) {
     return '<span class="art ' + (cls || '') + '" data-art="' + name + '"' + (style ? ' style="' + style + '"' : '') + '>' + svg + '</span>';
   }
+  let LOADED = false;
   function upgradeArt(root) {
+    if (!LOADED) return;
     (root || document).querySelectorAll('[data-art]:not([data-up])').forEach(n => {
       n.setAttribute('data-up', '1');
       const f = MANIFEST[n.getAttribute('data-art')];
-      if (f) n.innerHTML = '<img alt="" draggable="false" src="' + ASSET_BASE + (typeof f === 'string' ? f : n.getAttribute('data-art') + '.png') + '">';
+      if (!f) return;
+      const orig = n.innerHTML, im = new Image();
+      im.alt = ''; im.draggable = false;
+      im.onerror = () => { n.innerHTML = orig; };
+      im.src = ASSET_BASE + (typeof f === 'string' ? f : n.getAttribute('data-art') + '.png');
+      n.innerHTML = ''; n.append(im);
     });
   }
   function initAssets(base) {
     ASSET_BASE = base || '../assets/';
     return fetch(ASSET_BASE + 'manifest.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : {}).catch(() => ({})).then(m => {
-      MANIFEST = m || {}; upgradeArt();
+      MANIFEST = m || {}; LOADED = true; upgradeArt();
       new MutationObserver(() => upgradeArt()).observe(document.body, { childList: true, subtree: true });
     });
   }
