@@ -47,7 +47,7 @@ ol li,ul li{margin:4px 0}
       <li>Generate the <b>Box</b> and the <b>Hakawati</b> first. When you like one, attach it as a reference to later prompts ("same style as the attached image").</li>
       <li>Items, box and hakawati use a <b>solid pure green #00FF00 background</b>. Don't cut them out yourself: Claude does that in PhotoCraft (see the pipeline below).</li>
       <li>Download each image at full size and <b>rename it to the filename shown</b> (for example <code>items/rakweh.png</code>).</li>
-      <li>Send the raw files to Claude in the chat, or put them in a folder and connect it. Claude runs the PhotoCraft pass, adds them to <code>levant/assets/</code>, updates <code>manifest.json</code> and deploys.</li>
+      <li>Send the raw files to Claude in the chat, or put them in a folder and connect it. Claude runs the finishing pass, converts them to WebP for the web (items <code>items/&lt;id&gt;.webp</code>, scenes <code>scenes/&lt;code&gt;.webp</code>, box and hakawatis <code>&lt;name&gt;.webp</code>; banknote vignettes stay <code>lira/&lt;value&gt;.png</code> for print), updates <code>manifest.json</code> and deploys.</li>
     </ol>
   </div>
 
@@ -156,7 +156,7 @@ const card = (title, meta, text, thumb, extra) => { const id = 'p' + (n++);
   return `<div class="item${thumb ? '' : ' wide'}">${thumb ? `<div class="thumb">${thumb}</div>` : ''}<div><h3>${title}</h3><div class="meta">${meta}</div><pre id="${id}">${esc(text)}</pre><button data-copy="${id}">Copy</button><span class="ok"></span>${extra || ''}</div></div>`; };
 
 document.getElementById('style').textContent = STYLE;
-document.getElementById('hero').innerHTML = HERO.map(h => card(h.title, `save as assets/${h.file} · manifest "${h.key}"`, h.p) +
+document.getElementById('hero').innerHTML = HERO.map(h => card(h.title, `save as ${h.key === 'hakawati' ? 'hakawati-boys.jpg' : h.file} · manifest "${h.key === 'hakawati' ? 'hakawati-boys' : h.key}"`, h.p) +
   (h.alt ? card(h.title + ' · girls’ shift version', `save as assets/hakawati.png (swap it in for the girls’ shift)`, h.alt) : '')).join('');
 document.getElementById('scenes').innerHTML = SCENES.map(s => { const C = S.COUNTRIES[s.c];
   return card(`${C.en} · ${C.place_en}`, `save as assets/scenes/${s.c}.jpg · manifest "scene-${s.c}"`, s.p + SCENE_END); }).join('');
@@ -165,7 +165,7 @@ document.getElementById('items').innerHTML = S.ITEMS.map(i => card(`${i.en} · $
 document.getElementById('lira').innerHTML = LIRA.map(l => card(`${l.v} Lira note`, `save as assets/lira/${l.v}.png · manifest "lira-${l.v}"`, `${LIRA_STYLE}\n\nSubject: ${l.p}`)).join('');
 
 // manifest builder
-const KEYS = ['box','hakawati', ...SCENES.map(s => 'scene-' + s.c), ...S.ITEMS.map(i => 'item-' + i.id), ...LIRA.map(l => 'lira-' + l.v)];
+const KEYS = ['box','hakawati-boys','hakawati-girls', ...SCENES.map(s => 'scene-' + s.c), ...S.ITEMS.map(i => 'item-' + i.id), ...LIRA.map(l => 'lira-' + l.v)];
 document.getElementById('chk').innerHTML = KEYS.map(k => `<label><input type="checkbox" value="${k}"> ${k}</label>`).join('');
 document.getElementById('chk').addEventListener('change', () => {
   const o = {}; document.querySelectorAll('#chk input:checked').forEach(c => o[c.value] = true);

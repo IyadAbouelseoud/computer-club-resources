@@ -30,8 +30,10 @@
 
   // ---------- optional art from Gemini (assets/manifest.json) ----------
   let MAN = {};
-  fetch('assets/manifest.json', { cache: 'no-cache' }).then((r) => r.ok ? r.json() : {}).then((j) => { MAN = j || {}; renderAttract(); renderDoors(); }).catch(() => { });
-  const art = (id) => MAN['item-' + id] ? `<img src="assets/items/${id}.png" alt="" draggable="false">` : S.svgOf(id);
+  fetch('assets/manifest.json', { cache: 'no-cache' }).then((r) => r.ok ? r.json() : {}).then((j) => { MAN = j || {}; renderAttract(); renderDoors(); preload(); }).catch(() => { });
+  // warm the cache so the first round never pops in (also keeps everything ready if the Wi-Fi drops)
+  function preload() { Object.keys(MAN).forEach((k) => { const m = k.match(/^(item|scene)-(.+)$/); if (m) { const i = new Image(); i.src = `assets/${m[1] === 'item' ? 'items' : 'scenes'}/${m[2]}.webp`; } }); }
+  const art = (id) => MAN['item-' + id] ? `<img src="assets/items/${id}.webp" alt="" draggable="false">` : S.svgOf(id);
 
   // ---------- golden hour ----------
   function golden(now) {
@@ -115,9 +117,10 @@
     el.classList.remove('swap'); void el.offsetWidth; el.classList.add('swap');
   }
   function renderAttract() {
-    $('#boxArt').innerHTML = MAN['box'] ? '<img src="assets/box.png" alt="صندوق الدنيا" draggable="false">' : boxSVG();
+    $('#boxArt').innerHTML = MAN['box'] ? '<img src="assets/box.webp" alt="صندوق الدنيا" draggable="false">' : boxSVG();
     const hk = $('.hak'); if (hk) hk.remove();
-    if (MAN['hakawati']) $('#peekBtn').insertAdjacentHTML('beforeend', '<img class="hak" src="assets/hakawati.png" alt="" draggable="false">');
+    const hkey = MAN['hakawati-' + cfg.shift] ? 'hakawati-' + cfg.shift : MAN['hakawati'] ? 'hakawati' : null;
+    if (hkey) $('#peekBtn').insertAdjacentHTML('beforeend', `<img class="hak" src="assets/${hkey}.webp" alt="" draggable="false">`);
     $('.gc-ic').innerHTML = art('golden');
     $('#goalArt').innerHTML = tileSVG(null, true);
     renderBoard(); tickGold();
@@ -172,7 +175,8 @@
     $('#goldFlag').hidden = !g.on;
     // scene
     const sc = $('#scene');
-    if (MAN['scene-' + c]) { sc.className = 'scene img'; sc.style.backgroundImage = `url(assets/scenes/${c}.jpg)`; sc.innerHTML = ''; }
+    $('#stage').classList.toggle('art', !!MAN['scene-' + c]);
+    if (MAN['scene-' + c]) { sc.className = 'scene img'; sc.style.backgroundImage = `url(assets/scenes/${c}.webp)`; sc.innerHTML = ''; }
     else { sc.className = 'scene'; sc.style.backgroundImage = ''; sc.innerHTML = S.sceneSVG(c); }
     // tray
     $('#tray').innerHTML = targets.map((t) => `<div class="tg" data-id="${t.id}"><span class="ic">${art(t.id)}</span><span class="tx"><b>${t.ar}</b><small lang="en" dir="ltr">${t.en}</small></span></div>`).join('') +
