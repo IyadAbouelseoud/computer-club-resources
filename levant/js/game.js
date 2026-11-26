@@ -106,9 +106,9 @@
   const CALLS = [
     ['تعا تفرّج يا سلام! الدنيا كلها بهالصندوق', 'Come and see! The whole Levant fits in this box.'],
     ['٣ كنوز مخبّاية، ٤٠ ثانية، وليرات بجيبتك', '3 hidden treasures. 40 seconds. Lira in your pocket.'],
-    ['كمّل بلاطتك الشامية واربح الجايزة الكبيرة', 'Complete your Damascene tile, win the big prize.'],
+    ['كل جولة بلد جديد: سوريا، لبنان، فلسطين، الأردن', 'Every round a new country: Syria, Lebanon, Palestine, Jordan.'],
     ['في فنجان ذهبي مخبّى… مين بيلاقيه؟', 'A golden finjan is hiding somewhere. Who will find it?'],
-    ['أهلين وسهلين! أول قطعة من البلاطة علينا', 'Ahlain! The first piece of your tile is on us.']
+    ['ارجعلنا بالساعة الذهبية، الليرات دبل!', 'Come back at golden hour: double lira!']
   ];
   let callI = 0;
   function rotateCall() {
@@ -122,12 +122,13 @@
     const hkey = MAN['hakawati-' + cfg.shift] ? 'hakawati-' + cfg.shift : MAN['hakawati'] ? 'hakawati' : null;
     if (hkey) $('#peekBtn').insertAdjacentHTML('beforeend', `<img class="hak" src="assets/${hkey}.webp" alt="" draggable="false">`);
     $('.gc-ic').innerHTML = art('golden');
-    $('#goalArt').innerHTML = tileSVG(null, true);
+    $('#goalArt').innerHTML = ORDER.map((c) => `<span style="--c:${S.COUNTRIES[c].color}">${art(S.COUNTRIES[c].emblem)}</span>`).join('');
     renderBoard(); tickGold();
   }
   function renderBoard() {
     const b = board().slice(0, 5), sn = SHIFT_NAME[cfg.shift] || ['', cfg.shift];
     $('#shiftLabel').textContent = sn[1];
+    const pk = stats().peeks; $('#crowdN').textContent = AR(pk); $('#crowdNen').textContent = pk;
     $('#board').innerHTML = b.length ? b.map((r, i) => `<li><span class="rk">${AR(i + 1)}</span><span class="fl">${art(S.COUNTRIES[r.c].emblem)}</span><span class="nm" dir="auto">${esc(r.n)}</span><span class="tm" dir="ltr">${r.t.toFixed(1)}s</span></li>`).join('')
       : `<li class="empty">لسّا ما حدا · <span lang="en" dir="ltr">Be the first!</span></li>`;
   }
@@ -336,10 +337,13 @@
     $('#payLines').innerHTML = lines.map(([a, e, v], i) => `<li style="animation-delay:${i * .15}s"><span>${a}<small lang="en" dir="ltr">${e}</small></span><span class="v" dir="ltr">+${v}</span></li>`).join('') +
       (R.gh && sum > 0 ? `<li class="x2" style="animation-delay:${lines.length * .15}s"><span>الساعة الذهبية<small lang="en" dir="ltr">Golden hour</small></span><span class="v" dir="ltr">×${P.mult}</span></li>` : '') +
       (!lines.length ? `<li><span>ارجع جرّب كمان مرة<small lang="en" dir="ltr">Try again later</small></span><span class="v">0</span></li>` : '');
-    $('#stampArt').innerHTML = tileSVG(perfect ? R.c : null);
+    $('#stampArt').innerHTML = `<span class="emb-big" style="--c:${C.color}">${art(C.emblem)}</span>`;
     $('#stampMsg').innerHTML = perfect
-      ? `اختموا قطعة ${C.ar} على بطاقة البلاطة<small lang="en" dir="ltr">Stamp the ${C.en} piece on the Tile Card</small>`
-      : `قطعة ${C.ar} بتستناك، ارجعلنا بعد شوي<small lang="en" dir="ltr">The ${C.en} piece is waiting. Come back soon!</small>`;
+      ? `بزيارتك الجاية جرّب بلد تاني<small lang="en" dir="ltr">Next visit, peek into another country!</small>`
+      : `ارجعلنا بعد شوي وجرّب كمان مرة<small lang="en" dir="ltr">Come back soon and try again!</small>`;
+    const ng = golden();
+    $('#nextGold').innerHTML = ng.on ? `الساعة الذهبية شغّالة هلّق! <small lang="en" dir="ltr">Golden hour is on right now</small>`
+      : ng.next != null ? `الساعة الذهبية الجاية بعد <b dir="ltr">${mmss(ng.next)}</b><small lang="en" dir="ltr">Next golden hour in ${mmss(ng.next)}: double lira</small>` : '';
     // leaderboard
     const f = $('#nameForm'); f.hidden = true; R.rec = null;
     if (perfect) {
@@ -360,19 +364,6 @@
   function finishResult() { $('#confetti').innerHTML = ''; R = null; renderBoard(); tickGold(); show('attract'); }
   $('#doneBtn').addEventListener('click', () => { const v = $('#nameIn').value.trim(); if (R && R.rec && v) { R.rec.n = v.slice(0, 14); save(); } finishResult(); });
 
-  function tileSVG(hi, all) {
-    const k = '#2B2520', q = { sy: [100, 0], lb: [0, 0], ps: [100, 100], jo: [0, 100] };
-    let o = `<svg viewBox="-6 -6 212 212" xmlns="http://www.w3.org/2000/svg">`;
-    ORDER.forEach((c) => {
-      const [x, y] = q[c], C = S.COUNTRIES[c], on = c === hi || all;
-      o += `<rect x="${x}" y="${y}" width="100" height="100" fill="${on ? C.color : '#F3E9D4'}" stroke="${k}" stroke-width="4"/>`;
-      o += `<g transform="translate(${x + (x ? 46 : 14)} ${y + (y ? 46 : 14)}) scale(.4)" opacity="${on ? 1 : .35}"><rect width="100" height="100" rx="50" fill="#FFF6E3"/>${S.SVG[C.emblem]}</g>`;
-      if (on && !all) o += `<circle cx="${x + 50}" cy="${y + 50}" r="44" fill="none" stroke="#FFF6E3" stroke-width="3" stroke-dasharray="6 6"><animateTransform attributeName="transform" type="rotate" from="0 ${x + 50} ${y + 50}" to="360 ${x + 50} ${y + 50}" dur="8s" repeatCount="indefinite"/></circle>`;
-    });
-    let p = []; for (let i = 0; i < 16; i++) { const r = i % 2 ? 18 : 32, a = (i * 22.5 - 90) * Math.PI / 180; p.push((100 + Math.cos(a) * r).toFixed(1) + ' ' + (100 + Math.sin(a) * r).toFixed(1)); }
-    o += `<path d="M${p.join(' L')}Z" fill="#D9A43A" stroke="${k}" stroke-width="4"/><circle cx="100" cy="100" r="9" fill="#B0302E" stroke="${k}" stroke-width="3"/></svg>`;
-    return o;
-  }
   function confetti(gold) {
     const box = $('#confetti'); box.innerHTML = '';
     const cols = gold ? ['#F2C94C', '#D9A43A', '#FFFDF7'] : ['#FFFDF7', '#FFFDF7', '#B0302E', '#F2C94C'];
