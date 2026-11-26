@@ -189,9 +189,9 @@ small{display:block;font-family:var(--en-display);font-style:italic;font-weight:
   background:repeating-radial-gradient(circle,transparent 0 5px,rgba(31,78,140,.16) 5px 6px)}
 .note-big::before{left:-14%}.note-big::after{right:-14%}
 .nb-num{font-family:var(--ar-display);font-size:clamp(56px,11vmin,110px);line-height:.9;color:var(--cobalt)}
-.nb-unit{font-family:var(--ar-display);font-size:clamp(18px,3vmin,30px);margin-top:-.1em}
+.nb-unit{font-family:var(--ar-display);font-size:clamp(16px,2.5vmin,26px);line-height:1.6}
 .nb-num,.nb-unit{position:relative;z-index:1}
-.nb-en{position:absolute;bottom:14px;left:20px;z-index:1;font-family:var(--en-display);font-weight:900;font-size:clamp(14px,2vmin,20px)}
+.nb-en{position:absolute;top:14px;left:20px;z-index:1;font-family:var(--en-display);font-weight:900;font-size:clamp(14px,2vmin,20px)}
 .note-big.zero .nb-num{color:#9b8f7f}
 .lines{list-style:none;margin:0;padding:0;width:100%;display:flex;flex-direction:column;gap:5px}
 .lines li{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:5px 10px;border-radius:8px;background:var(--paper);font-weight:600;font-size:clamp(13px,1.8vmin,17px);animation:fadeIn .3s both}
@@ -259,7 +259,7 @@ small{display:block;font-family:var(--en-display);font-style:italic;font-weight:
   .doors{grid-template-columns:repeat(2,minmax(0,1fr));width:min(100%,640px)}
   .door{max-height:34vh}
   .res-grid{grid-template-columns:1fr;width:min(100%,560px)}
-  .stamp-art{width:clamp(64px,10vh,110px)}.note-big{max-width:300px}.res-wrap{gap:10px}.pay,.stamp-box{gap:8px;padding:12px}
+  .stamp-art{width:clamp(56px,8.5vh,110px)}.note-big{max-width:250px}.lines li{padding:3px 10px}.lines{gap:4px}.res-head h2{font-size:clamp(34px,6vmin,64px)}.res-wrap{gap:10px}.pay,.stamp-box{gap:8px;padding:12px}
   .tg{flex-direction:column;text-align:center;gap:4px}
   .tg .tx{width:100%}
 }
@@ -283,3 +283,9 @@ small{display:block;font-family:var(--en-display);font-style:italic;font-weight:
 /* hard mode: silhouettes in the tray until found, and no glow so items blend into the scene */
 .tray.sil .tg:not(.done):not(.gold) .ic{filter:brightness(0) opacity(.78)}
 .stage.art.blend .it,.stage.blend .it{filter:drop-shadow(1px 2px 0 rgba(43,37,32,.45))}
+
+.pay-notes{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;align-items:center;width:100%}
+.pay-notes:empty{display:none}
+.pn-lbl{font-weight:700;font-size:clamp(13px,1.8vmin,16px)}.pn-lbl small{display:inline;font-size:.8em}
+.pn{display:inline-flex;align-items:center;gap:6px;background:#fff;border:2px solid var(--c);border-inline-start-width:8px;border-radius:8px;padding:3px 10px;color:var(--c);font-weight:700;font-size:clamp(13px,1.8vmin,16px)}
+.pn b{font-family:var(--ar-display);font-size:1.3em;line-height:1.3}.pn i{font-style:normal;font-family:var(--en-display);font-weight:900;background:var(--c);color:#fff;border-radius:6px;padding:0 6px}

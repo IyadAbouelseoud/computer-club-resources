@@ -40,6 +40,8 @@
     orange: ['lemon', 'pomegranate'], mansaf: ['knafeh', 'olives'], sandbottle: ['lantern', 'rakweh'], shmagh: ['tatreez', 'tile'], dallah: ['rakweh', 'lantern']
   };
   const L = () => LEVELS[cfg.level] || LEVELS.hard;
+  // the four booth notes: each country's real currency name
+  const CUR = { 5: { ar: 'ليرة سورية', c: '#1F4E8C' }, 10: { ar: 'ليرة لبنانية', c: '#2F5E33' }, 25: { ar: 'جنيه فلسطيني', c: '#A8282B' }, 50: { ar: 'دينار أردني', c: '#A84E26' } };
   const SHIFT_NAME = { girls: ['فترة البنات', 'Girls shift'], boys: ['فترة الشباب', 'Boys shift'] };
 
   // ---------- optional art from Gemini (assets/manifest.json) ----------
@@ -119,10 +121,10 @@
   // ---------- attract ----------
   const CALLS = [
     ['تعا تفرّج يا سلام! الدنيا كلها بهالصندوق', 'Come and see! The whole Levant fits in this box.'],
-    ['٣ كنوز مخبّاية، ٤٠ ثانية، وليرات بجيبتك', '3 hidden treasures. 40 seconds. Lira in your pocket.'],
+    ['٣ كنوز مخبّاية، ٤٠ ثانية، ومصاري بجيبتك', '3 hidden treasures. 40 seconds. Cash in your pocket.'],
     ['كل جولة بلد جديد: سوريا، لبنان، فلسطين، الأردن', 'Every round a new country: Syria, Lebanon, Palestine, Jordan.'],
     ['في فنجان ذهبي مخبّى… مين بيلاقيه؟', 'A golden finjan is hiding somewhere. Who will find it?'],
-    ['ارجعلنا بالساعة الذهبية، الليرات دبل!', 'Come back at golden hour: double lira!']
+    ['ليرة سورية، ليرة لبنانية، جنيه فلسطيني، دينار أردني… كلها بتصرف عنا!', 'Syrian lira, Lebanese lira, Palestine pound, Jordanian dinar: all spendable here!']
   ];
   let callI = 0;
   function rotateCall() {
@@ -151,11 +153,11 @@
     const g = golden(), card = $('#goldCard');
     card.classList.toggle('live', g.on);
     if (g.on) {
-      $('#gcTitle').textContent = 'الساعة الذهبية شغّالة!'; $('#gcSub').textContent = 'Golden hour is ON · double lira';
-      $('#gcTime').textContent = mmss(g.left); $('#gcNote').textContent = 'كل الليرات ×٢ والفنجان الذهبي أقرب · All lira ×2';
+      $('#gcTitle').textContent = 'الساعة الذهبية شغّالة!'; $('#gcSub').textContent = 'Golden hour is ON · double cash';
+      $('#gcTime').textContent = mmss(g.left); $('#gcNote').textContent = 'كل المصاري ×٢ والفنجان الذهبي أقرب · All cash ×2';
     } else if (g.next != null) {
       $('#gcTitle').textContent = 'الساعة الذهبية بعد'; $('#gcSub').textContent = 'Golden hour starts in';
-      $('#gcTime').textContent = mmss(g.next); $('#gcNote').textContent = 'ارجعلنا وقتها، الليرات دبل · Come back for double lira';
+      $('#gcTime').textContent = mmss(g.next); $('#gcNote').textContent = 'ارجعلنا وقتها، المصاري دبل · Come back for double cash';
     } else {
       $('#gcTitle').textContent = 'الساعة الذهبية'; $('#gcSub').textContent = 'Golden hour';
       $('#gcTime').textContent = '--:--'; $('#gcNote').textContent = 'بتعلن عنها الحكواتية · Announced live at the booth';
@@ -321,7 +323,7 @@
     R.gotGold = true; const card = $('.tg.gold');
     fly(b, card.querySelector('.ic')); sfx.golden();
     setTimeout(() => card.classList.add('done'), 420);
-    banner(`✦ لقيت الفنجان الذهبي! <small lang="en" dir="ltr">+${cfg.pay.golden} lira</small>`, 2400);
+    banner(`✦ لقيت الفنجان الذهبي! <small lang="en" dir="ltr">+${cfg.pay.golden} bonus</small>`, 2400);
   }
   function fact(it) {
     const f = $('#fact');
@@ -360,7 +362,11 @@
 
     $('#resTitle').textContent = perfect ? 'يا سلام عليك!' : n ? 'قرّبت كتير!' : 'ولا يهمّك!';
     $('#resSub').textContent = perfect ? `Ya salaam! Sharp eyes: ${R.used.toFixed(1)} seconds.` : n ? 'So close! Come back for another peek.' : 'No worries. The box will wait for you.';
-    $('#payAr').textContent = AR(total); $('#payEn').textContent = total + ' LIRA';
+    $('#payAr').textContent = AR(total); $('#payEn').textContent = total + ' · BOOTH CASH';
+    // which notes to hand over: biggest first (50 dinar, 25 pound, 10 lira, 5 lira)
+    let left = total; const give = [];
+    [50, 25, 10, 5].forEach((v) => { const k = Math.floor(left / v); if (k) { give.push([v, k]); left -= v * k; } });
+    $('#payNotes').innerHTML = give.length ? `<span class="pn-lbl">سلّموه <small lang="en" dir="ltr">Hand over</small></span>` + give.map(([v, k]) => { const N = CUR[v]; return `<span class="pn" style="--c:${N.c}"><b>${AR(v)}</b><span>${N.ar}</span>${k > 1 ? `<i dir="ltr">×${k}</i>` : ''}</span>`; }).join('') : '';
     $('#noteBig').classList.toggle('zero', total === 0);
     $('#payLines').innerHTML = lines.map(([a, e, v], i) => `<li style="animation-delay:${i * .15}s"><span>${a}<small lang="en" dir="ltr">${e}</small></span><span class="v" dir="ltr">+${v}</span></li>`).join('') +
       (R.gh && sum > 0 ? `<li class="x2" style="animation-delay:${lines.length * .15}s"><span>الساعة الذهبية<small lang="en" dir="ltr">Golden hour</small></span><span class="v" dir="ltr">×${P.mult}</span></li>` : '') +
@@ -371,7 +377,7 @@
       : `ارجعلنا بعد شوي وجرّب كمان مرة<small lang="en" dir="ltr">Come back soon and try again!</small>`;
     const ng = golden();
     $('#nextGold').innerHTML = ng.on ? `الساعة الذهبية شغّالة هلّق! <small lang="en" dir="ltr">Golden hour is on right now</small>`
-      : ng.next != null ? `الساعة الذهبية الجاية بعد <b dir="ltr">${mmss(ng.next)}</b><small lang="en" dir="ltr">Next golden hour in ${mmss(ng.next)}: double lira</small>` : '';
+      : ng.next != null ? `الساعة الذهبية الجاية بعد <b dir="ltr">${mmss(ng.next)}</b><small lang="en" dir="ltr">Next golden hour in ${mmss(ng.next)}: double cash</small>` : '';
     // leaderboard
     const f = $('#nameForm'); f.hidden = true; R.rec = null;
     if (perfect) {
@@ -435,8 +441,8 @@
       <fieldset><legend>الفترة · Shift</legend>
         <div class="row"><div class="seg" id="segShift"><button data-v="girls" class="${cfg.shift === 'girls' ? 'on' : ''}">بنات · Girls</button><button data-v="boys" class="${cfg.shift === 'boys' ? 'on' : ''}">شباب · Boys</button></div>
         <button class="btn red" id="clrBoard">امسح اللوحة · Clear board</button></div>
-        <div class="stats"><div><b>${st.peeks}</b><span>Peeks</span></div><div><b>${st.perfect}</b><span>3/3 wins</span></div><div><b>${st.golden}</b><span>Golden</span></div><div><b>${st.lira}</b><span>Lira paid</span></div></div>
-        <p class="hint">Each shift keeps its own leaderboard and totals. "Lira paid" is what the screen told you to pay out.</p>
+        <div class="stats"><div><b>${st.peeks}</b><span>Peeks</span></div><div><b>${st.perfect}</b><span>3/3 wins</span></div><div><b>${st.golden}</b><span>Golden</span></div><div><b>${st.lira}</b><span>Paid out</span></div></div>
+        <p class="hint">Each shift keeps its own leaderboard and totals. "Paid out" is the total the screen told you to hand over (all four currencies count at face value).</p>
       </fieldset>
       <fieldset><legend>الساعة الذهبية · Golden hour</legend>
         <div class="row"><span>${g.on ? 'ON now · ' + mmss(g.left) + ' left' : 'Off · next in ' + (g.next != null ? mmss(g.next) : '—')}</span>
@@ -451,7 +457,7 @@
       <fieldset><legend>الجولة · Round</legend>
         ${num('roundSec', cfg.roundSec, 'Round length (seconds)')}${num('goldenChance', cfg.goldenChance, 'Golden finjan chance % (50% in golden hour)')}
       </fieldset>
-      <fieldset><legend>الليرات · Payouts</legend>
+      <fieldset><legend>المصاري · Payouts</legend>
         ${num('p_perfect', P.perfect, 'All 3 found', 'pay.perfect')}${num('p_partial', P.partial, 'Found 1 or 2', 'pay.partial')}
         ${num('p_speed', P.speed, 'Speed bonus', 'pay.speed')}${num('p_under', P.speedUnder, 'Speed bonus if under (s)', 'pay.speedUnder')}
         ${num('p_golden', P.golden, 'Golden finjan', 'pay.golden')}${num('p_mult', P.mult, 'Golden hour multiplier', 'pay.mult')}

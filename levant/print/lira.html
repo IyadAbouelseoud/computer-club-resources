@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
-<title>ليرة الدنيا · Donya Lira · A4 print sheet</title>
+<title>مصاري الدنيا · Booth money · A4 print sheet</title>
 <link rel="stylesheet" href="../fonts/fonts.css">
 <style>
   @page{size:A4;margin:0}
@@ -15,72 +15,110 @@
 </style>
 </head>
 <body>
-<p class="tip">Print on A4, scale 100% (not "fit to page"), single-sided. 30 notes per sheet: 12 × 10, 9 × 5, 6 × 25, 3 × 50. Cut along the thin outer lines, the notes share edges so each cut frees a whole row or column.</p>
+<p class="tip">Print on A4, scale 100% (not "fit to page"), single-sided. 30 notes per sheet: 12 × 10 Lebanese Lira, 9 × 5 Syrian Lira, 6 × 25 Palestine Pound, 3 × 50 Jordanian Dinar. All four are booth money at face value (a 25 is worth 25). Cut along the white gaps.</p>
 <div class="sheet" id="sheet"></div>
 <script src="../js/items.js"></script>
 <script>
 (function(){
-  const S = window.SANDOUQ;
+  const S = window.SANDOUQ, K = '#2B2520';
   const AR = n => String(n).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
-  // one note per country, colours match the game doors
+  // one note per country: its real currency name, its city, its craft
   const NOTES = {
-    5:  { c:'#1F4E8C', tint:'#EAF0F8', ar:'سوريا',  en:'SYRIA',     em:'jasmine' },
-    10: { c:'#3F6B3A', tint:'#EDF2E6', ar:'لبنان',  en:'LEBANON',   em:'cedar' },
-    25: { c:'#B0302E', tint:'#F8EAE7', ar:'فلسطين', en:'PALESTINE', em:'olives' },
-    50: { c:'#A84E26', tint:'#F7ECE2', ar:'الأردن', en:'JORDAN',    em:'treasury' }
+    5:  { c:'#1F4E8C', tint:'#EAF0F8', cur:'ليرة سورية',    en:'SYRIAN LIRA',     city:'دمشق',  cityEn:'Damascus', em:'jasmine',  style:'sy' },
+    10: { c:'#2F5E33', tint:'#EAF1E4', cur:'ليرة لبنانية',  en:'LEBANESE LIRA',   city:'بيروت', cityEn:'Beirut',   em:'cedar',    style:'lb' },
+    25: { c:'#A8282B', tint:'#F8E9E6', cur:'جنيه فلسطيني', en:'PALESTINE POUND', city:'القدس', cityEn:'Jerusalem', em:'olives',  style:'ps' },
+    50: { c:'#A84E26', tint:'#F7ECE1', cur:'دينار أردني',   en:'JORDANIAN DINAR', city:'البترا', cityEn:'Petra',   em:'treasury', style:'jo' }
   };
-  // Petra's Treasury, only used on the 50 note
   const TREASURY = '<g stroke="#2B2520" stroke-width="2.6" stroke-linejoin="round" fill="#E6A57E"><rect x="18" y="14" width="64" height="76"/><path d="M22 50 L78 50 L50 38 Z" fill="#F0BE98"/><rect x="40" y="18" width="20" height="22" fill="#F0BE98"/><path d="M38 18 Q50 6 62 18 Z" fill="#F0BE98"/>' +
     [26,38,56,68].map(x=>`<rect x="${x}" y="54" width="6" height="34" fill="#F0BE98"/>`).join('') + '<rect x="46" y="62" width="8" height="26" fill="#5A3324"/></g>';
   let MAN = {};
   const emblem = (id, v) => MAN['lira-' + v] ? `<image href="../assets/lira/${v}.png" x="0" y="0" width="100" height="100"/>` : id === 'treasury' ? TREASURY : S.SVG[id];
+  const W = 66, H = 28.5;
 
+  // ---- background patterns (very light, line-only, so they print cheaply) ----
+  function bgPattern(v, N){
+    const c = N.c, id = 'bg' + v;
+    if (N.style === 'sy') { // Damascene 8-point star lattice
+      const st = (x, y, r) => { let p = []; for (let i = 0; i < 16; i++){ const rr = i % 2 ? r * .5 : r, a = (i * 22.5) * Math.PI / 180; p.push((x + Math.cos(a) * rr).toFixed(2) + ' ' + (y + Math.sin(a) * rr).toFixed(2)); } return `<path d="M${p.join(' L')}Z" fill="none" stroke="${c}" stroke-width=".1" opacity=".55"/>`; };
+      return `<pattern id="${id}" width="4" height="4" patternUnits="userSpaceOnUse">${st(2,2,1.4)}<circle cx="0" cy="0" r=".35" fill="${c}" opacity=".3"/><circle cx="4" cy="4" r=".35" fill="${c}" opacity=".3"/></pattern>`;
+    }
+    if (N.style === 'lb') { // Mediterranean waves
+      return `<pattern id="${id}" width="4" height="1.6" patternUnits="userSpaceOnUse"><path d="M0 1 Q1 .2 2 1 T4 1" fill="none" stroke="${c}" stroke-width=".1" opacity=".55"/></pattern>`;
+    }
+    if (N.style === 'ps') { // tatreez cross-stitch grid
+      return `<pattern id="${id}" width="2" height="2" patternUnits="userSpaceOnUse"><path d="M.6 .6 l.8 .8 M1.4 .6 l-.8 .8" stroke="${c}" stroke-width=".11" opacity=".45"/></pattern>`;
+    }
+    // jo: Bedouin sadu triangles
+    return `<pattern id="${id}" width="3" height="3" patternUnits="userSpaceOnUse"><path d="M0 3 L1.5 1.2 L3 3" fill="none" stroke="${c}" stroke-width=".1" opacity=".55"/><path d="M1.5 0 L1.5 .6" stroke="${c}" stroke-width=".1" opacity=".4"/></pattern>`;
+  }
+  // ---- top and bottom border band, one craft per country ----
+  function band(N, y){
+    const c = N.c, x1 = 3.4, x2 = W - 3.4; let o = '';
+    if (N.style === 'sy') { // ablaq: alternating dark and light stone blocks
+      for (let x = x1, i = 0; x < x2 - .01; x += 1.6, i++) o += `<rect x="${x.toFixed(2)}" y="${y - .55}" width="1.6" height="1.1" fill="${i % 2 ? c : '#fff'}" stroke="${c}" stroke-width=".08"/>`;
+      return o;
+    }
+    if (N.style === 'lb') { // scalloped sea waves
+      let d = `M${x1} ${y + .4}`, d2 = `M${x1} ${(y - .2).toFixed(2)}`;
+      for (let x = x1; x < x2 - .01; x += 1.4) { d += ' q.35 -1 .7 0 t.7 0'; d2 += ' q.35 -1 .7 0 t.7 0'; }
+      return `<path d="${d}" fill="none" stroke="${c}" stroke-width=".16"/><path d="${d2}" fill="none" stroke="${c}" stroke-width=".1" opacity=".6"/>`;
+    }
+    if (N.style === 'ps') { // tatreez chain: x x diamond
+      for (let x = x1 + .5, i = 0; x < x2 - .4; x += 1.2, i++) {
+        if (i % 3 === 2) o += `<path d="M${x.toFixed(2)} ${y - .55} l.55 .55 l-.55 .55 l-.55 -.55z" fill="${c}"/>`;
+        else o += `<path d="M${(x - .4).toFixed(2)} ${y - .4} l.8 .8 M${(x + .4).toFixed(2)} ${y - .4} l-.8 .8" stroke="${c}" stroke-width=".16"/>`;
+      }
+      return o;
+    }
+    // jo: sadu teeth
+    let d = `M${x1} ${y + .5}`; for (let x = x1; x < x2 - .01; x += 1.2) d += ' l.6 -1 l.6 1';
+    return `<path d="${d}" fill="none" stroke="${c}" stroke-width=".16"/><path d="M${x1} ${y + .5} L${x2} ${y + .5}" stroke="${c}" stroke-width=".1"/>`;
+  }
+  // ---- frame around the value: star (Syria), wave ring (Lebanon), diamond (Palestine), Treasury arch (Jordan) ----
+  function valueFrame(N, cx, cy){
+    const c = N.c;
+    if (N.style === 'sy') { let p = []; for (let i = 0; i < 16; i++){ const r = i % 2 ? 6.2 : 8.4, a = (i * 22.5 - 90) * Math.PI / 180; p.push((cx + Math.cos(a) * r).toFixed(2) + ' ' + (cy + Math.sin(a) * r).toFixed(2)); }
+      return `<path d="M${p.join(' L')}Z" fill="#fff" stroke="${c}" stroke-width=".35"/><circle cx="${cx}" cy="${cy}" r="5.4" fill="none" stroke="${c}" stroke-width=".12"/>`; }
+    if (N.style === 'lb') { let d = ''; for (let i = 0; i <= 72; i++){ const a = i / 72 * Math.PI * 2, r = 7.4 + .45 * Math.sin(a * 12); d += (i ? 'L' : 'M') + (cx + Math.cos(a) * r).toFixed(2) + ' ' + (cy + Math.sin(a) * r).toFixed(2); }
+      return `<path d="${d}Z" fill="#fff" stroke="${c}" stroke-width=".35"/><circle cx="${cx}" cy="${cy}" r="6" fill="none" stroke="${c}" stroke-width=".12"/>`; }
+    if (N.style === 'ps') return `<path d="M${cx} ${cy - 8} L${cx + 8} ${cy} L${cx} ${cy + 8} L${cx - 8} ${cy}Z" fill="#fff" stroke="${c}" stroke-width=".35"/><path d="M${cx} ${cy - 6.7} L${cx + 6.7} ${cy} L${cx} ${cy + 6.7} L${cx - 6.7} ${cy}Z" fill="none" stroke="${c}" stroke-width=".12" stroke-dasharray=".5 .4"/>`;
+    return `<path d="M${cx - 6} ${cy + 7.4} L${cx - 6} ${cy - 1.6} A6 6 0 0 1 ${cx + 6} ${cy - 1.6} L${cx + 6} ${cy + 7.4}Z" fill="#fff" stroke="${c}" stroke-width=".35"/>` +
+      `<path d="M${cx - 4.9} ${cy + 7.4} L${cx - 4.9} ${cy - 1.6} A4.9 4.9 0 0 1 ${cx + 4.9} ${cy - 1.6} L${cx + 4.9} ${cy + 7.4}" fill="none" stroke="${c}" stroke-width=".12"/>`;
+  }
   function rosette(cx, cy, R, rings, petals, col){
     let o = '';
     for (let k = 0; k < rings; k++){
-      const r0 = R * (0.55 + 0.45 * k / Math.max(1, rings - 1)), amp = R * 0.09, ph = k * 0.5;
-      let d = '';
-      for (let i = 0; i <= 240; i++){ const t = i / 240 * Math.PI * 2, r = r0 + amp * Math.sin(petals * t + ph);
-        d += (i ? 'L' : 'M') + (cx + Math.cos(t) * r).toFixed(2) + ' ' + (cy + Math.sin(t) * r).toFixed(2); }
-      o += `<path d="${d}Z" fill="none" stroke="${col}" stroke-width="0.12" opacity="${0.35 + 0.3 * (k % 2)}"/>`;
+      const r0 = R * (0.55 + 0.45 * k / Math.max(1, rings - 1)), amp = R * 0.09, ph = k * 0.5; let d = '';
+      for (let i = 0; i <= 240; i++){ const t = i / 240 * Math.PI * 2, r = r0 + amp * Math.sin(petals * t + ph); d += (i ? 'L' : 'M') + (cx + Math.cos(t) * r).toFixed(2) + ' ' + (cy + Math.sin(t) * r).toFixed(2); }
+      o += `<path d="${d}Z" fill="none" stroke="${col}" stroke-width="0.11" opacity="${0.3 + 0.3 * (k % 2)}"/>`;
     }
     return o;
   }
-  function waveBand(x1, x2, y, amp, col){
-    let o = '';
-    [0, Math.PI].forEach(ph => { let d = '';
-      for (let x = x1; x <= x2 + 0.01; x += 0.25){ d += (x === x1 ? 'M' : 'L') + x.toFixed(2) + ' ' + (y + Math.sin(x * 2.2 + ph) * amp).toFixed(2); }
-      o += `<path d="${d}" fill="none" stroke="${col}" stroke-width="0.14"/>`; });
-    return o;
-  }
-  let serial = 1000 + Math.floor(Math.random() * 8000);
+  let serial = 1000;
+  const PREFIX = { sy:'SY', lb:'LB', ps:'PS', jo:'JO' }, PETALS = { sy:16, lb:12, ps:8, jo:10 };
   function note(v){
-    const N = NOTES[v], c = N.c, W = 66, H = 28.5, s = serial++;
-    let o = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="direction:ltr">`;
-    o += `<defs><pattern id="h${v}" width="1.2" height="1.2" patternUnits="userSpaceOnUse" patternTransform="rotate(35)"><path d="M0 0 L0 1.2" stroke="${c}" stroke-width="0.08" opacity=".35"/></pattern></defs>`;
+    const N = NOTES[v], c = N.c, s = serial++;
+    let o = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="direction:ltr"><defs>${bgPattern(v, N)}</defs>`;
     o += `<rect width="${W}" height="${H}" fill="#fff"/>`;
     o += `<rect x="1.1" y="1.1" width="${W-2.2}" height="${H-2.2}" rx="1" fill="${N.tint}"/>`;
-    o += `<rect x="1.1" y="1.1" width="${W-2.2}" height="${H-2.2}" rx="1" fill="url(#h${v})"/>`;
-    o += waveBand(2.2, W-2.2, 2.25, 0.45, c) + waveBand(2.2, W-2.2, H-2.25, 0.45, c);
+    o += `<rect x="1.1" y="1.1" width="${W-2.2}" height="${H-2.2}" rx="1" fill="url(#bg${v})"/>`;
+    o += band(N, 2.3) + band(N, H - 2.3);
     o += `<rect x="1.1" y="1.1" width="${W-2.2}" height="${H-2.2}" rx="1" fill="none" stroke="${c}" stroke-width="0.35"/>`;
-    o += `<rect x="3.1" y="3.1" width="${W-6.2}" height="${H-6.2}" rx=".6" fill="none" stroke="${c}" stroke-width="0.15"/>`;
-    // emblem medallion (left)
-    o += rosette(12.2, H/2, 9.2, 5, 14, c);
-    o += `<circle cx="12.2" cy="${H/2}" r="6.4" fill="#fff" stroke="${c}" stroke-width="0.3"/>`;
-    o += `<g transform="translate(${12.2-5} ${H/2-5}) scale(.1)">${emblem(N.em, v)}</g>`;
-    // value rosette (right)
-    o += rosette(55.4, H/2, 9.4, 6, 18, c);
-    o += `<circle cx="55.4" cy="${H/2}" r="6.6" fill="#fff" stroke="${c}" stroke-width="0.3"/>`;
-    o += `<text x="55.4" y="${H/2 + 3.6}" text-anchor="middle" font-family="Aref Ruqaa" font-weight="700" font-size="${v > 9 ? 9 : 10.5}" fill="${c}">${AR(v)}</text>`;
-    // corner numerals
-    o += `<text x="3.9" y="6.6" font-family="Fraunces" font-weight="900" font-size="2.7" fill="${c}">${v}</text>`;
-    o += `<text x="${W-3.9}" y="${H-4.4}" text-anchor="end" font-family="Fraunces" font-weight="900" font-size="2.7" fill="${c}">${v}</text>`;
-    // centre text
-    o += `<text x="33.6" y="11.4" text-anchor="middle" font-family="Aref Ruqaa" font-weight="700" font-size="5.6" fill="#2B2520">ليرة الدنيا</text>`;
-    o += `<text x="33.6" y="15.3" text-anchor="middle" direction="ltr" font-family="Fraunces" font-weight="900" font-size="2.25" letter-spacing=".35" fill="${c}">DONYA LIRA · ${v}</text>`;
-    o += `<text x="33.6" y="18.9" text-anchor="middle" font-family="Readex Pro" font-weight="600" font-size="1.9" fill="#2B2520">${N.ar} · <tspan font-family="Fraunces" font-weight="600" letter-spacing=".2">${N.en}</tspan></text>`;
-    o += `<text x="33.6" y="22.1" text-anchor="middle" direction="ltr" font-family="Fraunces" font-weight="600" font-size="1.6" fill="#B0302E" letter-spacing=".15">№ SD-${String(s).padStart(5,'0')}</text>`;
-    o += `<text x="33.6" y="${H-3.75}" text-anchor="middle" font-family="Readex Pro" font-size="1.05" fill="${c}">صندوق الدنيا · للّعب في جناح بلاد الشام فقط · <tspan direction="ltr">Booth money, no cash value</tspan></text>`;
+    o += `<rect x="3.1" y="3.4" width="${W-6.2}" height="${H-6.8}" rx=".6" fill="none" stroke="${c}" stroke-width="0.15"/>`;
+    o += rosette(12.4, H/2, 9, 5, PETALS[N.style], c);
+    o += `<circle cx="12.4" cy="${H/2}" r="6.4" fill="#fff" stroke="${c}" stroke-width="0.3"/>`;
+    o += `<g transform="translate(${12.4-5} ${H/2-5}) scale(.1)">${emblem(N.em, v)}</g>`;
+    o += rosette(55.2, H/2, 9.4, 6, PETALS[N.style] + 4, c);
+    o += valueFrame(N, 55.2, H/2);
+    o += `<text x="55.2" y="${H/2 + (N.style === 'jo' ? 4.1 : 3.4)}" text-anchor="middle" font-family="Aref Ruqaa" font-weight="700" font-size="${v > 9 ? (N.style === 'ps' || N.style === 'jo' ? 7.6 : 8.4) : 10}" fill="${c}">${AR(v)}</text>`;
+    o += `<text x="4.2" y="7" font-family="Fraunces" font-weight="900" font-size="2.6" fill="${c}">${v}</text>`;
+    o += `<text x="4.2" y="${H-4.6}" font-family="Fraunces" font-weight="900" font-size="2.6" fill="${c}">${v}</text>`;
+    o += `<text x="33.6" y="6.9" text-anchor="middle" font-family="Readex Pro" font-weight="600" font-size="1.55" fill="${c}">صندوق الدنيا · ${N.city} <tspan font-family="Fraunces" font-style="italic">· ${N.cityEn}</tspan></text>`;
+    o += `<text x="33.6" y="13" text-anchor="middle" font-family="Aref Ruqaa" font-weight="700" font-size="${N.cur.length > 10 ? 4.6 : 5}" fill="${K}">${N.cur}</text>`;
+    o += `<text x="33.6" y="16.6" text-anchor="middle" font-family="Fraunces" font-weight="900" font-size="${N.en.length > 13 ? 1.6 : 1.85}" letter-spacing="${N.en.length > 13 ? .12 : .22}" fill="${c}">${N.en} · ${v}</text>`;
+    o += `<text x="33.6" y="19.9" text-anchor="middle" font-family="Readex Pro" font-weight="600" font-size="1.7" fill="${K}">${AR(v)} ${N.cur}</text>`;
+    o += `<text x="33.6" y="22.5" text-anchor="middle" font-family="Fraunces" font-weight="600" font-size="1.45" fill="#B0302E" letter-spacing=".15">№ ${PREFIX[N.style]}-${String(s).padStart(5,'0')}</text>`;
+    o += `<text x="33.6" y="${H-3.95}" text-anchor="middle" font-family="Readex Pro" font-size="1" fill="${c}">مصاري الدنيا · للّعب في جناح بلاد الشام فقط · <tspan>Booth money, no cash value</tspan></text>`;
     return o + '</svg>';
   }
   const plan = [10,10,10, 10,10,10, 10,10,10, 10,10,10, 5,5,5, 5,5,5, 5,5,5, 25,25,25, 25,25,25, 50,50,50];

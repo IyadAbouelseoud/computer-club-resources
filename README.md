@@ -34,8 +34,8 @@ Orphan-home visit with the Volunteer Club. No build step, no tracking, works off
 
 ## Levant booth: صندوق الدنيا · Sandouq El-Donya (cultural event)
 One-screen booth game for a tablet or touch laptop. No build step, works offline once loaded.
-- `levant/` the game: attract screen (golden hour countdown, shift leaderboard), pick a country, curtain reveal, 40-second hidden-object round, payout screen telling staff how many Donya Lira to pay, plus a live "people peeked this shift" counter and next golden hour countdown to bring people back
+- `levant/` the game: attract screen (golden hour countdown, shift leaderboard), pick a country, curtain reveal, 40-second hidden-object round, payout screen telling staff exactly which notes to hand over, plus a live "people peeked this shift" counter and next golden hour countdown to bring people back
 - Staff panel: long-press the small red seal (bottom corner of the start screen) or Ctrl+Shift+S, PIN `2026` (change it inside). Switch girls/boys shift, clear board, start golden hour now, edit payouts and round length, see totals paid
-- `levant/print/donya-lira-A4.pdf` 30 notes per A4 (12 × 10, 9 × 5, 6 × 25, 3 × 50); `lira.html` regenerates it (new serial numbers each print)
+- `levant/print/booth-money-A4.pdf` «مصاري الدنيا», 30 notes per A4, one real currency name per country: 9 × 5 ليرة سورية, 12 × 10 ليرة لبنانية, 6 × 25 جنيه فلسطيني (the historical Palestine Pound), 3 × 50 دينار أردني, each with its own craft pattern (ablaq, sea waves, tatreez, sadu). `lira.html` regenerates it (new serial numbers each print)
 - `levant/prompts/` Gemini prompt library, PhotoCraft finishing steps and font list
 - `levant/assets/` the finished Gemini art (green keyed out, palette-matched, grain + halftone + misregistration): `items/<id>.webp`, `scenes/<sy|lb|ps|jo>.webp`, `box.webp`, `hakawati-boys.webp` / `hakawati-girls.webp` (picked automatically by the shift set in the staff panel), `lira/<5|10|25|50>.png` for the print sheet. `manifest.json` lists what exists; anything missing falls back to the built-in drawings

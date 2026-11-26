@@ -65,7 +65,7 @@ ol li,ul li{margin:4px 0}
   <p>1:1 square, one object each. The thumbnail shows the built-in drawing it replaces.</p>
   <div class="grid" id="items"></div>
 
-  <h2>5 · Banknote vignettes (optional upgrade for the Lira sheet)</h2>
+  <h2>5 · Banknote vignettes (used on the booth money sheet)</h2>
   <p>These replace the small round emblems on the notes. White background is fine here; it sits inside a white circle. Square 1:1.</p>
   <div class="grid" id="lira"></div>
 
@@ -84,7 +84,7 @@ ol li,ul li{margin:4px 0}
   <div class="fonts">
     <div class="font"><b>Aref Ruqaa</b> · Arabic headings<div class="s" style="font-family:'Aref Ruqaa'">صندوق الدنيا</div><div class="meta">fonts.google.com/specimen/Aref+Ruqaa · weight 700</div></div>
     <div class="font"><b>Readex Pro</b> · Arabic + English body<div class="s" style="font-family:'Readex Pro';font-weight:600">تعا تفرّج · Peek in</div><div class="meta">fonts.google.com/specimen/Readex+Pro · 400 / 600 / 700</div></div>
-    <div class="font"><b>Fraunces</b> · English display<div class="s" style="font-family:'Fraunces';font-weight:900">Donya Lira <i style="font-weight:600">· 25</i></div><div class="meta">fonts.google.com/specimen/Fraunces · 600 / 900 / 600 italic</div></div>
+    <div class="font"><b>Fraunces</b> · English display<div class="s" style="font-family:'Fraunces';font-weight:900">Jordanian Dinar <i style="font-weight:600">· 25</i></div><div class="meta">fonts.google.com/specimen/Fraunces · 600 / 900 / 600 italic</div></div>
   </div>
   <p>Reem Kufi stays banned from club designs (hard to read).</p>
 
@@ -162,7 +162,7 @@ document.getElementById('scenes').innerHTML = SCENES.map(s => { const C = S.COUN
   return card(`${C.en} · ${C.place_en}`, `save as assets/scenes/${s.c}.jpg · manifest "scene-${s.c}"`, s.p + SCENE_END); }).join('');
 document.getElementById('items').innerHTML = S.ITEMS.map(i => card(`${i.en} · ${i.ar}`, `save as assets/items/${i.id}.png · manifest "item-${i.id}" · ${i.c === 'all' ? 'shared' : i.c === 'gold' ? 'bonus' : S.COUNTRIES[i.c].en}`,
   `${STYLE}\n\nSubject: ${DESC[i.id]}. ${ITEM_END}`, S.svgOf(i.id))).join('');
-document.getElementById('lira').innerHTML = LIRA.map(l => card(`${l.v} Lira note`, `save as assets/lira/${l.v}.png · manifest "lira-${l.v}"`, `${LIRA_STYLE}\n\nSubject: ${l.p}`)).join('');
+document.getElementById('lira').innerHTML = LIRA.map(l => card(`${l.v} note · ${({5:'Syrian lira',10:'Lebanese lira',25:'Palestine pound',50:'Jordanian dinar'})[l.v]}`, `save as assets/lira/${l.v}.png · manifest "lira-${l.v}"`, `${LIRA_STYLE}\n\nSubject: ${l.p}`)).join('');
 
 // manifest builder
 const KEYS = ['box','hakawati-boys','hakawati-girls', ...SCENES.map(s => 'scene-' + s.c), ...S.ITEMS.map(i => 'item-' + i.id), ...LIRA.map(l => 'lira-' + l.v)];
