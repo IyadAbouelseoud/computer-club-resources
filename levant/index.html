@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#2B2520">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>صندوق الدنيا · Sandouq El-Donya</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ccircle cx=%2250%22 cy=%2250%22 r=%2246%22 fill=%22%23B0302E%22/%3E%3Cpath d=%22M50 14 61 39 86 50 61 61 50 86 39 61 14 50 39 39Z%22 fill=%22%23F2C94C%22/%3E%3C/svg%3E">
+<link rel="stylesheet" href="fonts/fonts.css">
+<link rel="stylesheet" href="css/sandouq.css">
+</head>
+<body>
+<div id="app">
+
+  <!-- ATTRACT -->
+  <section id="attract" class="screen on" aria-label="شاشة البداية">
+    <div class="band band-top" aria-hidden="true"></div>
+    <div class="attract-grid">
+      <header class="brand">
+        <p class="kicker"><span>بلاد الشام</span><i aria-hidden="true">✦</i><span lang="en" dir="ltr">Bilad Al-Sham</span></p>
+        <h1 class="title">صندوق الدنيا</h1>
+        <p class="title-en" lang="en" dir="ltr">Sandouq El-Donya <em>· The Box of Wonders</em></p>
+        <p class="call" id="call" aria-live="polite"></p>
+      </header>
+
+      <button class="box-wrap" id="peekBtn" aria-label="تفرّج · Peek in">
+        <div class="box-art" id="boxArt"></div>
+        <span class="cta"><b>تفرّج!</b><small lang="en" dir="ltr">Tap to peek</small></span>
+      </button>
+
+      <aside class="side">
+        <div class="card gold-card" id="goldCard">
+          <div class="gc-top"><span class="gc-ic" aria-hidden="true"></span><div><b id="gcTitle">الساعة الذهبية</b><small lang="en" dir="ltr" id="gcSub">Golden hour</small></div></div>
+          <div class="gc-time" id="gcTime" dir="ltr">--:--</div>
+          <p class="gc-note" id="gcNote"></p>
+        </div>
+        <div class="card board-card">
+          <div class="bc-head"><b>أحدّ عيون</b><small lang="en" dir="ltr">Sharpest eyes · <span id="shiftLabel"></span></small></div>
+          <ol class="board" id="board"></ol>
+        </div>
+        <div class="card goal-card">
+          <div class="goal-art" id="goalArt"></div>
+          <div class="goal-tx"><b>كمّل البلاطة الشامية</b><small lang="en" dir="ltr">Complete the Damascene tile</small>
+            <p>٤ بلاد، ٤ قطع، وكل قطعة بزيارة. البلاطة الكاملة بتربح الجايزة الكبيرة.</p>
+            <p lang="en" dir="ltr">4 countries, 4 pieces, one piece per visit. A full tile wins the big prize.</p></div>
+        </div>
+        <div class="card how">
+          <div><span class="n">١</span><b>تفرّج</b><small lang="en" dir="ltr">Peek in</small></div>
+          <div><span class="n">٢</span><b>لاقي ٣ كنوز</b><small lang="en" dir="ltr">Find 3 treasures</small></div>
+          <div><span class="n">٣</span><b>خود ليراتك</b><small lang="en" dir="ltr">Get your lira</small></div>
+        </div>
+      </aside>
+    </div>
+    <div class="band band-bottom" aria-hidden="true"></div>
+    <button class="seal" id="staffSeal" aria-label="Staff">صد</button>
+  </section>
+
+  <!-- PICK A COUNTRY -->
+  <section id="pick" class="screen" aria-label="اختار البلد">
+    <div class="band band-top" aria-hidden="true"></div>
+    <div class="pick-wrap">
+      <header class="pick-head">
+        <h2>أي قطعة ناقصتك؟</h2>
+        <p lang="en" dir="ltr">Which piece of your tile are you hunting?</p>
+      </header>
+      <div class="doors" id="doors"></div>
+      <button class="ghost" id="pickBack"><span>رجوع</span><small lang="en" dir="ltr">Back</small></button>
+    </div>
+    <div class="band band-bottom" aria-hidden="true"></div>
+  </section>
+
+  <!-- PLAY -->
+  <section id="play" class="screen" aria-label="اللعب">
+    <div class="frame">
+      <div class="hud">
+        <div class="place"><b id="placeAr"></b><small lang="en" dir="ltr" id="placeEn"></small></div>
+        <div class="gold-flag" id="goldFlag" hidden><b>الساعة الذهبية ×٢</b></div>
+        <div class="timer" id="timer"><svg viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="19" class="t-bg"/><circle cx="22" cy="22" r="19" class="t-fg" id="timerRing"/></svg><span id="timerNum" dir="ltr">40</span></div>
+      </div>
+      <div class="stage-wrap">
+        <div class="stage" id="stage">
+          <div class="scene" id="scene"></div>
+          <div class="wash" aria-hidden="true"></div>
+          <div class="items" id="items"></div>
+        </div>
+        <div class="curtain c-r" aria-hidden="true"></div><div class="curtain c-l" aria-hidden="true"></div>
+        <div class="count" id="count" aria-live="assertive"></div>
+        <div class="banner" id="banner" hidden></div>
+      </div>
+      <div class="tray" id="tray"></div>
+      <div class="fact" id="fact" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <!-- RESULT -->
+  <section id="result" class="screen" aria-label="النتيجة">
+    <div class="band band-top" aria-hidden="true"></div>
+    <div class="res-wrap">
+      <header class="res-head">
+        <h2 id="resTitle"></h2>
+        <p lang="en" dir="ltr" id="resSub"></p>
+      </header>
+      <div class="res-grid">
+        <div class="pay">
+          <small class="pay-lbl"><span>ادفعوله</span> <span lang="en" dir="ltr">· Pay out</span></small>
+          <div class="note-big" id="noteBig"><span class="nb-num" id="payAr"></span><span class="nb-unit">ليرة</span><span class="nb-en" lang="en" dir="ltr" id="payEn"></span></div>
+          <ul class="lines" id="payLines"></ul>
+        </div>
+        <div class="stamp-box">
+          <div class="stamp-art" id="stampArt"></div>
+          <p class="stamp-msg" id="stampMsg"></p>
+          <form class="name-form" id="nameForm" hidden>
+            <label for="nameIn"><b id="rankMsg"></b><small lang="en" dir="ltr">Put your name on the board</small></label>
+            <div class="nf-row"><input id="nameIn" maxlength="14" autocomplete="off" placeholder="اسمك · your name" dir="auto"><button type="submit">سجّل</button></div>
+          </form>
+        </div>
+      </div>
+      <button class="primary" id="doneBtn"><span>تمام</span><small lang="en" dir="ltr">Done</small></button>
+    </div>
+    <div class="band band-bottom" aria-hidden="true"></div>
+    <div class="confetti" id="confetti" aria-hidden="true"></div>
+  </section>
+
+  <!-- STAFF -->
+  <div class="staff" id="staff" hidden role="dialog" aria-modal="true" aria-label="Staff panel">
+    <div class="staff-card">
+      <div id="pinView">
+        <h3>لوحة الفريق <small lang="en" dir="ltr">Staff panel</small></h3>
+        <div class="pin-dots" id="pinDots"><i></i><i></i><i></i><i></i></div>
+        <div class="pinpad" id="pinpad" dir="ltr"></div>
+        <button class="ghost sm" data-close>إغلاق · Close</button>
+      </div>
+      <div id="staffView" hidden></div>
+    </div>
+  </div>
+</div>
+<div class="grain" aria-hidden="true"></div>
+
+<script src="js/items.js"></script>
+<script src="js/scenes.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/game.js"></script>
+</body>
+</html>

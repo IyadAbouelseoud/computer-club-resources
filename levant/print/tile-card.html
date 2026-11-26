@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>بطاقة البلاطة · Tile Card · A4 print sheet</title>
+<link rel="stylesheet" href="../fonts/fonts.css">
+<style>
+  @page{size:A4;margin:0}
+  html,body{margin:0;background:#ddd}
+  .sheet{width:210mm;height:297mm;margin:0 auto;background:#fff;padding:6mm;box-sizing:border-box;display:grid;
+    grid-template-columns:repeat(3,66mm);grid-template-rows:repeat(4,71mm);justify-content:center;align-content:center}
+  .sheet svg{display:block;width:66mm;height:71mm}
+  .tip{max-width:210mm;margin:10px auto;font:14px/1.5 'Readex Pro',sans-serif;color:#333}
+  @media print{html,body{background:#fff}.tip{display:none}}
+</style>
+</head>
+<body>
+<p class="tip">Print on A4 at 100%, single-sided. 12 cards per sheet. The centre star is printed already filled: that is the free "welcome" piece. Stamp or sign a country square each time the game screen says so. The square positions match the game screen.</p>
+<div class="sheet" id="sheet"></div>
+<script src="../js/items.js"></script>
+<script>
+(function(){
+  const S = window.SANDOUQ, K = '#2B2520';
+  const Q = { sy:[33,0], lb:[0,0], ps:[33,33], jo:[0,33] }; // same layout as the game: top-right Syria, top-left Lebanon, bottom-right Palestine, bottom-left Jordan
+  const TINT = { sy:'#EAF0F8', lb:'#EDF2E6', ps:'#F8EAE7', jo:'#F7ECE2' };
+  function card(){
+    const W = 66, H = 71, T = 42, ox = (66 - 42) / 2, oy = 14.6; // tile is 42 x 42 mm
+    let o = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="direction:ltr">`;
+    o += `<rect x="1.1" y="1.1" width="${W-2.2}" height="${H-2.2}" rx="2" fill="#FBF6EA" stroke="${K}" stroke-width="0.35"/>`;
+    // tatreez strip at the top
+    let tz = ''; for (let x = 4; x < W-4; x += 3) tz += `<path d="M${x} 3.6 l1.2 1.2 M${x+1.2} 3.6 l-1.2 1.2" stroke="#B0302E" stroke-width="0.3"/>`;
+    o += tz;
+    o += `<text x="33" y="10.2" text-anchor="middle" font-family="Aref Ruqaa" font-weight="700" font-size="5" fill="${K}">بطاقة البلاطة</text>`;
+    o += `<text x="33" y="13.1" text-anchor="middle" font-family="Fraunces" font-weight="600" font-style="italic" font-size="2" fill="#B0302E">Sandouq El-Donya · Tile Card</text>`;
+    Object.entries(Q).forEach(([c, [qx, qy]]) => {
+      const C = S.COUNTRIES[c], x = ox + (qx ? T / 2 : 0), y = oy + (qy ? T / 2 : 0), s = T / 2;
+      o += `<rect x="${x}" y="${y}" width="${s}" height="${s}" fill="${TINT[c]}" stroke="${K}" stroke-width="0.35"/>`;
+      o += `<circle cx="${x + s/2}" cy="${y + s/2}" r="6.4" fill="none" stroke="${C.color}" stroke-width="0.25" stroke-dasharray="1 0.8"/>`;
+      o += `<g transform="translate(${x + s/2 - 3.6} ${y + s/2 - 3.6}) scale(.072)" opacity=".28">${S.SVG[C.emblem]}</g>`;
+      const ty = qy ? y + s - 1.2 : y + 2.6;
+      o += `<text x="${x + s/2}" y="${ty}" text-anchor="middle" font-family="Readex Pro" font-weight="700" font-size="1.8" fill="${C.color}">${C.ar} · <tspan font-family="Fraunces" font-weight="600" font-size="1.5">${C.en}</tspan></text>`;
+    });
+    // centre star: pre-filled welcome piece
+    const cx = ox + T / 2, cy = oy + T / 2; let p = [];
+    for (let i = 0; i < 16; i++){ const r = i % 2 ? 3.8 : 6.6, a = (i * 22.5 - 90) * Math.PI / 180; p.push((cx + Math.cos(a) * r).toFixed(2) + ' ' + (cy + Math.sin(a) * r).toFixed(2)); }
+    o += `<path d="M${p.join(' L')}Z" fill="#D9A43A" stroke="${K}" stroke-width="0.4"/>`;
+    o += `<circle cx="${cx}" cy="${cy}" r="3" fill="#B0302E" stroke="${K}" stroke-width="0.3"/>`;
+    o += `<text x="${cx}" y="${cy + 0.9}" text-anchor="middle" font-family="Readex Pro" font-weight="700" font-size="1.7" fill="#FFF6E3">أهلين</text>`;
+    // footer
+    o += `<text x="33" y="${oy + T + 4.4}" text-anchor="middle" font-family="Readex Pro" font-weight="700" font-size="2.15" fill="${K}">أول قطعة علينا ✓ كمّل الأربعة واربح الجايزة الكبيرة</text>`;
+    o += `<text x="33" y="${oy + T + 7.2}" text-anchor="middle" font-family="Fraunces" font-weight="600" font-style="italic" font-size="1.85" fill="${K}">First piece is on us. Fill all 4, win the big prize.</text>`;
+    o += `<text x="${W - 5}" y="${H - 4.2}" text-anchor="end" font-family="Readex Pro" font-size="1.9" fill="${K}">الاسم · Name</text>`;
+    o += `<line x1="5" y1="${H - 4.4}" x2="${W - 18}" y2="${H - 4.4}" stroke="${K}" stroke-width="0.2" stroke-dasharray="0.6 0.6"/>`;
+    return o + '</svg>';
+  }
+  document.getElementById('sheet').innerHTML = Array.from({ length: 12 }, card).join('');
+})();
+</script>
+</body>
+</html>

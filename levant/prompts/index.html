@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sandouq El-Donya · Gemini prompt library</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="../fonts/fonts.css">
+<style>
+:root{--ink:#2B2520;--paper:#F3E9D4;--card:#FBF6EA;--red:#B0302E;--cobalt:#1F4E8C;--olive:#5E6B33;--gold:#D9A43A}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.6 'Readex Pro',system-ui,sans-serif;padding:24px 16px 70px}
+main{max-width:980px;margin:0 auto}
+h1{font-family:'Fraunces',Georgia,serif;font-weight:900;font-size:32px;margin:0}
+h1 span{font-family:'Aref Ruqaa',serif;color:var(--red);margin-inline-start:10px}
+h2{font-family:'Fraunces',Georgia,serif;font-weight:900;font-size:22px;margin:34px 0 8px;border-bottom:3px solid var(--ink);padding-bottom:4px}
+.lead{margin:4px 0 18px;font-size:17px}
+.box{background:var(--card);border:2px solid var(--ink);border-radius:14px;padding:14px 16px;margin:10px 0}
+.grid{display:grid;gap:12px}
+.item{background:var(--card);border:2px solid var(--ink);border-radius:14px;padding:12px 14px;display:grid;grid-template-columns:72px minmax(0,1fr);gap:12px;align-items:start}
+.item.wide{grid-template-columns:minmax(0,1fr)}
+.thumb{width:72px;height:72px;background:#fff;border:2px solid var(--ink);border-radius:10px;padding:6px}
+.thumb svg{width:100%;height:100%}
+.item h3{margin:0;font-size:17px}
+.meta{font:13px ui-monospace,Menlo,Consolas,monospace;color:#6b5f52;margin:2px 0}
+pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#fff;border:1px dashed var(--ink);border-radius:10px;padding:10px;margin:8px 0;font:13px/1.55 ui-monospace,Menlo,Consolas,monospace}
+button{background:var(--ink);color:var(--paper);border:0;border-radius:10px;padding:7px 14px;font:700 14px 'Readex Pro',sans-serif;cursor:pointer}
+button.alt{background:var(--red)}
+.ok{color:var(--olive);font-size:13px;margin-inline-start:6px;font-weight:700}
+code{background:#fff;border:1px solid #d8c8a8;border-radius:6px;padding:0 5px;font-size:.9em}
+ol li,ul li{margin:4px 0}
+.fonts{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.font{background:var(--card);border:2px solid var(--ink);border-radius:14px;padding:12px 14px}
+.font .s{font-size:30px;line-height:1.3;margin:4px 0}
+.chk{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:4px 12px;font:14px ui-monospace,Menlo,monospace}
+</style>
+</head>
+<body>
+<main>
+  <h1>Gemini prompt library <span>صندوق الدنيا</span></h1>
+  <p class="lead">Everything the Levant booth game can use from Gemini. The game already ships with built-in drawings for all of it, so nothing is blocked: each image you generate simply replaces its built-in version.</p>
+
+  <div class="box">
+    <b>How to use</b>
+    <ol>
+      <li>Open a new Gemini chat. Paste the <b>Style lock</b> once as your first message so every image shares one look.</li>
+      <li>Generate the <b>Box</b> and the <b>Hakawati</b> first. When you like one, attach it as a reference to later prompts ("same style as the attached image").</li>
+      <li>Items, box and hakawati use a <b>solid pure green #00FF00 background</b>. Don't cut them out yourself: Claude does that in PhotoCraft (see the pipeline below).</li>
+      <li>Download each image at full size and <b>rename it to the filename shown</b> (for example <code>items/rakweh.png</code>).</li>
+      <li>Send the raw files to Claude in the chat, or put them in a folder and connect it. Claude runs the PhotoCraft pass, adds them to <code>levant/assets/</code>, updates <code>manifest.json</code> and deploys.</li>
+    </ol>
+  </div>
+
+  <h2>1 · Style lock (paste first, and at the start of any prompt that drifts)</h2>
+  <div class="item wide" data-p="style"><div><pre id="style"></pre><button data-copy="style">Copy</button><span class="ok"></span></div></div>
+
+  <h2>2 · Hero pieces</h2>
+  <div class="grid" id="hero"></div>
+
+  <h2>3 · Scenes (the 4 backgrounds inside the box)</h2>
+  <p>16:10 landscape, as big as Gemini allows. They must stay calm and mid-tone, with <b>no small objects</b>, so the hidden items on top stay findable.</p>
+  <div class="grid" id="scenes"></div>
+
+  <h2>4 · The 25 hidden items + the golden finjan</h2>
+  <p>1:1 square, one object each. The thumbnail shows the built-in drawing it replaces.</p>
+  <div class="grid" id="items"></div>
+
+  <h2>5 · Banknote vignettes (optional upgrade for the Lira sheet)</h2>
+  <p>These replace the small round emblems on the notes. White background is fine here; it sits inside a white circle. Square 1:1.</p>
+  <div class="grid" id="lira"></div>
+
+  <h2>6 · What Claude does in PhotoCraft (so nothing looks AI-generated)</h2>
+  <div class="box">
+    <ol>
+      <li><b>Key out the green:</b> Select › Color Range on #00FF00 (fuzziness about 60), delete, then shrink the edge 1 px and remove leftover green spill so there's no glowing halo.</li>
+      <li><b>Lock the palette:</b> Gradient Map adjustment built from the booth colours (basalt › cobalt › red › orange › gold › limestone) at about 30–40% in Color mode. Every image ends up in the same 8-colour family as the game.</li>
+      <li><b>Kill the AI sheen:</b> flatten shiny highlights (Levels on the top 10%), Despeckle to remove the over-smooth "plastic" texture, and a light Median on the over-detailed areas.</li>
+      <li><b>Make it printed:</b> monochrome Add Noise (about 3%) for paper grain, and a Halftone Pattern layer on the shadows at 12–18% Multiply. Then a 1 px red-offset copy of the outline at about 25% Multiply for real riso misregistration.</li>
+      <li><b>Export to spec:</b> items as 512×512 transparent PNG, scenes as 2560×1600 JPG (quality 82), box and hakawati as about 1200 px tall transparent PNG, vignettes as 600×600 PNG.</li>
+    </ol>
+  </div>
+
+  <h2>7 · Fonts (install these on the PhotoCraft computer)</h2>
+  <div class="fonts">
+    <div class="font"><b>Aref Ruqaa</b> · Arabic headings<div class="s" style="font-family:'Aref Ruqaa'">صندوق الدنيا</div><div class="meta">fonts.google.com/specimen/Aref+Ruqaa · weight 700</div></div>
+    <div class="font"><b>Readex Pro</b> · Arabic + English body<div class="s" style="font-family:'Readex Pro';font-weight:600">تعا تفرّج · Peek in</div><div class="meta">fonts.google.com/specimen/Readex+Pro · 400 / 600 / 700</div></div>
+    <div class="font"><b>Fraunces</b> · English display<div class="s" style="font-family:'Fraunces';font-weight:900">Donya Lira <i style="font-weight:600">· 25</i></div><div class="meta">fonts.google.com/specimen/Fraunces · 600 / 900 / 600 italic</div></div>
+  </div>
+  <p>Reem Kufi stays banned from club designs (hard to read).</p>
+
+  <h2>8 · Manifest (for whoever adds files by hand)</h2>
+  <p>Tick the files that now exist in <code>levant/assets/</code>, copy the JSON, and save it as <code>levant/assets/manifest.json</code>.</p>
+  <div class="box"><div class="chk" id="chk"></div><pre id="man">{}</pre><button data-copy="man">Copy manifest</button><span class="ok"></span></div>
+</main>
+
+<script src="../js/items.js"></script>
+<script>
+const S = window.SANDOUQ;
+const STYLE = `Vintage Levantine screen-print illustration, in the style of a 1960s Middle East travel poster printed on a risograph. Limited palette only: limestone sand #E9DCC3, basalt black #2B2520, Damascene cobalt #1F4E8C, tatreez red #B0302E, olive green #5E6B33, sun orange #E07A2E, warm gold #D9A43A, cream paper #F6EEDC. Bold, slightly uneven hand-inked dark outlines, flat colour fills, subtle paper grain and coarse halftone dots in the shadows, a tiny bit of ink misregistration on the edges. Simple, iconic, readable at small size. No gradients, no 3D render, no glossy or plastic look, no photorealism, no text, no letters, no numbers, no watermark, no signature.`;
+const ON_GREEN = `Centered, filling about 80% of the frame, on a perfectly flat solid pure green #00FF00 background, no shadow on the background, no floor, nothing else in the frame.`;
+const ITEM_END = `Single object only, three-quarter front view, 1:1 square. ` + ON_GREEN;
+const SCENE_END = `Wide background plate for a hidden-object game, 16:10 landscape. Calm, mid-tone and low in contrast so small objects placed on top stay readable. Only architecture and landscape: NO loose small objects, no food, no cups, no pots, no lanterns, no potted plants, no instruments, no people, no animals, no text or signs with writing.`;
+
+const HERO = [
+  { key:'box', file:'box.png', title:'The Box (attract screen)', thumb:null,
+    p:`Front view of a traditional Levantine "sandouq al-donya" storyteller peep-show box, a tall wooden cabinet standing on four splayed wooden legs, portrait shape. The top is a crown of stepped crenellations above a band of alternating black basalt and pale limestone stripes (ablaq). The front panel has a red tatreez cross-stitch border, two round brass peep holes on the left and right, small cobalt eight-pointed stars, and in the middle a large arched window with a gold frame and closed red velvet curtains glowing with warm light from behind. 4:5 portrait. ` + ON_GREEN },
+  { key:'hakawati', file:'hakawati.png', title:'The Hakawati (storyteller next to the box)', thumb:null,
+    p:`A friendly Levantine hakawati, the traditional café storyteller, as a stylised poster character (not a real person). Full body, three-quarter view, one open hand inviting people in, the other hand holding a small brass bell. Red tarboush with a black tassel, white shirt with rolled sleeves, dark embroidered vest, red-and-white sash, baggy dark sirwal trousers. Middle-aged, warm smile, neat moustache. 3:4 portrait. ` + ON_GREEN,
+    alt:`Same style and pose, but a young female hakawatiya for the girls' shift: long embroidered Palestinian-style thobe with red tatreez on the chest, a white headscarf, a dark embroidered vest, holding a small brass bell and inviting people in with an open hand. Warm smile. 3:4 portrait. ` + ON_GREEN }
+];
+const SCENES = [
+  { c:'sy', p:`Inside Souq Al-Hamidiyeh in Damascus: a long covered market street under a tall arched metal roof with tiny holes letting dots of sunlight through, shop arches with ablaq stripes of black basalt and pale limestone on both sides, rolls of colourful fabric hanging in the shopfronts, a worn stone floor running to the vanishing point. ` },
+  { c:'lb', p:`An old souk alley in Byblos, Lebanon: sand-coloured stone block walls, a weathered wooden shop door, strings of bare light bulbs hanging under a red and wooden awning, a small glimpse of blue Mediterranean sea at the far end of the alley. ` },
+  { c:'ps', p:`A Palestinian village terrace at golden hour, like a vintage travel poster: a big round orange sun, rolling hills covered with olive trees, a cluster of pale stone houses and a minaret on the hill, a low stone wall in the foreground with a red floral embroidered cloth draped over it. ` },
+  { c:'jo', p:`Petra, Jordan: the rose-red sandstone walls of the Siq canyon opening onto the carved facade of Al-Khazneh (the Treasury), with its columns and pediment, warm pink and orange stone, soft sand on the ground. ` }
+];
+const DESC = {
+  rakweh:'a small Levantine coffee pot (rakweh) in hammered brass with a long straight brass handle and a tiny pouring lip, a little coffee foam at the rim',
+  finjan:'a small white porcelain coffee cup with a tiny handle on a matching saucer, a thin red band with small cobalt dots around the cup, dark coffee inside',
+  lemon:'one ripe yellow lemon with a single green leaf on its stem',
+  pomegranate:'one whole red pomegranate with its little crown on top',
+  lantern:'a traditional Ramadan fanous lantern: hexagonal brass frame, warm orange glass panels, domed top with a hanging ring, glowing softly',
+  misbaha:'a loop of round prayer beads in deep cobalt blue with a few gold spacer beads and a short red silk tassel, laid in a loose circle',
+  oud:'an oud, the Arabic lute: pear-shaped wooden bowl, short neck bent back at the pegbox, a carved round rosette sound hole',
+  jasmine:'a sprig of Damascene jasmine: three white five-petal flowers with yellow centres and a few small green leaves on a thin stem',
+  aleppo:'one cube of traditional Aleppo laurel soap, olive green outside with one corner cut to show the pale inside, a round maker’s stamp pressed into the top',
+  tarboush:'a red felt tarboush (fez) with a flat top and a black silk tassel hanging from the centre',
+  tile:'a square Damascene ceramic tile: white glaze, a cobalt-blue eight-pointed star in the middle with a small orange centre, turquoise corner triangles',
+  barazek:'one round, thin, golden Damascene barazek cookie, covered in toasted sesame seeds with a few green pistachio pieces',
+  cedar:'a single Lebanese cedar tree with flat, layered horizontal branches in deep green and a short brown trunk',
+  manousheh:'a round Lebanese manousheh flatbread topped with za’atar and olive oil: golden dough edge, dark green speckled topping',
+  kaak:'a Beirut street ka’ak: a purse-shaped golden sesame bread ring with a handle loop on top, covered in sesame seeds',
+  boat:'a small traditional Lebanese wooden fishing boat (shakhtoura), painted cobalt blue with a white stripe, a little white and orange sail, on two small stylised waves',
+  record:'a vintage black vinyl record with a plain red centre label (no readable text), a soft sheen on the grooves',
+  olives:'a white bowl with a thin cobalt rim, full of green and dark olive-green olives, with a small olive twig and two leaves on top',
+  tatreez:'a small square of cream linen with Palestinian tatreez cross-stitch embroidery: a red diamond motif with olive-green accents, a red cross-stitch border, a short fringe at the bottom',
+  knafeh:'a round silver tray of Nabulsi knafeh: bright orange shredded-pastry top sprinkled with crushed green pistachios, one slice lifted to show white stretchy cheese',
+  orange:'one Jaffa orange, bright orange and slightly oval, with a stem and two glossy green leaves',
+  mansaf:'a large round platter of Jordanian mansaf: white rice, pieces of lamb on top, toasted pine nuts and almonds, a little yellow jameed sauce',
+  sandbottle:'a small clear glass Petra sand-art bottle with a cork, filled with layers of coloured sand in bands of pink, yellow, red, blue and orange, with a tiny camel silhouette drawn in the sand',
+  shmagh:'a red-and-white Jordanian shmagh scarf folded into a triangle, small red checked pattern, short tassels along the bottom edge',
+  dallah:'a brass Bedouin dallah coffee pot with a long curved beak-shaped spout, a tall pointed lid with a small finial, and a curved handle',
+  golden:'a small coffee cup on a saucer made entirely of shining gold, with a few simple four-point sparkles around it, a treasure feeling'
+};
+const LIRA_STYLE = `Fine copper-plate banknote engraving vignette, printed in one dark ink colour, dense fine parallel hatching and cross-hatching like the small picture on a vintage banknote, round composition that fits inside a circle, plain white background, no text, no numbers, no border.`;
+const LIRA = [
+  { v:5, p:'A sprig of Damascene jasmine flowers with leaves (Syria).' },
+  { v:10, p:'A single Lebanese cedar tree on a small mound (Lebanon).' },
+  { v:25, p:'An olive branch heavy with olives and leaves (Palestine).' },
+  { v:50, p:'The carved facade of the Treasury at Petra, Al-Khazneh, seen straight on (Jordan).' }
+];
+
+const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;');
+let n = 0;
+const card = (title, meta, text, thumb, extra) => { const id = 'p' + (n++);
+  return `<div class="item${thumb ? '' : ' wide'}">${thumb ? `<div class="thumb">${thumb}</div>` : ''}<div><h3>${title}</h3><div class="meta">${meta}</div><pre id="${id}">${esc(text)}</pre><button data-copy="${id}">Copy</button><span class="ok"></span>${extra || ''}</div></div>`; };
+
+document.getElementById('style').textContent = STYLE;
+document.getElementById('hero').innerHTML = HERO.map(h => card(h.title, `save as assets/${h.file} · manifest "${h.key}"`, h.p) +
+  (h.alt ? card(h.title + ' · girls’ shift version', `save as assets/hakawati.png (swap it in for the girls’ shift)`, h.alt) : '')).join('');
+document.getElementById('scenes').innerHTML = SCENES.map(s => { const C = S.COUNTRIES[s.c];
+  return card(`${C.en} · ${C.place_en}`, `save as assets/scenes/${s.c}.jpg · manifest "scene-${s.c}"`, s.p + SCENE_END); }).join('');
+document.getElementById('items').innerHTML = S.ITEMS.map(i => card(`${i.en} · ${i.ar}`, `save as assets/items/${i.id}.png · manifest "item-${i.id}" · ${i.c === 'all' ? 'shared' : i.c === 'gold' ? 'bonus' : S.COUNTRIES[i.c].en}`,
+  `${STYLE}\n\nSubject: ${DESC[i.id]}. ${ITEM_END}`, S.svgOf(i.id))).join('');
+document.getElementById('lira').innerHTML = LIRA.map(l => card(`${l.v} Lira note`, `save as assets/lira/${l.v}.png · manifest "lira-${l.v}"`, `${LIRA_STYLE}\n\nSubject: ${l.p}`)).join('');
+
+// manifest builder
+const KEYS = ['box','hakawati', ...SCENES.map(s => 'scene-' + s.c), ...S.ITEMS.map(i => 'item-' + i.id), ...LIRA.map(l => 'lira-' + l.v)];
+document.getElementById('chk').innerHTML = KEYS.map(k => `<label><input type="checkbox" value="${k}"> ${k}</label>`).join('');
+document.getElementById('chk').addEventListener('change', () => {
+  const o = {}; document.querySelectorAll('#chk input:checked').forEach(c => o[c.value] = true);
+  document.getElementById('man').textContent = JSON.stringify(o, null, 1);
+});
+document.addEventListener('click', e => { const id = e.target.dataset.copy; if (!id) return;
+  navigator.clipboard.writeText(document.getElementById(id).textContent).then(() => { const ok = e.target.nextElementSibling; ok.textContent = 'Copied'; setTimeout(() => ok.textContent = '', 1400); }); });
+</script>
+</body>
+</html>

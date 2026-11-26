@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>ليرة الدنيا · Donya Lira · A4 print sheet</title>
+<link rel="stylesheet" href="../fonts/fonts.css">
+<style>
+  @page{size:A4;margin:0}
+  html,body{margin:0;background:#ddd}
+  .sheet{width:210mm;height:297mm;margin:0 auto;background:#fff;padding:6mm;box-sizing:border-box;display:grid;
+    grid-template-columns:repeat(3,66mm);grid-template-rows:repeat(10,28.5mm);justify-content:center;align-content:center}
+  .sheet svg{display:block;width:66mm;height:28.5mm}
+  .tip{max-width:210mm;margin:10px auto;font:14px/1.5 'Readex Pro',sans-serif;color:#333}
+  @media print{html,body{background:#fff}.tip{display:none}}
+</style>
+</head>
+<body>
+<p class="tip">Print on A4, scale 100% (not "fit to page"), single-sided. 30 notes per sheet: 12 × 10, 9 × 5, 6 × 25, 3 × 50. Cut along the thin outer lines, the notes share edges so each cut frees a whole row or column.</p>
+<div class="sheet" id="sheet"></div>
+<script src="../js/items.js"></script>
+<script>
+(function(){
+  const S = window.SANDOUQ;
+  const AR = n => String(n).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
+  // one note per country, colours match the game doors
+  const NOTES = {
+    5:  { c:'#1F4E8C', tint:'#EAF0F8', ar:'سوريا',  en:'SYRIA',     em:'jasmine' },
+    10: { c:'#3F6B3A', tint:'#EDF2E6', ar:'لبنان',  en:'LEBANON',   em:'cedar' },
+    25: { c:'#B0302E', tint:'#F8EAE7', ar:'فلسطين', en:'PALESTINE', em:'olives' },
+    50: { c:'#A84E26', tint:'#F7ECE2', ar:'الأردن', en:'JORDAN',    em:'treasury' }
+  };
+  // Petra's Treasury, only used on the 50 note
+  const TREASURY = '<g stroke="#2B2520" stroke-width="2.6" stroke-linejoin="round" fill="#E6A57E"><rect x="18" y="14" width="64" height="76"/><path d="M22 50 L78 50 L50 38 Z" fill="#F0BE98"/><rect x="40" y="18" width="20" height="22" fill="#F0BE98"/><path d="M38 18 Q50 6 62 18 Z" fill="#F0BE98"/>' +
+    [26,38,56,68].map(x=>`<rect x="${x}" y="54" width="6" height="34" fill="#F0BE98"/>`).join('') + '<rect x="46" y="62" width="8" height="26" fill="#5A3324"/></g>';
+  let MAN = {};
+  const emblem = (id, v) => MAN['lira-' + v] ? `<image href="../assets/lira/${v}.png" x="0" y="0" width="100" height="100"/>` : id === 'treasury' ? TREASURY : S.SVG[id];
+
+  function rosette(cx, cy, R, rings, petals, col){
+    let o = '';
+    for (let k = 0; k < rings; k++){
+      const r0 = R * (0.55 + 0.45 * k / Math.max(1, rings - 1)), amp = R * 0.09, ph = k * 0.5;
+      let d = '';
+      for (let i = 0; i <= 240; i++){ const t = i / 240 * Math.PI * 2, r = r0 + amp * Math.sin(petals * t + ph);
+        d += (i ? 'L' : 'M') + (cx + Math.cos(t) * r).toFixed(2) + ' ' + (cy + Math.sin(t) * r).toFixed(2); }
+      o += `<path d="${d}Z" fill="none" stroke="${col}" stroke-width="0.12" opacity="${0.35 + 0.3 * (k % 2)}"/>`;
+    }
+    return o;
+  }
+  function waveBand(x1, x2, y, amp, col){
+    let o = '';
+    [0, Math.PI].forEach(ph => { let d = '';
+      for (let x = x1; x <= x2 + 0.01; x += 0.25){ d += (x === x1 ? 'M' : 'L') + x.toFixed(2) + ' ' + (y + Math.sin(x * 2.2 + ph) * amp).toFixed(2); }
+      o += `<path d="${d}" fill="none" stroke="${col}" stroke-width="0.14"/>`; });
+    return o;
+  }
+  let serial = 1000 + Math.floor(Math.random() * 8000);
+  function note(v){
+    const N = NOTES[v], c = N.c, W = 66, H = 28.5, s = serial++;
+    let o = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="direction:ltr">`;
+    o += `<defs><pattern id="h${v}" width="1.2" height="1.2" patternUnits="userSpaceOnUse" patternTransform="rotate(35)"><path d="M0 0 L0 1.2" stroke="${c}" stroke-width="0.08" opacity=".35"/></pattern></defs>`;
+    o += `<rect width="${W}" height="${H}" fill="#fff"/>`;
+    o += `<rect x="1.1" y="1.1" width="${W-2.2}" height="${H-2.2}" rx="1" fill="${N.tint}"/>`;
+    o += `<rect x="1.1" y="1.1" width="${W-2.2}" height="${H-2.2}" rx="1" fill="url(#h${v})"/>`;
+    o += waveBand(2.2, W-2.2, 2.25, 0.45, c) + waveBand(2.2, W-2.2, H-2.25, 0.45, c);
+    o += `<rect x="1.1" y="1.1" width="${W-2.2}" height="${H-2.2}" rx="1" fill="none" stroke="${c}" stroke-width="0.35"/>`;
+    o += `<rect x="3.1" y="3.1" width="${W-6.2}" height="${H-6.2}" rx=".6" fill="none" stroke="${c}" stroke-width="0.15"/>`;
+    // emblem medallion (left)
+    o += rosette(12.2, H/2, 9.2, 5, 14, c);
+    o += `<circle cx="12.2" cy="${H/2}" r="6.4" fill="#fff" stroke="${c}" stroke-width="0.3"/>`;
+    o += `<g transform="translate(${12.2-5} ${H/2-5}) scale(.1)">${emblem(N.em, v)}</g>`;
+    // value rosette (right)
+    o += rosette(55.4, H/2, 9.4, 6, 18, c);
+    o += `<circle cx="55.4" cy="${H/2}" r="6.6" fill="#fff" stroke="${c}" stroke-width="0.3"/>`;
+    o += `<text x="55.4" y="${H/2 + 3.6}" text-anchor="middle" font-family="Aref Ruqaa" font-weight="700" font-size="${v > 9 ? 9 : 10.5}" fill="${c}">${AR(v)}</text>`;
+    // corner numerals
+    o += `<text x="3.9" y="6.6" font-family="Fraunces" font-weight="900" font-size="2.7" fill="${c}">${v}</text>`;
+    o += `<text x="${W-3.9}" y="${H-4.4}" text-anchor="end" font-family="Fraunces" font-weight="900" font-size="2.7" fill="${c}">${v}</text>`;
+    // centre text
+    o += `<text x="33.6" y="11.4" text-anchor="middle" font-family="Aref Ruqaa" font-weight="700" font-size="5.6" fill="#2B2520">ليرة الدنيا</text>`;
+    o += `<text x="33.6" y="15.3" text-anchor="middle" direction="ltr" font-family="Fraunces" font-weight="900" font-size="2.25" letter-spacing=".35" fill="${c}">DONYA LIRA · ${v}</text>`;
+    o += `<text x="33.6" y="18.9" text-anchor="middle" font-family="Readex Pro" font-weight="600" font-size="1.9" fill="#2B2520">${N.ar} · <tspan font-family="Fraunces" font-weight="600" letter-spacing=".2">${N.en}</tspan></text>`;
+    o += `<text x="33.6" y="22.1" text-anchor="middle" direction="ltr" font-family="Fraunces" font-weight="600" font-size="1.6" fill="#B0302E" letter-spacing=".15">№ SD-${String(s).padStart(5,'0')}</text>`;
+    o += `<text x="33.6" y="${H-3.75}" text-anchor="middle" font-family="Readex Pro" font-size="1.05" fill="${c}">صندوق الدنيا · للّعب في جناح بلاد الشام فقط · <tspan direction="ltr">Booth money, no cash value</tspan></text>`;
+    return o + '</svg>';
+  }
+  const plan = [10,10,10, 10,10,10, 10,10,10, 10,10,10, 5,5,5, 5,5,5, 5,5,5, 25,25,25, 25,25,25, 50,50,50];
+  const draw = () => { serial = 1000 + Math.floor(Math.random() * 8000); document.getElementById('sheet').innerHTML = plan.map(note).join(''); };
+  draw();
+  fetch('../assets/manifest.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : {}).then(j => { MAN = j || {}; if (Object.keys(MAN).some(k => k.startsWith('lira-'))) draw(); }).catch(() => {});
+})();
+</script>
+</body>
+</html>

@@ -31,3 +31,11 @@ Orphan-home visit with the Volunteer Club. No build step, no tracking, works off
 - `pd/fury/` Keyboard Fury: `index.html` contestant screen, `board.html` live projector leaderboard, `sync.js` live sync (same laptop: automatic; two devices: same room code on both, uses ntfy.sh)
 - `pd/index.html` hub linking the booth apps (vault pages are left off on purpose)
 - `pd/fonts/` self-hosted fonts shared by all
+
+## Levant booth: صندوق الدنيا · Sandouq El-Donya (cultural event)
+One-screen booth game for a tablet or touch laptop. No build step, works offline once loaded.
+- `levant/` the game: attract screen (golden hour countdown, shift leaderboard), pick a country, curtain reveal, 40-second hidden-object round, payout screen telling staff how many Donya Lira to pay and which Tile Card piece to stamp
+- Staff panel: long-press the small red seal (bottom corner of the start screen) or Ctrl+Shift+S, PIN `2026` (change it inside). Switch girls/boys shift, clear board, start golden hour now, edit payouts and round length, see totals paid
+- `levant/print/donya-lira-A4.pdf` 30 notes per A4 (12 × 10, 9 × 5, 6 × 25, 3 × 50), `levant/print/tile-card-A4.pdf` 12 Tile Cards per A4. The `.html` versions regenerate them (new serial numbers each print)
+- `levant/prompts/` Gemini prompt library, PhotoCraft finishing steps and font list
+- `levant/assets/` optional art from Gemini; list each file in `manifest.json` (keys `box`, `hakawati`, `scene-<sy|lb|ps|jo>`, `item-<id>`, `lira-<5|10|25|50>`)
