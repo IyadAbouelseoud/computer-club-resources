@@ -279,3 +279,7 @@ small{display:block;font-family:var(--en-display);font-style:italic;font-weight:
   .board-card .bc-head small{font-size:11px}
 }
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+
+/* hard mode: silhouettes in the tray until found, and no glow so items blend into the scene */
+.tray.sil .tg:not(.done):not(.gold) .ic{filter:brightness(0) opacity(.78)}
+.stage.art.blend .it,.stage.blend .it{filter:drop-shadow(1px 2px 0 rgba(43,37,32,.45))}

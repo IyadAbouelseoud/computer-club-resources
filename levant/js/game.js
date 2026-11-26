@@ -12,7 +12,7 @@
   const KEY = 'sandouq.v1';
   const DEFAULTS = {
     pin: '2026', shift: 'girls', sound: true,
-    roundSec: 40, penalty: 1, goldenChance: 12,
+    roundSec: 40, penalty: 1, goldenChance: 12, level: 'hard',
     ghAuto: true, ghEvery: 30, ghLen: 5, ghManualUntil: 0,
     pay: { perfect: 10, partial: 5, speed: 5, speedUnder: 20, golden: 15, mult: 2 }
   };
@@ -26,6 +26,20 @@
   sfx.on = cfg.sound;
   const board = () => (DB.boards[cfg.shift] = DB.boards[cfg.shift] || []);
   const stats = () => (DB.stats[cfg.shift] = DB.stats[cfg.shift] || { peeks: 0, lira: 0, golden: 0, perfect: 0 });
+  // difficulty presets: size = item size vs the short side of the stage, count = how many items, look = lookalikes planted next to each target
+  const LEVELS = {
+    easy:   { ar: 'سهل', en: 'Easy',   size: 0.17,  area: 2.6, min: 12, max: 22, rot: 22, look: 0, dup: 2, spread: 1.05, sil: false, halo: true,  hint: 13, penalty: 1, under: false },
+    normal: { ar: 'وسط', en: 'Normal', size: 0.145, area: 2.0, min: 18, max: 28, rot: 30, look: 1, dup: 2, spread: 0.8,  sil: false, halo: true,  hint: 18, penalty: 1, under: true },
+    hard:   { ar: 'صعب', en: 'Hard',   size: 0.125, area: 1.55, min: 24, max: 36, rot: 40, look: 2, dup: 3, spread: 0.72, sil: true,  halo: false, hint: 22, penalty: 2, under: true }
+  };
+  const LOOK = {
+    rakweh: ['dallah', 'finjan'], finjan: ['rakweh', 'misbaha'], lemon: ['orange', 'pomegranate'], pomegranate: ['orange', 'tarboush'], lantern: ['dallah', 'sandbottle'],
+    misbaha: ['record', 'kaak'], oud: ['dallah', 'boat'], jasmine: ['cedar', 'olives'], aleppo: ['tile', 'tatreez'], tarboush: ['pomegranate', 'lantern'],
+    tile: ['tatreez', 'aleppo'], barazek: ['manousheh', 'kaak'], cedar: ['jasmine', 'olives'], manousheh: ['barazek', 'knafeh'], kaak: ['barazek', 'record'],
+    boat: ['oud', 'shmagh'], record: ['misbaha', 'kaak'], olives: ['mansaf', 'knafeh'], tatreez: ['tile', 'shmagh'], knafeh: ['manousheh', 'mansaf'],
+    orange: ['lemon', 'pomegranate'], mansaf: ['knafeh', 'olives'], sandbottle: ['lantern', 'rakweh'], shmagh: ['tatreez', 'tile'], dallah: ['rakweh', 'lantern']
+  };
+  const L = () => LEVELS[cfg.level] || LEVELS.hard;
   const SHIFT_NAME = { girls: ['فترة البنات', 'Girls shift'], boys: ['فترة الشباب', 'Boys shift'] };
 
   // ---------- optional art from Gemini (assets/manifest.json) ----------
@@ -180,6 +194,7 @@
     if (MAN['scene-' + c]) { sc.className = 'scene img'; sc.style.backgroundImage = `url(assets/scenes/${c}.webp)`; sc.innerHTML = ''; }
     else { sc.className = 'scene'; sc.style.backgroundImage = ''; sc.innerHTML = S.sceneSVG(c); }
     // tray
+    $('#tray').classList.toggle('sil', L().sil);
     $('#tray').innerHTML = targets.map((t) => `<div class="tg" data-id="${t.id}"><span class="ic">${art(t.id)}</span><span class="tx"><b>${t.ar}</b><small lang="en" dir="ltr">${t.en}</small></span></div>`).join('') +
       (hasGold ? `<div class="tg gold" data-id="golden"><span class="ic">${art('golden')}</span></div>` : '');
     $('#items').innerHTML = ''; $('#banner').hidden = true; $('#fact').classList.remove('show');
@@ -190,42 +205,51 @@
   }
 
   function layout() {
-    const st = $('#stage').getBoundingClientRect(), W = st.width, H = st.height;
-    const base = Math.max(56, Math.min(140, Math.min(W, H) * 0.17, Math.sqrt(W * H) * 0.12));
-    const n = Math.max(12, Math.min(22, Math.round((W * H) / (base * base * 2.6))));
-    const placed = [];
-    const m = base * 0.6;
-    function spot(minD, size) {
-      for (let tries = 0, d = minD; tries < 400; tries++) {
+    const D = L(), st = $('#stage').getBoundingClientRect(), W = st.width, H = st.height;
+    const base = Math.max(48, Math.min(140, Math.min(W, H) * D.size, Math.sqrt(W * H) * D.size * 0.7));
+    const n = Math.max(D.min, Math.min(D.max, Math.round((W * H) / (base * base * D.area))));
+    const placed = [], m = base * 0.55;
+    const ok = (x, y, size, d) => placed.every((p) => Math.hypot(p.x - x, p.y - y) > d * (size + p.s) / 2 / base);
+    function spot(minD, size, near) {
+      for (let tries = 0, d = minD; tries < 500; tries++) {
         if (tries && tries % 80 === 0) d *= 0.85;
-        const x = rand(m, W - m), y = rand(m, H - m);
-        if (placed.every((p) => Math.hypot(p.x - x, p.y - y) > d * (size + p.s) / 2 / base * 1.0)) return { x, y };
+        let x, y;
+        if (near && tries < 200) { const a = rand(0, Math.PI * 2), r = base * rand(0.9, 1.5); x = near.x + Math.cos(a) * r; y = near.y + Math.sin(a) * r; if (x < m || x > W - m || y < m || y > H - m) continue; }
+        else { x = rand(m, W - m); y = rand(m, H - m); }
+        if (ok(x, y, size, d)) return { x, y };
       }
       return { x: rand(m, W - m), y: rand(m, H - m) };
     }
+    const sz = () => base * rand(0.84, 1.1);
     const list = [];
-    R.targets.forEach((id) => list.push({ id, kind: 't', s: base * rand(0.95, 1.1) }));
-    if (R.hasGold) list.push({ id: 'golden', kind: 'g', s: base * 0.78 });
+    R.targets.forEach((id) => {
+      list.push({ id, kind: 't', s: sz() });
+      shuffle((LOOK[id] || []).filter((x) => !R.targets.includes(x))).slice(0, D.look).forEach((lk) => list.push({ id: lk, kind: 'd', s: sz(), near: id }));
+    });
+    if (R.hasGold) list.push({ id: 'golden', kind: 'g', s: base * 0.8 });
     const pool = shuffle(S.ITEMS.filter((i) => i.c !== 'gold' && !R.targets.includes(i.id)).map((i) => i.id));
-    let k = 0; const counts = {};
-    while (list.length < n) { const id = pool[k++ % pool.length]; counts[id] = (counts[id] || 0) + 1; if (counts[id] > 2) continue; list.push({ id, kind: 'd', s: base * rand(0.82, 1.12) }); }
-    const frag = document.createDocumentFragment();
-    list.forEach((it, i) => {
-      const pos = spot(it.kind === 'd' ? base * 0.78 : base * 1.05, it.s);
-      placed.push({ x: pos.x, y: pos.y, s: it.s });
+    let k = 0, guard = 0; const counts = {};
+    list.forEach((it) => { if (it.kind === 'd') counts[it.id] = (counts[it.id] || 0) + 1; });
+    while (list.length < n && guard++ < 500) { const id = pool[k++ % pool.length]; if ((counts[id] || 0) >= D.dup) continue; counts[id] = (counts[id] || 0) + 1; list.push({ id, kind: 'd', s: sz() }); }
+    const frag = document.createDocumentFragment(), where = {};
+    list.forEach((it) => {
+      const pos = spot(base * D.spread, it.s, it.near ? where[it.near] : null);
+      placed.push({ x: pos.x, y: pos.y, s: it.s }); where[it.id] = where[it.id] || pos;
       const b = document.createElement('button');
       b.className = 'it'; b.dataset.id = it.id; b.dataset.k = it.kind;
       b.setAttribute('aria-label', byId[it.id].ar + ' · ' + byId[it.id].en);
       b.style.setProperty('--x', (pos.x / W * 100).toFixed(2) + '%');
       b.style.setProperty('--y', (pos.y / H * 100).toFixed(2) + '%');
       b.style.setProperty('--s', Math.round(it.s) + 'px');
-      b.style.setProperty('--r', Math.round(rand(-22, 22)) + 'deg');
-      b.style.zIndex = it.kind === 'd' ? 1 + (i % 3) : 2;
+      b.style.setProperty('--r', Math.round(rand(-D.rot, D.rot)) + 'deg');
+      // targets sometimes sit underneath decoys (still tappable where visible)
+      b.style.zIndex = it.kind === 'd' ? 1 + Math.floor(Math.random() * 4) : (D.under ? 1 + Math.floor(Math.random() * 3) : 3);
       b.innerHTML = art(it.id);
       frag.appendChild(b);
       if (it.kind !== 'd') R.el[it.id] = b;
     });
     $('#items').appendChild(frag);
+    $('#stage').classList.toggle('blend', !D.halo);
   }
 
   function openCurtains() {
@@ -249,7 +273,7 @@
     $('#timerNum').textContent = AR(Math.ceil(rem));
     $('#timerRing').style.strokeDashoffset = (119.4 * (1 - rem / D)).toFixed(1);
     $('#timer').classList.toggle('low', rem <= 10);
-    if (!R.hinted && now - R.lastFind > 13000) {
+    if (!R.hinted && now - R.lastFind > L().hint * 1000) {
       const id = R.targets.find((t) => !R.found.includes(t));
       if (id) { R.el[id].classList.add('hint'); R.hinted = true; }
     }
@@ -258,16 +282,20 @@
   }
 
   $('#items').addEventListener('pointerdown', (e) => {
-    const b = e.target.closest('.it'); if (!b || !R || R.over || !R.t0) return;
+    if (!R || R.over || !R.t0) return;
+    // items are square buttons but drawn round-ish: hit-test against the visible circle so a decoy's empty corner never steals a tap
+    const hits = document.elementsFromPoint(e.clientX, e.clientY).filter((el) => el.classList && el.classList.contains('it') && !el.classList.contains('got'));
+    const b = hits.find((el) => { const r = el.getBoundingClientRect(); return Math.hypot(e.clientX - (r.left + r.width / 2), e.clientY - (r.top + r.height / 2)) < r.width * 0.46; }) || hits[0];
+    if (!b) return;
     e.preventDefault();
     const id = b.dataset.id, k = b.dataset.k;
     if (k === 't' && !R.found.includes(id)) return found(b, id);
     if (k === 'g' && !R.gotGold) return gotGold(b);
     if (k === 'd') {
       b.classList.remove('wig'); void b.offsetWidth; b.classList.add('wig');
-      sfx.wrong(); R.penalty += cfg.penalty;
+      sfx.wrong(); R.penalty += L().penalty;
       tip(b, byId[id]);
-      if (cfg.penalty) minus(b);
+      if (L().penalty) minus(b);
     }
   });
 
@@ -308,7 +336,7 @@
   }
   function minus(b) {
     const st = $('#stage').getBoundingClientRect(), a = centerOf(b), m = document.createElement('span');
-    m.className = 'minus'; m.textContent = '-' + cfg.penalty + 's'; m.style.left = (a.x - st.left + 20) + 'px'; m.style.top = (a.y - st.top) + 'px';
+    m.className = 'minus'; m.textContent = '-' + L().penalty + 's'; m.style.left = (a.x - st.left + 20) + 'px'; m.style.top = (a.y - st.top) + 'px';
     $('#items').appendChild(m); setTimeout(() => m.remove(), 900);
   }
 
@@ -416,8 +444,12 @@
         <div class="row"><label><input type="checkbox" id="ghAuto" ${cfg.ghAuto ? 'checked' : ''}> Automatic schedule</label></div>
         ${num('ghEvery', cfg.ghEvery, 'Every (minutes)')}${num('ghLen', cfg.ghLen, 'Lasts (minutes)')}
       </fieldset>
+      <fieldset><legend>الصعوبة · Difficulty</legend>
+        <div class="row"><div class="seg" id="segLevel">${Object.entries(LEVELS).map(([k, v]) => `<button data-v="${k}" class="${cfg.level === k ? 'on' : ''}">${v.ar} · ${v.en}</button>`).join('')}</div></div>
+        <p class="hint">Hard: more and smaller items, lookalikes placed next to each target, silhouettes in the tray, hint after 22 s, wrong tap costs 2 s. Easy is the original version.</p>
+      </fieldset>
       <fieldset><legend>الجولة · Round</legend>
-        ${num('roundSec', cfg.roundSec, 'Round length (seconds)')}${num('penalty', cfg.penalty, 'Wrong tap costs (seconds)')}${num('goldenChance', cfg.goldenChance, 'Golden finjan chance % (50% in golden hour)')}
+        ${num('roundSec', cfg.roundSec, 'Round length (seconds)')}${num('goldenChance', cfg.goldenChance, 'Golden finjan chance % (50% in golden hour)')}
       </fieldset>
       <fieldset><legend>الليرات · Payouts</legend>
         ${num('p_perfect', P.perfect, 'All 3 found', 'pay.perfect')}${num('p_partial', P.partial, 'Found 1 or 2', 'pay.partial')}
@@ -437,6 +469,7 @@
       if (cfg.ghEvery < 1) cfg.ghEvery = 1; if (cfg.ghLen >= cfg.ghEvery) cfg.ghLen = Math.max(1, cfg.ghEvery - 1); if (cfg.roundSec < 10) cfg.roundSec = 10; if (cfg.pay.mult < 1) cfg.pay.mult = 1;
       save();
     }));
+    sv.querySelector('#segLevel').addEventListener('click', (e) => { const v = e.target.dataset.v; if (v) { cfg.level = v; save(); renderStaff(); } });
     sv.querySelector('#segShift').addEventListener('click', (e) => { const v = e.target.dataset.v; if (v) { cfg.shift = v; save(); renderStaff(); } });
     sv.querySelector('#clrBoard').addEventListener('click', () => { if (confirmTwice(sv.querySelector('#clrBoard'))) { DB.boards[cfg.shift] = []; DB.stats[cfg.shift] = { peeks: 0, lira: 0, golden: 0, perfect: 0 }; save(); renderStaff(); } });
     const now = sv.querySelector('#ghNow'), stop = sv.querySelector('#ghStop');
