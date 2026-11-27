@@ -8,8 +8,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>صندوق الدنيا · Sandouq El-Donya</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ccircle cx=%2250%22 cy=%2250%22 r=%2246%22 fill=%22%23B0302E%22/%3E%3Cpath d=%22M50 14 61 39 86 50 61 61 50 86 39 61 14 50 39 39Z%22 fill=%22%23F2C94C%22/%3E%3C/svg%3E">
-<link rel="stylesheet" href="fonts/fonts.css?v=16">
-<link rel="stylesheet" href="css/sandouq.css?v=16">
+<link rel="stylesheet" href="fonts/fonts.css?v=17">
+<link rel="stylesheet" href="css/sandouq.css?v=17">
 </head>
 <body>
 <div id="app">
@@ -41,10 +41,12 @@
           <ol class="board" id="board"></ol>
         </div>
         <div class="card goal-card">
+          <div class="crowd">
+            <b class="crowd-n" id="crowdN">٠</b>
+            <div class="crowd-tx"><b id="crowdAr">تفرّجوا بهالفترة</b><small lang="en" dir="ltr" id="crowdEn">people peeked this shift</small></div>
+          </div>
           <div class="goal-art" id="goalArt"></div>
-          <div class="goal-tx"><b><span id="crowdN" class="crowd-n">٠</span> تفرّجوا بهالفترة</b><small lang="en" dir="ltr"><span id="crowdNen">0</span> people peeked this shift</small>
-            <p>٤ بلاد، ٤ مشاهد، وكل جولة كنوز جديدة.</p>
-            <p lang="en" dir="ltr">4 countries, 4 scenes, new treasures every round.</p></div>
+          <p class="goal-tag">٤ بلاد، ٤ مشاهد، وكل جولة كنوز جديدة<small lang="en" dir="ltr">4 countries, 4 scenes, new treasures every round</small></p>
         </div>
         <div class="card how">
           <div><span class="n">١</span><b>تفرّج</b><small lang="en" dir="ltr">Peek in</small></div>
@@ -145,9 +147,9 @@
 </div>
 <div class="grain" aria-hidden="true"></div>
 
-<script src="js/items.js?v=16"></script>
-<script src="js/scenes.js?v=16"></script>
-<script src="js/audio.js?v=16"></script>
-<script src="js/game.js?v=16"></script>
+<script src="js/items.js?v=17"></script>
+<script src="js/scenes.js?v=17"></script>
+<script src="js/audio.js?v=17"></script>
+<script src="js/game.js?v=17"></script>
 </body>
 </html>

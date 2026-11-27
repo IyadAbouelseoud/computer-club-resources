@@ -138,7 +138,7 @@
     const hkey = MAN['hakawati-' + cfg.shift] ? 'hakawati-' + cfg.shift : MAN['hakawati'] ? 'hakawati' : null;
     if (hkey) $('#peekBtn').insertAdjacentHTML('beforeend', `<img class="hak" src="assets/${hkey}.webp" alt="" draggable="false">`);
     $('.gc-ic').innerHTML = art('golden');
-    $('#goalArt').innerHTML = ORDER.map((c) => `<span style="--c:${S.COUNTRIES[c].color}">${art(S.COUNTRIES[c].emblem)}</span>`).join('');
+    $('#goalArt').innerHTML = ORDER.map((c) => { const C = S.COUNTRIES[c]; return `<span class="ga" style="--c:${C.color}"><i>${art(C.emblem)}</i><b>${C.ar}</b><small lang="en" dir="ltr">${C.en}</small></span>`; }).join('');
     renderBoard(); tickGold(); renderShiftSw();
   }
   function renderShiftSw() {
@@ -156,7 +156,11 @@
   function renderBoard() {
     const b = board().slice(0, 5), sn = SHIFT_NAME[cfg.shift] || ['', cfg.shift];
     $('#shiftLabel').textContent = sn[1];
-    const pk = stats().peeks; $('#crowdN').textContent = AR(pk); $('#crowdNen').textContent = pk;
+    const pk = stats().peeks, cw = $('.crowd');
+    cw.classList.toggle('zero', !pk);
+    $('#crowdN').textContent = pk ? AR(pk) : '١';
+    $('#crowdAr').textContent = pk ? (pk === 1 ? 'شخص تفرّج بهالفترة' : 'تفرّجوا بهالفترة') : 'كون أول واحد بيتفرّج!';
+    $('#crowdEn').textContent = pk ? (pk === 1 ? '1 person peeked this shift' : pk + ' people peeked this shift') : 'Be the first to peek this shift!';
     $('#board').innerHTML = b.length ? b.map((r, i) => `<li><span class="rk">${AR(i + 1)}</span><span class="fl">${art(S.COUNTRIES[r.c].emblem)}</span><span class="nm" dir="auto">${esc(r.n)}</span><span class="tm" dir="ltr">${r.t.toFixed(1)}s</span></li>`).join('')
       : `<li class="empty">لسّا ما حدا · <span lang="en" dir="ltr">Be the first!</span></li>`;
   }
