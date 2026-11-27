@@ -114,7 +114,7 @@
       ${peep(124)}${peep(476)}
       ${star(124, 450, 22, '#1F4E8C')}${star(476, 450, 22, '#1F4E8C')}
       <rect x="196" y="524" width="208" height="40" rx="8" fill="#F3E9D4" ${sw.replace('5', '4')}/>
-      <text x="300" y="552" text-anchor="middle" font-family="Aref Ruqaa, serif" font-weight="700" font-size="26" fill="#B0302E">تعا تفرّج</text>
+      <text x="300" y="552" text-anchor="middle" font-family="El Messiri, sans-serif" font-weight="700" font-size="26" fill="#B0302E">تعا تفرّج</text>
     </svg>`;
   }
 
@@ -139,8 +139,20 @@
     if (hkey) $('#peekBtn').insertAdjacentHTML('beforeend', `<img class="hak" src="assets/${hkey}.webp" alt="" draggable="false">`);
     $('.gc-ic').innerHTML = art('golden');
     $('#goalArt').innerHTML = ORDER.map((c) => `<span style="--c:${S.COUNTRIES[c].color}">${art(S.COUNTRIES[c].emblem)}</span>`).join('');
-    renderBoard(); tickGold();
+    renderBoard(); tickGold(); renderShiftSw();
   }
+  function renderShiftSw() {
+    document.querySelectorAll('#shiftSw button').forEach((b) => { b.classList.toggle('on', b.dataset.v === cfg.shift); b.classList.remove('arm'); b.innerHTML = b.dataset.label; });
+  }
+  let armT = 0;
+  $('#shiftSw').addEventListener('click', (e) => {
+    const b = e.target.closest('button'); if (!b || b.dataset.v === cfg.shift) return;
+    if (!b.classList.contains('arm')) { // first tap arms it, second tap switches, so a passer-by can't flip it by accident
+      renderShiftSw(); b.classList.add('arm'); b.innerHTML = 'أكيد؟ <small lang="en" dir="ltr">Tap again</small>';
+      clearTimeout(armT); armT = setTimeout(renderShiftSw, 3000); sfx.tap(); return;
+    }
+    clearTimeout(armT); cfg.shift = b.dataset.v; save(); sfx.found(0); renderAttract();
+  });
   function renderBoard() {
     const b = board().slice(0, 5), sn = SHIFT_NAME[cfg.shift] || ['', cfg.shift];
     $('#shiftLabel').textContent = sn[1];

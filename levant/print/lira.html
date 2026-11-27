@@ -110,11 +110,11 @@
     o += `<g transform="translate(${12.4-5} ${H/2-5}) scale(.1)">${emblem(N.em, v)}</g>`;
     o += rosette(55.2, H/2, 9.4, 6, PETALS[N.style] + 4, c);
     o += valueFrame(N, 55.2, H/2);
-    o += `<text x="55.2" y="${H/2 + (N.style === 'jo' ? 4.1 : 3.4)}" text-anchor="middle" font-family="Aref Ruqaa" font-weight="700" font-size="${v > 9 ? (N.style === 'ps' || N.style === 'jo' ? 7.6 : 8.4) : 10}" fill="${c}">${AR(v)}</text>`;
+    { const fz = (v > 9 ? ({ sy:7.4, lb:7.2, ps:6.2, jo:6.4 }[N.style]) : 9); o += `<text x="55.2" y="${(H/2 + fz * 0.34 + (N.style === 'jo' ? 1 : 0)).toFixed(2)}" text-anchor="middle" font-family="El Messiri" font-weight="700" font-size="${fz}" fill="${c}">${AR(v)}</text>`; }
     o += `<text x="4.2" y="7" font-family="Fraunces" font-weight="900" font-size="2.6" fill="${c}">${v}</text>`;
     o += `<text x="4.2" y="${H-4.6}" font-family="Fraunces" font-weight="900" font-size="2.6" fill="${c}">${v}</text>`;
     o += `<text x="33.6" y="6.9" text-anchor="middle" font-family="Readex Pro" font-weight="600" font-size="1.55" fill="${c}">صندوق الدنيا · ${N.city} <tspan font-family="Fraunces" font-style="italic">· ${N.cityEn}</tspan></text>`;
-    o += `<text x="33.6" y="13" text-anchor="middle" font-family="Aref Ruqaa" font-weight="700" font-size="${N.cur.length > 10 ? 4.6 : 5}" fill="${K}">${N.cur}</text>`;
+    o += `<text x="33.6" y="12.6" text-anchor="middle" font-family="El Messiri" font-weight="700" font-size="${N.cur.length > 10 ? 3.5 : 3.9}" fill="${K}">${N.cur}</text>`;
     o += `<text x="33.6" y="16.6" text-anchor="middle" font-family="Fraunces" font-weight="900" font-size="${N.en.length > 13 ? 1.6 : 1.85}" letter-spacing="${N.en.length > 13 ? .12 : .22}" fill="${c}">${N.en} · ${v}</text>`;
     o += `<text x="33.6" y="19.9" text-anchor="middle" font-family="Readex Pro" font-weight="600" font-size="1.7" fill="${K}">${AR(v)} ${N.cur}</text>`;
     o += `<text x="33.6" y="22.5" text-anchor="middle" font-family="Fraunces" font-weight="600" font-size="1.45" fill="#B0302E" letter-spacing=".15">№ ${PREFIX[N.style]}-${String(s).padStart(5,'0')}</text>`;
