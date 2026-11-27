@@ -340,6 +340,7 @@
   function fact(it) {
     const f = $('#fact');
     f.innerHTML = `<span class="ic">${art(it.id)}</span><div><b>${it.ar}</b><span class="tr" lang="en" dir="ltr">${it.tr} · ${it.en}</span><p>${it.fact_ar}</p><p lang="en" dir="ltr">${it.fact_en}</p></div>`;
+    const tr = $('#tray').getBoundingClientRect(); f.style.bottom = Math.round(innerHeight - tr.top + 10) + 'px';
     f.classList.add('show'); clearTimeout(fact.t); fact.t = setTimeout(() => f.classList.remove('show'), 2800);
   }
   function tip(b, it) {

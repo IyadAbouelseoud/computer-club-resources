@@ -170,6 +170,7 @@ small{display:block;font-family:var(--en-display);font-style:italic;font-weight:
   background:var(--paper);border:3px solid var(--ink);border-radius:14px;padding:10px 14px;box-shadow:0 6px 0 var(--ink);display:flex;gap:12px;align-items:center;transition:opacity .25s,transform .25s}
 .fact.show{opacity:1;transform:translate(-50%,0)}
 .fact .ic{width:56px;height:56px;flex:none}
+.fact .ic img,.fact .ic svg{width:100%;height:100%;display:block;object-fit:contain}
 .fact b{font-size:18px;display:block}.fact .tr{display:block;font-family:var(--en-display);font-style:italic;color:var(--red);font-weight:600;font-size:14px}
 .fact p{margin:2px 0 0;font-size:14px;line-height:1.4}.fact p[lang]{font-family:var(--en-display);font-size:13px;opacity:.85}
 @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-2px)}75%{transform:translateX(2px)}}
