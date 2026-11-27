@@ -118,6 +118,57 @@
     </svg>`;
   }
 
+  // ---------- the hakawati's speech bubble: funny lines, one set per shift ----------
+  const QUIPS = {
+    boys: [
+      ['يا شباب! الصندوق ما بيعضّ… تعا تفرّج', 'Guys! The box doesn’t bite. Come peek.'],
+      ['صرلي ١٠٠ سنة عم بحكي قصص، وإنت لسّا واقف؟', '100 years telling stories and you’re still standing there?'],
+      ['الطربوش مش للبيع… بس الكنوز ببلاش', 'The tarboush isn’t for sale. The treasures are free.'],
+      ['سمعت إنك أسرع واحد بالجامعة؟ ورجيني', 'Heard you’re the fastest at uni? Prove it.'],
+      ['الجرس مش للزينة! طن طن… تعا لهون', 'This bell isn’t decoration! Ding ding, over here.'],
+      ['مش لازم تحكي شامي… بس لازم تتفرّج', 'No Shami needed. Just peek.'],
+      ['ما بتعرف شو هي الركوة؟ ولا يهمك، الصندوق بيعلّمك', 'Don’t know what a rakweh is? The box will teach you.'],
+      ['جيب صاحبك، الحماس بيصير دبل', 'Bring your friend. Double the hype.'],
+      ['الكعكة مخبّاية أحسن مني بالغميضة', 'The ka’ak plays hide-and-seek better than me.'],
+      ['قهوة بلا هيل متل جولة بلا فوز… جرّب حظك', 'Coffee without cardamom is like a round without a win.'],
+      ['تيتا كانت تلاقي الكنوز بـ ١٠ ثواني… وإنت؟', 'My teta found them in 10 seconds. You?'],
+      ['خلّص محاضرتك وتعا… أو لا، تعا هلّق', 'Finish your lecture and come. Actually, come now.']
+    ],
+    girls: [
+      ['يا صبايا! الصندوق ما بيعضّ… تعي تفرّجي', 'Ladies! The box doesn’t bite. Come peek.'],
+      ['تيتا علّمتني القصص، وأنا بعلّمك الكنوز', 'Teta taught me the stories. I’ll show you the treasures.'],
+      ['الكنافة مخبّاية… لا تقوليلي إنك ما بتحبي الكنافة', 'The knafeh is hiding. Don’t tell me you don’t love knafeh.'],
+      ['التطريز أصعب من هاللعبة، صدّقيني', 'Tatreez is harder than this game, trust me.'],
+      ['سمعت إنك أسرع وحدة بالجامعة؟ ورجيني', 'Heard you’re the fastest at uni? Prove it.'],
+      ['الجرس مش للزينة! طن طن… تعي لهون', 'This bell isn’t decoration! Ding ding, over here.'],
+      ['مش لازم تحكي شامي… بس لازم تتفرّجي', 'No Shami needed. Just peek.'],
+      ['ما بتعرفي شو هي الركوة؟ ولا يهمك، الصندوق بيعلّمك', 'Don’t know what a rakweh is? The box will teach you.'],
+      ['جيبي صاحبتك، الحماس بيصير دبل', 'Bring your friend. Double the hype.'],
+      ['الياسمين الشامي مخبّى… ريحته بتدلّك', 'The jasmine is hiding. Follow the scent.'],
+      ['عيونك حلوين… بس هل هنّي سريعين؟', 'Lovely eyes. But are they fast?'],
+      ['خلّصي محاضرتك وتعي… أو لا، تعي هلّق', 'Finish your lecture and come. Actually, come now.']
+    ]
+  };
+  let bubLast = -1, bubN = 0;
+  function bubLines() {
+    const g = cfg.shift === 'girls', L = (QUIPS[cfg.shift] || QUIPS.boys).slice(), live = [];
+    const gh = golden();
+    if (gh.on) live.push(['الساعة الذهبية!! المصاري دبل، ركضوا!', 'Golden hour!! Double cash. RUN!']);
+    const top = board()[0];
+    if (top) live.push([`«${esc(top.n)}» عامل${g ? 'ة' : ''} حال${g ? 'ها' : 'و'} بطل${g ? 'ة' : ''} بـ ${top.t.toFixed(1)} ثانية… مين بيكسر الرقم؟`, `${esc(top.n)} thinks they’re the champ at ${top.t.toFixed(1)}s. Who beats it?`]);
+    return { L, live };
+  }
+  function rotateBub() {
+    const b = $('#bub'); if (!b) return;
+    const { L, live } = bubLines();
+    let line;
+    if (live.length && bubN++ % 3 === 0) line = live[Math.floor(Math.random() * live.length)];
+    else { let i; do { i = Math.floor(Math.random() * L.length); } while (i === bubLast && L.length > 1); bubLast = i; line = L[i]; }
+    b.innerHTML = `<b>${line[0]}</b><small lang="en" dir="ltr">${line[1]}</small>`;
+    b.classList.remove('pop'); void b.offsetWidth; b.classList.add('pop');
+  }
+  setInterval(() => { if (screen === 'attract') rotateBub(); }, 4800);
+
   // ---------- attract ----------
   const CALLS = [
     ['تعا تفرّج يا سلام! الدنيا كلها بهالصندوق', 'Come and see! The whole Levant fits in this box.'],
@@ -136,7 +187,7 @@
     $('#boxArt').innerHTML = MAN['box'] ? '<img src="assets/box.webp" alt="صندوق الدنيا" draggable="false">' : boxSVG();
     const hk = $('.hak'); if (hk) hk.remove();
     const hkey = MAN['hakawati-' + cfg.shift] ? 'hakawati-' + cfg.shift : MAN['hakawati'] ? 'hakawati' : null;
-    if (hkey) $('#peekBtn').insertAdjacentHTML('beforeend', `<img class="hak" src="assets/${hkey}.webp" alt="" draggable="false">`);
+    if (hkey) { $('#peekBtn').insertAdjacentHTML('beforeend', `<span class="hak"><span class="bub" id="bub"></span><img src="assets/${hkey}.webp" alt="" draggable="false"></span>`); bubLast = -1; rotateBub(); }
     $('.gc-ic').innerHTML = art('golden');
     $('#goalArt').innerHTML = ORDER.map((c) => { const C = S.COUNTRIES[c]; return `<span class="ga" style="--c:${C.color}"><i>${art(C.emblem)}</i><b>${C.ar}</b><small lang="en" dir="ltr">${C.en}</small></span>`; }).join('');
     renderBoard(); tickGold(); renderShiftSw();
