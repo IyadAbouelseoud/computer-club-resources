@@ -177,7 +177,71 @@
   }
   setInterval(() => { if (screen === 'attract') tickGold(); }, 1000);
   setInterval(() => { if (screen === 'attract') rotateCall(); }, 5200);
-  $('#peekBtn').addEventListener('click', () => { sfx.init(); sfx.tap(); show('pick'); });
+  // ---------- the big entrance: dive into the box, curtains part, doors drop, olive leaves fall ----------
+  let diving = false;
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  $('#peekBtn').addEventListener('click', () => {
+    sfx.init(); sfx.tap();
+    if (diving) return;
+    if (reduced) { show('pick'); dropDoors(); return; }
+    diving = true;
+    const art = $('#boxArt'), pic = art.firstElementChild, ar = art.getBoundingClientRect(), pr = (pic || art).getBoundingClientRect();
+    // the window sits in the middle of the box, a little above centre
+    const cx = pr.left + pr.width * 0.5, cy = pr.top + pr.height * 0.5;
+    const s = Math.max(innerWidth / (pr.width * 0.36), innerHeight / (pr.height * 0.3));
+    art.style.transformOrigin = `${cx - ar.left}px ${cy - ar.top}px`;
+    const dx = innerWidth / 2 - cx, dy = innerHeight / 2 - cy;
+    const zoom = art.animate([{ transform: 'translate(0,0) scale(1)' }, { transform: `translate(${dx * .15}px,${dy * .15}px) scale(1.08)`, offset: .18 }, { transform: `translate(${dx}px,${dy}px) scale(${s})` }],
+      { duration: 1050, easing: 'cubic-bezier(.55,0,.85,.35)', fill: 'forwards' });
+    const fades = [...document.querySelectorAll('#attract .brand, #attract .side, #attract .cta, #attract .hak, #attract .shift-sw, #attract .seal, #attract .band')]
+      .map((el, i) => el.animate([{ opacity: 1, transform: 'none' }, { opacity: 0, transform: `translateY(${i % 2 ? 24 : -24}px)` }], { duration: 420, easing: 'ease-in', fill: 'forwards' }));
+    // full-screen curtain arrives as the camera reaches the window
+    const zc = document.createElement('div'); zc.className = 'zcurtain';
+    zc.innerHTML = '<div class="zc zc-r"></div><div class="zc zc-l"></div><div class="zc-val"></div>';
+    document.body.appendChild(zc);
+    zc.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 260, delay: 760, easing: 'ease-out', fill: 'both' });
+    setTimeout(() => sfx.curtain(), 700);
+    setTimeout(() => {
+      zoom.cancel(); fades.forEach((f) => f.cancel()); art.style.transformOrigin = '';
+      show('pick'); dropDoors(true);
+      setTimeout(() => { zc.classList.add('open'); }, 120);
+      setTimeout(() => { zc.remove(); diving = false; }, 1500);
+    }, 1080);
+  });
+  function dropDoors(afterCurtain) {
+    const head = $('.pick-head'), back = $('#pickBack'), doors = [...document.querySelectorAll('#doors .door')];
+    const base = afterCurtain ? 520 : 80;
+    head.animate([{ opacity: 0, transform: 'translateY(-30px)' }, { opacity: 1, transform: 'none' }], { duration: 500, delay: base, easing: 'cubic-bezier(.2,.8,.2,1)', fill: 'both' }).finished.then((a) => a.cancel()).catch(() => {});
+    doors.forEach((d, i) => {
+      const rot = (i % 2 ? 1 : -1) * (4 + i * 2);
+      d.animate([
+        { transform: `translateY(-115vh) rotate(${rot}deg)`, opacity: 1 },
+        { transform: 'translateY(4%) rotate(0deg)', offset: .72 },
+        { transform: 'translateY(-2%)', offset: .86 },
+        { transform: 'none' }
+      ], { duration: 780, delay: base + 260 + i * 170, easing: 'cubic-bezier(.3,.7,.35,1)', fill: 'both' }).finished.then((a) => a.cancel()).catch(() => {});
+      setTimeout(() => { sfx.found(i); }, base + 260 + i * 170 + 560);
+    });
+    back.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 400, delay: base + 260 + doors.length * 170 + 400, fill: 'both' }).finished.then((a) => a.cancel()).catch(() => {});
+    setTimeout(() => leaves($('#pick')), base + 200);
+  }
+  // olive leaves, olives and jasmine drifting down
+  const LEAF = (c) => `<svg viewBox="0 0 40 20"><path d="M2 10 Q14 -2 38 9 Q16 21 2 10Z" fill="${c}" stroke="#2B2520" stroke-width="1.4"/><path d="M4 10 Q20 8 36 9" stroke="#2B2520" stroke-width=".9" fill="none" opacity=".6"/></svg>`;
+  const OLIVE = (c) => `<svg viewBox="0 0 30 30"><ellipse cx="15" cy="16" rx="9" ry="11.5" fill="${c}" stroke="#2B2520" stroke-width="1.6"/><ellipse cx="11.5" cy="11.5" rx="2.6" ry="3.6" fill="#fff" opacity=".35"/><path d="M15 4.5 Q17 1 21 1" stroke="#5A4632" stroke-width="1.6" fill="none"/></svg>`;
+  const JAS = `<svg viewBox="0 0 40 40">${[0, 72, 144, 216, 288].map((a) => `<ellipse cx="20" cy="10" rx="6" ry="9" fill="#FFFDF7" stroke="#2B2520" stroke-width="1.4" transform="rotate(${a} 20 20)"/>`).join('')}<circle cx="20" cy="20" r="4" fill="#F2C43D"/></svg>`;
+  function leaves(host) {
+    let box = host.querySelector('.fall'); if (box) box.remove();
+    box = document.createElement('div'); box.className = 'fall'; host.appendChild(box);
+    const kinds = [() => LEAF('#6F7F3A'), () => LEAF('#8E9C55'), () => LEAF('#5E6B33'), () => OLIVE('#5E6B33'), () => OLIVE('#3A4220'), () => OLIVE('#8A9A45'), () => JAS];
+    for (let i = 0; i < 34; i++) {
+      const k = i % kinds.length, el = document.createElement('i'), w = k < 3 ? rand(30, 54) : k < 6 ? rand(18, 28) : rand(22, 34);
+      el.className = 'lf';
+      el.style.cssText = `left:${rand(-2, 98)}%;--w:${w}px;--d:${rand(2.6, 4.4)}s;--dl:${rand(0, 1.4)}s;--dx:${rand(-120, 120)}px;--sw:${rand(1, 1.8)}s;--r0:${rand(-60, 60)}deg`;
+      el.innerHTML = `<span>${kinds[k]()}</span>`;
+      box.appendChild(el);
+    }
+    setTimeout(() => box.remove(), 6500);
+  }
 
   // ---------- pick ----------
   function renderDoors() {
